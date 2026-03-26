@@ -214,7 +214,7 @@ const POPUP_ID = 'pc-popup-overlay';
 async function openMainHub() {
     if ($(`#${POPUP_ID}`).length) return;
 
-    // ST 함수를 전역에 먼저 노출
+    // ST 함수 전역 노출 (iframe에서 window.parent로 접근)
     window.__PC_STORE__    = getStore();
     window.__PC_CLOSE__    = closeMainHub;
     window.__PC_GENERATE__ = generateWithRole;
@@ -222,59 +222,59 @@ async function openMainHub() {
     window.__PC_CHAR__     = getCurrentCharName();
     window.__PC_SAVE__     = saveStore;
 
-    // main.html을 fetch해서 DOM에 직접 삽입 (iframe 대신)
     const extUrl = `scripts/extensions/third-party/${MODULE_NAME}/main.html`;
-    let htmlContent = '';
-    try {
-        const res = await fetch(extUrl);
-        htmlContent = await res.text();
-        // <html><head><body> 태그 제거하고 내용만 추출
-        htmlContent = htmlContent
-            .replace(/<html[^>]*>/i, '')
-            .replace(/<\/html>/i, '')
-            .replace(/<head[\s\S]*?<\/head>/i, '')
-            .replace(/<body[^>]*>/i, '')
-            .replace(/<\/body>/i, '');
-    } catch(e) {
-        console.error(`[${MODULE_NAME}] main.html 로드 실패`, e);
-        return;
-    }
 
-    const $overlay = $(`
-        <div id="${POPUP_ID}" style="
-            position:fixed;inset:0;z-index:9999;
-            display:flex;align-items:center;justify-content:center;
-            background:rgba(0,0,0,0.6);
-            backdrop-filter:blur(4px);
-        ">
-            <div id="pc-popup-inner" style="
-                position:relative;
-                width:min(520px,95vw);
-                height:min(90vh,800px);
-                border-radius:28px;
-                overflow:hidden;
-                box-shadow:0 24px 64px rgba(0,0,0,0.5);
-            ">
-            </div>
-        </div>
-    `);
+    const overlay = document.createElement('div');
+    overlay.id = POPUP_ID;
+    overlay.style.cssText = [
+        'position:fixed', 'inset:0', 'z-index:9999',
+        'display:flex', 'align-items:center', 'justify-content:center',
+        'background:rgba(0,0,0,0.6)', 'backdrop-filter:blur(4px)',
+    ].join(';');
 
-    $overlay.on('click', function(e) {
-        if ($(e.target).is(`#${POPUP_ID}`)) closeMainHub();
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeMainHub();
     });
 
-    $('body').append($overlay);
-    $('#pc-popup-inner').html(htmlContent);
+    const wrap = document.createElement('div');
+    wrap.style.cssText = [
+        'position:relative',
+        'width:min(520px,95vw)',
+        'height:min(90vh,800px)',
+        'border-radius:28px',
+        'overflow:hidden',
+        'box-shadow:0 24px 64px rgba(0,0,0,0.5)',
+    ].join(';');
 
-    // main.html 내의 스크립트 수동 실행
-    $('#pc-popup-inner script').each(function() {
+    const iframe = document.createElement('iframe');
+    iframe.src = extUrl;
+    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+    iframe.setAttribute('id', 'pc-iframe');
+
+    // iframe 로드 완료 후 브릿지 주입
+    iframe.addEventListener('load', function() {
         try {
-            // eslint-disable-next-line no-eval
-            eval($(this).text());
-        } catch(err) {
-            console.warn(`[${MODULE_NAME}] script eval error`, err);
+            const iw = iframe.contentWindow;
+            // same-origin이므로 직접 접근 가능
+            iw.__PC_STORE__    = getStore();
+            iw.__PC_CLOSE__    = closeMainHub;
+            iw.__PC_GENERATE__ = generateWithRole;
+            iw.__PC_GET_CHAT__ = getRecentChat;
+            iw.__PC_CHAR__     = getCurrentCharName();
+            iw.__PC_SAVE__     = saveStore;
+            // main.html 측에서 브릿지 수신 알림
+            if (typeof iw.__PC_ON_BRIDGE__ === 'function') {
+                iw.__PC_ON_BRIDGE__();
+            }
+            console.log(`[${MODULE_NAME}] iframe bridge OK`);
+        } catch(e) {
+            console.error(`[${MODULE_NAME}] iframe bridge error`, e);
         }
     });
+
+    wrap.appendChild(iframe);
+    overlay.appendChild(wrap);
+    document.body.appendChild(overlay);
 }
 
 function closeMainHub() {

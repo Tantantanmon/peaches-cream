@@ -37,12 +37,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 /* ── 레이아웃 ── */
 .shell{
   width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  padding:12px;
+  display:flex;align-items:stretch;justify-content:center;
+  padding:0;
 }
 .popup{
-  width:100%;max-width:520px;
-  height:100%;max-height:90vh;
+  width:100%;max-width:100%;
+  height:100%;max-height:100%;
   background:var(--surface);
   border-radius:var(--radius-lg);
   border:0.5px solid rgba(255,255,255,0.9);
@@ -617,7 +617,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
     </div>
 
     <!-- ── CLINIC ── -->
-    <div id="screen-clinic" style="display:none;display:flex;flex-direction:column;gap:12px;">
+    <div id="screen-clinic" style="display:none;">
       <div class="data-card">
         <div class="data-label">연동된 데이터</div>
         <div class="data-tags" id="clinic-tags"></div>
@@ -659,21 +659,36 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 
 <script>
 // ─────────────────────────────────────────────
-// Bridge — parent window에서 주입된 값 읽기
+// Bridge — index.js에서 주입된 값 읽기
+// iframe load 후 index.js가 __PC_ON_BRIDGE__를 호출해서 초기화
 // ─────────────────────────────────────────────
-const w = window;
-let store       = w.__PC_STORE__   || { config:{}, profile:{}, lastTouch:{ cards:[], pinned:[] } };
-let charName    = w.__PC_CHAR__    || '{{char}}';
-let extName     = w.__PC_EXT_NAME__|| 'peaches-cream';
-const generate  = w.__PC_GENERATE__;
-const getChat   = w.__PC_GET_CHAT__;
+let store    = { config:{}, profile:{}, lastTouch:{ cards:[], pinned:[] } };
+let charName = '{{char}}';
+let generate = null;
+let getChat  = null;
 
-// store 동기화 헬퍼
+// iframe 안에서 parent의 데이터를 읽어옴
 function syncStore() {
-  if (w.__PC_STORE__) {
-    store = w.__PC_STORE__;
-  }
+  if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
 }
+
+function initBridge() {
+  const p = window.parent;
+  store    = (p && p.__PC_STORE__)    || store;
+  charName = (p && p.__PC_CHAR__)     || charName;
+  generate = (p && p.__PC_GENERATE__) || null;
+  getChat  = (p && p.__PC_GET_CHAT__) || null;
+  console.log('[PC] bridge initialized, char:', charName);
+}
+
+// index.js가 iframe.contentWindow.__PC_ON_BRIDGE__() 를 호출
+// → 여기 window (iframe) 에 등록해야 함
+window.__PC_ON_BRIDGE__ = function() {
+  initBridge();
+};
+
+// 이미 주입된 경우 즉시 초기화
+if (window.parent && window.parent.__PC_STORE__) initBridge();
 
 // ─────────────────────────────────────────────
 // 화면 라우터
@@ -716,7 +731,7 @@ function updateTopbar(id) {
 }
 
 function closeApp() {
-  if (w.__PC_CLOSE__) w.__PC_CLOSE__();
+  if (window.parent.__PC_CLOSE__) window.parent.__PC_CLOSE__();
   else window.close();
 }
 
@@ -822,12 +837,12 @@ function ltTogglePin(id, e) {
   const targetId = id || (ltActiveCard && ltActiveCard.id);
   if (!targetId) return;
   // parent store에 반영
-  if (w.__PC_STORE__) {
-    const pinned = w.__PC_STORE__.lastTouch.pinned;
+  if (window.parent.__PC_STORE__) {
+    const pinned = window.parent.__PC_STORE__.lastTouch.pinned;
     const idx    = pinned.indexOf(targetId);
     if (idx >= 0) pinned.splice(idx, 1);
     else pinned.push(targetId);
-    if (w.parent && w.parent.saveSettingsDebounced) w.parent.saveSettingsDebounced();
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
   }
   renderLTList();
   if (ltActiveCard) ltOpenCard(ltActiveCard.id);
@@ -835,10 +850,10 @@ function ltTogglePin(id, e) {
 
 function ltDelete(id, e) {
   if (e) e.stopPropagation();
-  if (w.__PC_STORE__) {
-    w.__PC_STORE__.lastTouch.cards  = w.__PC_STORE__.lastTouch.cards.filter(c => c.id !== id);
-    w.__PC_STORE__.lastTouch.pinned = w.__PC_STORE__.lastTouch.pinned.filter(p => p !== id);
-    if (w.parent && w.parent.saveSettingsDebounced) w.parent.saveSettingsDebounced();
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.lastTouch.cards  = window.parent.__PC_STORE__.lastTouch.cards.filter(c => c.id !== id);
+    window.parent.__PC_STORE__.lastTouch.pinned = window.parent.__PC_STORE__.lastTouch.pinned.filter(p => p !== id);
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
   }
   renderLTList();
 }
@@ -892,13 +907,13 @@ Maximum 5 records. Most recent first.`;
     }
 
     // store에 저장
-    if (w.__PC_STORE__) {
-      const existing = w.__PC_STORE__.lastTouch.cards;
-      const pinnedIds = w.__PC_STORE__.lastTouch.pinned;
+    if (window.parent.__PC_STORE__) {
+      const existing = window.parent.__PC_STORE__.lastTouch.cards;
+      const pinnedIds = window.parent.__PC_STORE__.lastTouch.pinned;
       const pinnedCards   = existing.filter(c => pinnedIds.includes(c.id));
       const newCards      = [...cards, ...pinnedCards].slice(0, 5);
-      w.__PC_STORE__.lastTouch.cards = newCards;
-      if (w.parent && w.parent.saveSettingsDebounced) w.parent.saveSettingsDebounced();
+      window.parent.__PC_STORE__.lastTouch.cards = newCards;
+      if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
     }
     renderLTList();
   } catch(err) {
@@ -984,11 +999,11 @@ function saveProfile() {
     moanType:     getSelected('bg-moanType'),
   };
 
-  if (w.__PC_STORE__) {
-    w.__PC_STORE__.profile = { ...(w.__PC_STORE__.profile || {}), ...profile };
-    if (w.parent && w.parent.saveSettingsDebounced) w.parent.saveSettingsDebounced();
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.profile = { ...(window.parent.__PC_STORE__.profile || {}), ...profile };
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
     // 프롬프트 갱신
-    if (w.parent && w.parent.__PC_REFRESH_PROMPT__) w.parent.__PC_REFRESH_PROMPT__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
   }
 
   showToast('저장됐어요 ✓');
