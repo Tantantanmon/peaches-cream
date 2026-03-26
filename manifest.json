@@ -1,16 +1,10 @@
 {
   "display_name": "Peaches & Cream",
   "version": "1.0.0",
-  "author": "Tantantanmon",
-  "description": "ST 위에 얹힌 앱 런처 + 상태 저장 + 프롬프트 주입 시스템",
-  "js": [
-    "index.js"
-  ],
-  "css": [],
-  "default_settings": {
-    "apiSource": "main",
-    "maxTokens": 1500
-  },
-  "homepage": "",
-  "tags": ["utility", "profile", "nsfw"]
+  "author": "",
+  "description": "ST 앱 런처 + 상태 저장 + 프롬프트 주입 시스템",
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "auto_update": true
 }

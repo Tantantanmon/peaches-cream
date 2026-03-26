@@ -1,4 +1,6 @@
 // index.js — Peaches & Cream
+// store.js 내용 인라인 포함 (ST는 ES module import 미지원)
+
 const EXT_NAME   = 'peaches-cream';
 const POPUP_ID   = 'pc-popup-overlay';
 const WAND_LABEL = '🍑 Peaches & Cream';
@@ -92,6 +94,7 @@ function buildPrompt() {
 // ═══════════════════════════════════════════════
 jQuery(async () => {
   getStore();
+
   renderSettingsPanel();
   addWandMenuItem();
 
@@ -99,6 +102,7 @@ jQuery(async () => {
   eventSource.on(event_types.CHAT_CHANGED,     refreshPrompt);
 
   refreshPrompt();
+
   window.__PC_REFRESH_PROMPT__ = refreshPrompt;
 });
 
@@ -107,6 +111,7 @@ jQuery(async () => {
 // ═══════════════════════════════════════════════
 function renderSettingsPanel() {
   const store = getStore();
+
   const html = `
     <div id="pc-settings" style="padding:10px 0;">
       <h4 style="margin-bottom:12px;font-size:14px;font-weight:600;">🍑 Peaches &amp; Cream</h4>
@@ -127,16 +132,30 @@ function renderSettingsPanel() {
   `;
 
   $('#extensions_settings').append(html);
-  $('#pc-api-source').on('change', function () { updateConfig({ apiSource: $(this).val() }); });
-  $('#pc-max-tokens').on('change', function () { updateConfig({ maxTokens: parseInt($(this).val()) || 1500 }); });
+
+  $('#pc-api-source').on('change', function () {
+    updateConfig({ apiSource: $(this).val() });
+  });
+  $('#pc-max-tokens').on('change', function () {
+    updateConfig({ maxTokens: parseInt($(this).val()) || 1500 });
+  });
 }
 
 // ═══════════════════════════════════════════════
 // 3. 요술봉 메뉴 항목
 // ═══════════════════════════════════════════════
 function addWandMenuItem() {
-  const $item = $(`<div id="pc-wand-item" class="options-content-item" title="${WAND_LABEL}">🍑 ${WAND_LABEL}</div>`);
-  $item.on('click', () => { $('#options').hide(); openMainHub(); });
+  const $item = $(`
+    <div id="pc-wand-item" class="options-content-item" title="${WAND_LABEL}">
+      🍑 ${WAND_LABEL}
+    </div>
+  `);
+
+  $item.on('click', () => {
+    $('#options').hide();
+    openMainHub();
+  });
+
   $('#options').append($item);
 }
 
@@ -145,19 +164,39 @@ function addWandMenuItem() {
 // ═══════════════════════════════════════════════
 function openMainHub() {
   if ($(`#${POPUP_ID}`).length) return;
-  // 경로 수정: ST의 URL 설치 표준 경로 대응
-  const extUrl = `extensions/${EXT_NAME}/main.html`;
+
+  const extUrl = `scripts/extensions/third-party/${EXT_NAME}/main.html`;
 
   const $overlay = $(`
-    <div id="${POPUP_ID}" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);">
-      <div style="position:relative;width:min(520px,95vw);height:min(90vh,800px);border-radius:28px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.4);">
-        <iframe id="pc-iframe" src="${extUrl}" style="width:100%;height:100%;border:none;display:block;"></iframe>
+    <div id="${POPUP_ID}" style="
+      position:fixed;inset:0;z-index:9999;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.55);
+      backdrop-filter:blur(4px);
+    ">
+      <div style="
+        position:relative;
+        width:min(520px,95vw);
+        height:min(90vh,800px);
+        border-radius:28px;
+        overflow:hidden;
+        box-shadow:0 24px 64px rgba(0,0,0,0.4);
+      ">
+        <iframe
+          id="pc-iframe"
+          src="${extUrl}"
+          style="width:100%;height:100%;border:none;display:block;"
+        ></iframe>
       </div>
     </div>
   `);
 
-  $overlay.on('click', function (e) { if ($(e.target).is(`#${POPUP_ID}`)) closeMainHub(); });
+  $overlay.on('click', function (e) {
+    if ($(e.target).is(`#${POPUP_ID}`)) closeMainHub();
+  });
+
   $('body').append($overlay);
+
   $overlay.find('#pc-iframe').on('load', function () {
     try {
       const iw = this.contentWindow;
@@ -167,7 +206,9 @@ function openMainHub() {
       iw.__PC_GET_CHAT__ = getRecentChat;
       iw.__PC_CHAR__     = getCurrentCharName();
       iw.__PC_EXT_NAME__ = EXT_NAME;
-    } catch (e) { console.warn('[PC] iframe bridge error', e); }
+    } catch (e) {
+      console.warn('[PC] iframe bridge error', e);
+    }
   });
 }
 
@@ -185,25 +226,51 @@ function getRecentChat(limit) {
     const ctx  = getContext();
     const chat = ctx.chat || [];
     return chat.slice(-limit).map(function(m) {
-      return { role: m.is_user ? 'user' : 'assistant', content: m.mes || '', name: m.name || '' };
+      return {
+        role:    m.is_user ? 'user' : 'assistant',
+        content: m.mes  || '',
+        name:    m.name || '',
+      };
     });
-  } catch (e) { return []; }
+  } catch (e) {
+    console.warn('[PC] getRecentChat error', e);
+    return [];
+  }
 }
 
 function getCurrentCharName() {
-  try { return getContext().name2 || '{{char}}'; } catch (e) { return '{{char}}'; }
+  try {
+    return getContext().name2 || '{{char}}';
+  } catch (e) {
+    return '{{char}}';
+  }
 }
 
+// ═══════════════════════════════════════════════
+// 6. generateRaw 래퍼
+// ═══════════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt) {
   const store = getStore();
   try {
-    return await generateRaw(userPrompt, { system: systemPrompt, max_tokens: store.config.maxTokens || 1500 });
-  } catch (e) { throw e; }
+    const result = await generateRaw(userPrompt, {
+      system:     systemPrompt,
+      max_tokens: store.config.maxTokens || 1500,
+    });
+    return result;
+  } catch (e) {
+    console.error('[PC] generateRaw error', e);
+    throw e;
+  }
 }
 
+// ═══════════════════════════════════════════════
+// 7. 프롬프트 주입
+// ═══════════════════════════════════════════════
 function refreshPrompt() {
   try {
     const promptText = buildPrompt();
     setExtensionPrompt(EXT_NAME, promptText, 1, 0);
-  } catch (e) { console.warn('[PC] setExtensionPrompt error', e); }
+  } catch (e) {
+    console.warn('[PC] setExtensionPrompt error', e);
+  }
 }
