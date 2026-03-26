@@ -199,13 +199,11 @@ function addWandMenuItem() {
     </div>`);
 
     $item.on('click', function() {
-        // 드롭다운 닫기
-        $('#options').hide();
+        $('#extensionsMenu').hide();
         openMainHub();
     });
 
-    // 요술봉 메뉴 리스트에 추가
-    $('#options').append($item);
+    $('#extensionsMenu').append($item);
 }
 
 // ═══════════════════════════════════════════════
@@ -213,10 +211,34 @@ function addWandMenuItem() {
 // ═══════════════════════════════════════════════
 const POPUP_ID = 'pc-popup-overlay';
 
-function openMainHub() {
+async function openMainHub() {
     if ($(`#${POPUP_ID}`).length) return;
 
+    // ST 함수를 전역에 먼저 노출
+    window.__PC_STORE__    = getStore();
+    window.__PC_CLOSE__    = closeMainHub;
+    window.__PC_GENERATE__ = generateWithRole;
+    window.__PC_GET_CHAT__ = getRecentChat;
+    window.__PC_CHAR__     = getCurrentCharName();
+    window.__PC_SAVE__     = saveStore;
+
+    // main.html을 fetch해서 DOM에 직접 삽입 (iframe 대신)
     const extUrl = `scripts/extensions/third-party/${MODULE_NAME}/main.html`;
+    let htmlContent = '';
+    try {
+        const res = await fetch(extUrl);
+        htmlContent = await res.text();
+        // <html><head><body> 태그 제거하고 내용만 추출
+        htmlContent = htmlContent
+            .replace(/<html[^>]*>/i, '')
+            .replace(/<\/html>/i, '')
+            .replace(/<head[\s\S]*?<\/head>/i, '')
+            .replace(/<body[^>]*>/i, '')
+            .replace(/<\/body>/i, '');
+    } catch(e) {
+        console.error(`[${MODULE_NAME}] main.html 로드 실패`, e);
+        return;
+    }
 
     const $overlay = $(`
         <div id="${POPUP_ID}" style="
@@ -225,7 +247,7 @@ function openMainHub() {
             background:rgba(0,0,0,0.6);
             backdrop-filter:blur(4px);
         ">
-            <div style="
+            <div id="pc-popup-inner" style="
                 position:relative;
                 width:min(520px,95vw);
                 height:min(90vh,800px);
@@ -233,11 +255,6 @@ function openMainHub() {
                 overflow:hidden;
                 box-shadow:0 24px 64px rgba(0,0,0,0.5);
             ">
-                <iframe
-                    id="pc-iframe"
-                    src="${extUrl}"
-                    style="width:100%;height:100%;border:none;display:block;"
-                ></iframe>
             </div>
         </div>
     `);
@@ -247,18 +264,15 @@ function openMainHub() {
     });
 
     $('body').append($overlay);
+    $('#pc-popup-inner').html(htmlContent);
 
-    $overlay.find('#pc-iframe').on('load', function() {
+    // main.html 내의 스크립트 수동 실행
+    $('#pc-popup-inner script').each(function() {
         try {
-            const iw = this.contentWindow;
-            iw.__PC_STORE__     = getStore();
-            iw.__PC_CLOSE__     = closeMainHub;
-            iw.__PC_GENERATE__  = generateWithRole;
-            iw.__PC_GET_CHAT__  = getRecentChat;
-            iw.__PC_CHAR__      = getCurrentCharName();
-            iw.__PC_SAVE__      = saveStore;
-        } catch (e) {
-            console.warn(`[${MODULE_NAME}] iframe bridge error`, e);
+            // eslint-disable-next-line no-eval
+            eval($(this).text());
+        } catch(err) {
+            console.warn(`[${MODULE_NAME}] script eval error`, err);
         }
     });
 }
