@@ -85,39 +85,128 @@ function buildPrompt() {
     const e = s.erogenous || {};
     const lines = ['[Peaches & Cream — User Profile]'];
 
-    // ── Profile ──
-    if (p.height || p.weight) lines.push(`Body: ${p.height || '?'}cm, ${p.weight || '?'}kg`);
-    if (p.eyeColor)      lines.push(`Eye color: ${p.eyeColor}`);
-    if (p.hair)          lines.push(`Hair: ${p.hair}`);
-    if (p.skinTone)      lines.push(`Skin tone: ${p.skinTone}`);
-    if (p.bodyType)      lines.push(`Body type: ${p.bodyType}`);
-    if (p.chest)         lines.push(`Bust: ${p.chest}`);
-    if (p.butt)          lines.push(`Butt: ${p.butt}`);
-    if (p.waistHip)      lines.push(`Waist-hip: ${p.waistHip}`);
-    if (p.skinTexture)   lines.push(`Skin texture: ${p.skinTexture}`);
-    if (p.bodyHair)      lines.push(`Body hair: ${p.bodyHair}`);
-    if (p.peachColor)    lines.push(`Peach color: ${p.peachColor}`);
-    if (p.venusDimples)  lines.push(`Venus dimples: ${p.venusDimples}`);
-    if (p.scent)         lines.push(`Scent: ${p.scent}`);
+    // ── Profile 매핑 ──
+    const skinToneMap = {
+        'Light':  '피부가 매우 밝고 도자기처럼 하얀 피부',
+        'Medium': '따뜻한 중간 톤의 피부',
+        'Dark':   '깊고 풍부한 어두운 피부',
+    };
+    const bodyTypeMap = {
+        'Slim':       '가늘고 날씬한 체형, 군살 없이 마른 팔다리',
+        'Average':    '균형 잡힌 비율, 자연스러운 여성스러운 체형',
+        'Glamorous':  '풍만하고 볼륨감 있는 체형, 모래시계 실루엣',
+        'Athletic':   '탄탄하고 근육질, 전체적으로 탄력 있음',
+    };
+    const bustMap = {
+        'A':  '작고 오똑한 가슴, 손에 쏙 들어오는 크기',
+        'B':  '아담하고 둥근 가슴, 자연스러운 형태',
+        'C':  '풍성하고 부드러운 가슴, 움직일 때 출렁임',
+        'D':  '크고 무거운 가슴, 손으로 다 감싸기 어려운 크기',
+        'D+': '매우 크고 넘칠 듯한 가슴, 묵직하게 처짐',
+    };
+    const buttMap = {
+        'Small & firm':  '작고 탄탄하게 올라붙은 엉덩이',
+        'Large & full':  '크고 부드러운 엉덩이, 움직일 때마다 흔들림',
+        'Average':       '적당히 둥글고 자연스러운 형태',
+    };
+    const waistHipMap = {
+        'Slim':      '좁은 골반, 허리 라인이 완만함',
+        'Hourglass': '극적으로 잘록한 허리, 넓게 퍼진 골반',
+        'Full':      '넓은 골반, 풍성한 허벅지, 부드러운 하체',
+    };
+    const skinTextureMap = {
+        'Soft':    '믿을 수 없이 부드럽고 비단결 같은 피부',
+        'Firm':    '탄탄하고 탄력 있는 피부',
+        'Average': '매끄럽고 자연스러운 피부결',
+    };
+    const bodyHairMap = {
+        'Yes':      '자연스러운 체모 있음',
+        'None':     '완전히 제모됨, 전체적으로 매끄러움',
+        'A little': '옅고 드문드문한 체모',
+    };
+    const venusDimplesMap = {
+        'Yes': '허리 아래 등에 두 개의 작은 보조개가 있음',
+        'No':  null,
+    };
 
-    // ── Erogenous Zone ──
+    if (p.height || p.weight) lines.push(`신체: ${p.height || '?'}cm, ${p.weight || '?'}kg`);
+    if (p.eyeColor)     lines.push(`눈 색깔: ${p.eyeColor}`);
+    if (p.hair)         lines.push(`헤어: ${p.hair}`);
+    if (p.skinTone   && skinToneMap[p.skinTone])    lines.push(`피부: ${skinToneMap[p.skinTone]}`);
+    if (p.bodyType   && bodyTypeMap[p.bodyType])    lines.push(`체형: ${bodyTypeMap[p.bodyType]}`);
+    if (p.chest      && bustMap[p.chest])           lines.push(`가슴: ${bustMap[p.chest]}`);
+    if (p.butt       && buttMap[p.butt])            lines.push(`엉덩이: ${buttMap[p.butt]}`);
+    if (p.waistHip   && waistHipMap[p.waistHip])   lines.push(`허리-골반: ${waistHipMap[p.waistHip]}`);
+    if (p.skinTexture && skinTextureMap[p.skinTexture]) lines.push(`피부 질감: ${skinTextureMap[p.skinTexture]}`);
+    if (p.bodyHair   && bodyHairMap[p.bodyHair])   lines.push(`체모: ${bodyHairMap[p.bodyHair]}`);
+    if (p.peachColor)   lines.push(`음부 색: ${p.peachColor}`);
+    if (p.venusDimples && venusDimplesMap[p.venusDimples]) lines.push(`등 보조개: ${venusDimplesMap[p.venusDimples]}`);
+    if (p.scent)        lines.push(`체향: ${p.scent}`);
+
+    // ── Erogenous Zone 매핑 ──
+    const tightnessMap = {
+        'Normal':  '편안하게 받아들이는 정도의 조임',
+        'Tight':   '단단하게 조여드는 느낌, 눈에 띄는 저항감',
+        'Extreme': '극도로 조임, 깊이 삽입 시 아랫배가 눈에 띄게 불룩해짐',
+    };
+    const lubricationMap = {
+        'Dry':     '자연 애액이 거의 없음',
+        'Moist':   '자연스럽게 촉촉함, 부드럽게 젖어있음',
+        'Soaking': '매우 많이 젖어있음, 흘러내릴 정도',
+    };
+    const textureMap = {
+        'Creamy': '진하고 크리미한 질감',
+        'Watery': '묽고 투명한 질감',
+        'Mixed':  '크리미와 묽은 질감이 섞여 변화함',
+    };
+    const squirtingMap = {
+        'None':     '분출 없음',
+        'Rare':     '강한 자극에서 가끔 분출',
+        'Frequent': '쉽게 그리고 자주 분출, 강한 수축 동반',
+    };
+    const responsivityMap = {
+        'Normal':  '평균적인 민감도로 반응',
+        'High':    '매우 민감함, 가벼운 터치에도 강하게 반응',
+        'Extreme': '극도로 민감함, 아주 작은 자극에도 몸이 떨리는 반응',
+    };
+    const moaningMap = {
+        'Muted':      '소리를 억누르고 코로 거칠게 숨을 쉼',
+        'Vocal':      '솔직하고 표현이 풍부한 신음',
+        'Passionate': '크고 통제 불가능한 신음, 완전히 이성을 잃음',
+    };
+    const flushingMap = {
+        'Pale':  '흥분해도 피부색 변화가 거의 없음',
+        'Rosy':  '흥분 시 볼과 가슴이 분홍빛으로 물듦',
+        'Deep':  '얼굴, 목, 가슴까지 온몸이 새빨개짐',
+    };
+    const experienceMap = {
+        'Novice':  '경험이 적고 수줍음, 쉽게 당황함, 머리보다 몸이 먼저 반응',
+        'Skilled': '편안하고 자신감 있음, 자기 몸을 잘 앎',
+        'Master':  '경험이 매우 풍부함, 원하는 것과 방법을 정확히 앎',
+    };
+    const vibeMap = {
+        'Romantic': '눈 맞춤과 함께하는 부드럽고 감정적인 섹스 선호',
+        'Rough':    '강렬하고 공격적인 섹스 선호, 제압당할 때 강하게 반응',
+        'Slow':     '길게 끌고 뜸들이는 섹스 선호, 절정보다 과정을 더 원함',
+    };
+
     const ezLines = [];
-    if (e.tightness)     ezLines.push(`Tightness: ${e.tightness}`);
-    if (e.lubrication)   ezLines.push(`Lubrication: ${e.lubrication}`);
-    if (e.texture)       ezLines.push(`Texture: ${e.texture}`);
-    if (e.squirting)     ezLines.push(`Squirting: ${e.squirting}`);
-    if (e.responsivity)  ezLines.push(`Responsivity: ${e.responsivity}`);
-    if (e.moaning)       ezLines.push(`Moaning: ${e.moaning}`);
-    if (e.flushing)      ezLines.push(`Flushing: ${e.flushing}`);
-    if (e.experience)    ezLines.push(`Experience: ${e.experience}`);
-    if (e.vibe)          ezLines.push(`Preferred vibe: ${e.vibe}`);
+    if (e.tightness   && tightnessMap[e.tightness])     ezLines.push(`조임: ${tightnessMap[e.tightness]}`);
+    if (e.lubrication && lubricationMap[e.lubrication]) ezLines.push(`애액: ${lubricationMap[e.lubrication]}`);
+    if (e.texture     && textureMap[e.texture])         ezLines.push(`질감: ${textureMap[e.texture]}`);
+    if (e.squirting   && squirtingMap[e.squirting])     ezLines.push(`분출: ${squirtingMap[e.squirting]}`);
+    if (e.responsivity && responsivityMap[e.responsivity]) ezLines.push(`민감도: ${responsivityMap[e.responsivity]}`);
+    if (e.moaning     && moaningMap[e.moaning])         ezLines.push(`신음: ${moaningMap[e.moaning]}`);
+    if (e.flushing    && flushingMap[e.flushing])       ezLines.push(`홍조: ${flushingMap[e.flushing]}`);
+    if (e.experience  && experienceMap[e.experience])   ezLines.push(`경험: ${experienceMap[e.experience]}`);
+    if (e.vibe        && vibeMap[e.vibe])               ezLines.push(`선호 분위기: ${vibeMap[e.vibe]}`);
     if (e.sensitiveZones && e.sensitiveZones.length)
-        ezLines.push(`Sensitive zones: ${e.sensitiveZones.join(', ')}`);
+        ezLines.push(`민감 부위: ${e.sensitiveZones.join(', ')}`);
     if (e.sensoryFeedback && e.sensoryFeedback.length)
-        ezLines.push(`Sensory feedback: ${e.sensoryFeedback.join(', ')}`);
+        ezLines.push(`감각 반응: ${e.sensoryFeedback.join(', ')}`);
 
     if (ezLines.length) {
-        lines.push('\n[Erogenous Zone]');
+        lines.push('\n[성감대 / 신체 반응]');
         ezLines.forEach(l => lines.push(l));
     }
 
