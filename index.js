@@ -30,9 +30,22 @@ const defaultSettings = {
         waistHip: '',
         skinTexture: '',
         bodyHair: '',
-        sensitiveParts: [],
-        bodyScent: '',
-        moanType: '',
+        peachColor: '',
+        venusDimples: '',
+        scent: '',
+    },
+    erogenous: {
+        tightness: '',
+        lubrication: '',
+        texture: '',
+        squirting: '',
+        responsivity: '',
+        moaning: '',
+        flushing: '',
+        experience: '',
+        vibe: '',
+        sensitiveZones: [],
+        sensoryFeedback: [],
     },
     lastTouch: {
         cards: [],
@@ -49,9 +62,10 @@ function getStore() {
         extensionSettings[MODULE_NAME] = JSON.parse(JSON.stringify(defaultSettings));
     }
     const s = extensionSettings[MODULE_NAME];
-    if (!s.config)    s.config    = { ...defaultSettings.config };
-    if (!s.profile)   s.profile   = { ...defaultSettings.profile };
-    if (!s.lastTouch) s.lastTouch = { cards: [], pinned: [] };
+    if (!s.config)     s.config     = { ...defaultSettings.config };
+    if (!s.profile)    s.profile    = { ...defaultSettings.profile };
+    if (!s.erogenous)  s.erogenous  = { ...defaultSettings.erogenous };
+    if (!s.lastTouch)  s.lastTouch  = { cards: [], pinned: [] };
     return s;
 }
 
@@ -67,25 +81,47 @@ function updateConfig(data) {
 
 function buildPrompt() {
     const s = getStore();
-    const p = s.profile;
+    const p = s.profile   || {};
+    const e = s.erogenous || {};
     const lines = ['[Peaches & Cream — User Profile]'];
 
-    if (p.height || p.weight) lines.push(`신체: 키 ${p.height || '?'}cm, 몸무게 ${p.weight || '?'}kg`);
-    if (p.eyeColor)    lines.push(`눈 색깔: ${p.eyeColor}`);
-    if (p.hair)        lines.push(`헤어: ${p.hair}`);
-    if (p.skinTone)    lines.push(`피부 톤: ${p.skinTone}`);
-    if (p.bodyType)    lines.push(`체형: ${p.bodyType}`);
-    if (p.chest)       lines.push(`가슴: ${p.chest}컵`);
-    if (p.butt)        lines.push(`엉덩이: ${p.butt}`);
-    if (p.waistHip)    lines.push(`허리-골반: ${p.waistHip}`);
-    if (p.skinTexture) lines.push(`피부 질감: ${p.skinTexture}`);
-    if (p.bodyHair)    lines.push(`체모: ${p.bodyHair}`);
-    if (p.sensitiveParts && p.sensitiveParts.length) {
-        lines.push(`민감 부위: ${p.sensitiveParts.join(', ')}`);
-    }
-    if (p.bodyScent)   lines.push(`체향: ${p.bodyScent}`);
-    if (p.moanType)    lines.push(`신음 타입: ${p.moanType}`);
+    // ── Profile ──
+    if (p.height || p.weight) lines.push(`Body: ${p.height || '?'}cm, ${p.weight || '?'}kg`);
+    if (p.eyeColor)      lines.push(`Eye color: ${p.eyeColor}`);
+    if (p.hair)          lines.push(`Hair: ${p.hair}`);
+    if (p.skinTone)      lines.push(`Skin tone: ${p.skinTone}`);
+    if (p.bodyType)      lines.push(`Body type: ${p.bodyType}`);
+    if (p.chest)         lines.push(`Bust: ${p.chest}`);
+    if (p.butt)          lines.push(`Butt: ${p.butt}`);
+    if (p.waistHip)      lines.push(`Waist-hip: ${p.waistHip}`);
+    if (p.skinTexture)   lines.push(`Skin texture: ${p.skinTexture}`);
+    if (p.bodyHair)      lines.push(`Body hair: ${p.bodyHair}`);
+    if (p.peachColor)    lines.push(`Peach color: ${p.peachColor}`);
+    if (p.venusDimples)  lines.push(`Venus dimples: ${p.venusDimples}`);
+    if (p.scent)         lines.push(`Scent: ${p.scent}`);
 
+    // ── Erogenous Zone ──
+    const ezLines = [];
+    if (e.tightness)     ezLines.push(`Tightness: ${e.tightness}`);
+    if (e.lubrication)   ezLines.push(`Lubrication: ${e.lubrication}`);
+    if (e.texture)       ezLines.push(`Texture: ${e.texture}`);
+    if (e.squirting)     ezLines.push(`Squirting: ${e.squirting}`);
+    if (e.responsivity)  ezLines.push(`Responsivity: ${e.responsivity}`);
+    if (e.moaning)       ezLines.push(`Moaning: ${e.moaning}`);
+    if (e.flushing)      ezLines.push(`Flushing: ${e.flushing}`);
+    if (e.experience)    ezLines.push(`Experience: ${e.experience}`);
+    if (e.vibe)          ezLines.push(`Preferred vibe: ${e.vibe}`);
+    if (e.sensitiveZones && e.sensitiveZones.length)
+        ezLines.push(`Sensitive zones: ${e.sensitiveZones.join(', ')}`);
+    if (e.sensoryFeedback && e.sensoryFeedback.length)
+        ezLines.push(`Sensory feedback: ${e.sensoryFeedback.join(', ')}`);
+
+    if (ezLines.length) {
+        lines.push('\n[Erogenous Zone]');
+        ezLines.forEach(l => lines.push(l));
+    }
+
+    // ── Pinned Memories ──
     const pinned = s.lastTouch.cards.filter(c => s.lastTouch.pinned.includes(c.id));
     if (pinned.length) {
         lines.push('\n[Pinned Memories]');
@@ -111,7 +147,6 @@ function refreshPrompt() {
 // generateRaw 래퍼
 // ═══════════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt) {
-    const s = getStore();
     const { generateRaw } = ctx();
     return await generateRaw({
         systemPrompt,
@@ -177,7 +212,6 @@ function renderSettingsPanel() {
         </div>
     `;
 
-    // ST 확장 설정 영역에 추가
     $('#extensions_settings2').append(settingsHtml);
 
     $('#pc-api-source').on('change', function() {
@@ -192,7 +226,6 @@ function renderSettingsPanel() {
 // 요술봉 메뉴 항목 추가
 // ═══════════════════════════════════════════════
 function addWandMenuItem() {
-    // ST 요술봉 드롭다운에 항목 추가
     const $item = $(`<div id="pc-wand-btn" class="list-group-item flex-container flexGap5">
         <span>🍑</span>
         <span>Peaches &amp; Cream</span>
@@ -214,7 +247,6 @@ const POPUP_ID = 'pc-popup-overlay';
 async function openMainHub() {
     if ($(`#${POPUP_ID}`).length) return;
 
-    // ST 함수 전역 노출 (iframe에서 window.parent로 접근)
     window.__PC_STORE__    = getStore();
     window.__PC_CLOSE__    = closeMainHub;
     window.__PC_GENERATE__ = generateWithRole;
@@ -251,18 +283,15 @@ async function openMainHub() {
     iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
     iframe.setAttribute('id', 'pc-iframe');
 
-    // iframe 로드 완료 후 브릿지 주입
     iframe.addEventListener('load', function() {
         try {
             const iw = iframe.contentWindow;
-            // same-origin이므로 직접 접근 가능
             iw.__PC_STORE__    = getStore();
             iw.__PC_CLOSE__    = closeMainHub;
             iw.__PC_GENERATE__ = generateWithRole;
             iw.__PC_GET_CHAT__ = getRecentChat;
             iw.__PC_CHAR__     = getCurrentCharName();
             iw.__PC_SAVE__     = saveStore;
-            // main.html 측에서 브릿지 수신 알림
             if (typeof iw.__PC_ON_BRIDGE__ === 'function') {
                 iw.__PC_ON_BRIDGE__();
             }
@@ -286,24 +315,16 @@ function closeMainHub() {
 // 초기화
 // ═══════════════════════════════════════════════
 (async function init() {
-    // 설정 초기화
     getStore();
-
-    // 확장 탭 패널 렌더링
     renderSettingsPanel();
-
-    // 요술봉 메뉴 항목 추가
     addWandMenuItem();
 
-    // 이벤트 리스너
     const { eventSource, event_types } = ctx();
     eventSource.on(event_types.MESSAGE_RECEIVED, refreshPrompt);
     eventSource.on(event_types.CHAT_CHANGED,     refreshPrompt);
 
-    // 초기 프롬프트 주입
     refreshPrompt();
 
-    // iframe에서 접근할 수 있도록 전역 노출
     window.__PC_REFRESH_PROMPT__ = refreshPrompt;
     window.__PC_SAVE_STORE__     = saveStore;
 

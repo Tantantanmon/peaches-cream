@@ -27,7 +27,7 @@
   --radius-sm:10px;
   --radius-btn:8px;
 }
-html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;}
+html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;}
 
 /* ── 스크롤 ── */
 ::-webkit-scrollbar{width:4px;}
@@ -75,7 +75,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 .back-btn{
   display:flex;align-items:center;gap:5px;
   font-size:13px;color:var(--text-muted);cursor:pointer;
-  padding:4px 0;transition:color .15s;
+  padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;
 }
 .back-btn:hover{color:var(--text-secondary);}
 .back-btn svg{width:14px;height:14px;}
@@ -153,15 +153,16 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 .lt-dd-item.danger{color:#c04030;}
 
 .ai-btn{
-  width:100%;background:var(--card);border:0.5px solid var(--card-border);
+  background:var(--card);border:0.5px solid var(--card-border);
   border-radius:var(--radius-md);padding:14px;
   font-size:13px;font-weight:500;color:var(--text-secondary);
   cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:var(--shadow);margin-top:10px;transition:opacity .15s;
+  box-shadow:var(--shadow);transition:opacity .15s;font-family:inherit;flex:1;
 }
 .ai-btn:hover{opacity:.8;}
 .ai-btn svg{width:15px;height:15px;}
 .ai-btn.loading{opacity:.6;pointer-events:none;}
+#screen-lasttouch .ai-btn{flex:unset;width:100%;margin-top:10px;}
 
 /* ── Last Touch 카드 팝업 ── */
 .card-overlay{
@@ -227,7 +228,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 }
 
 /* ══════════════════════════════
-   MY PROFILE
+   PROFILE (new)
 ══════════════════════════════ */
 .profile-section{
   background:var(--card);border-radius:var(--radius-md);
@@ -238,7 +239,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 }
 .ps-label{font-size:9px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
 .ps-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.ps-row-label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);min-width:80px;flex-shrink:0;}
+.ps-row-label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);min-width:90px;flex-shrink:0;}
 .ps-row-label svg{width:14px;height:14px;color:var(--text-muted);}
 .ps-input-wrap{display:flex;align-items:center;gap:4px;}
 .ps-input{
@@ -253,7 +254,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
   flex:1;padding:5px 10px;border-radius:8px;
   border:0.5px solid var(--divider);
   background:var(--surface);color:var(--text-primary);
-  font-size:13px;outline:none;
+  font-size:13px;outline:none;font-family:inherit;
 }
 .ps-text-input:focus{border-color:rgba(100,140,200,0.4);}
 .btn-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
@@ -261,25 +262,10 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
   padding:5px 11px;border-radius:7px;font-size:11px;font-weight:500;
   background:var(--btn-idle);color:var(--btn-idle-text);
   border:0.5px solid rgba(160,190,220,0.3);
-  cursor:pointer;transition:all .12s;
+  cursor:pointer;transition:all .12s;font-family:inherit;
 }
 .pg-btn.sel{background:var(--btn-select);color:var(--btn-select-text);border-color:transparent;}
 .pg-btn:hover:not(.sel){background:#dce6f0;}
-
-/* 민감 부위 태그 */
-.sensitive-wrap{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;}
-.sens-tag{
-  padding:4px 10px;border-radius:20px;font-size:11px;
-  background:var(--btn-idle);color:var(--btn-idle-text);
-  border:0.5px solid rgba(160,190,220,0.3);
-  cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:4px;
-}
-.sens-tag.sel{background:var(--btn-select);color:var(--btn-select-text);}
-.sens-add{
-  padding:4px 10px;border-radius:20px;font-size:11px;
-  background:transparent;color:var(--text-muted);
-  border:0.5px dashed rgba(160,190,220,0.5);cursor:pointer;
-}
 
 /* 저장 버튼 */
 .save-row{display:flex;gap:8px;margin-top:4px;}
@@ -299,89 +285,36 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 .save-toast.show{opacity:1;}
 
 /* ══════════════════════════════
-   CLINIC
+   EROGENOUS ZONE (new)
 ══════════════════════════════ */
-.data-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);box-shadow:var(--shadow);
-  padding:12px 16px;
-}
-.data-label{font-size:9px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;}
-.data-tags{display:flex;flex-wrap:wrap;gap:5px;}
-.dtag{padding:3px 9px;border-radius:6px;font-size:10px;font-weight:500;}
-.dtag.w{background:rgba(200,80,60,0.1);border:0.5px solid rgba(200,80,60,0.2);color:#a04030;}
-.dtag.g{background:rgba(60,140,80,0.08);border:0.5px solid rgba(60,140,80,0.18);color:#3a7050;}
-.dtag.n{background:var(--surface);border:0.5px solid var(--divider);color:var(--text-secondary);}
-
-.input-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);box-shadow:var(--shadow);
-  padding:14px 16px;display:flex;flex-direction:column;gap:10px;
-}
-.input-lbl{font-size:11px;color:var(--text-muted);}
-.q-input{
-  width:100%;background:var(--surface);
-  border:0.5px solid rgba(160,190,220,0.3);
-  border-radius:var(--radius-sm);padding:11px 13px;
-  font-size:13px;color:var(--text-primary);
-  outline:none;font-family:inherit;resize:none;min-height:68px;line-height:1.6;
-}
-.q-input::placeholder{color:var(--text-muted);}
-.eq-row{display:flex;flex-wrap:wrap;gap:5px;}
-.eq{
-  padding:5px 11px;border-radius:20px;font-size:11px;
-  background:var(--surface);border:0.5px solid var(--divider);
-  color:var(--text-secondary);cursor:pointer;transition:background .12s;
-}
-.eq:hover{background:#dce6f0;}
-.ask-btn{
-  width:100%;background:var(--accent);border:none;
-  border-radius:var(--radius-sm);padding:13px;
-  font-size:13px;font-weight:600;color:#fff;
-  cursor:pointer;font-family:inherit;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:opacity .15s;
-}
-.ask-btn:hover{opacity:.85;}
-.ask-btn svg{width:13px;height:13px;}
-.ask-btn:disabled{opacity:.5;pointer-events:none;}
-
-.answers{display:flex;flex-direction:column;gap:10px;margin-top:2px;}
-.ans-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);overflow:hidden;
-}
-.ans-card.dark{background:#12161f;border-color:rgba(255,255,255,0.06);}
-.ans-header{
-  display:flex;align-items:center;gap:10px;
-  padding:12px 16px 10px;
-  border-bottom:0.5px solid var(--divider);
-}
-.ans-card.dark .ans-header{border-bottom-color:rgba(255,255,255,0.07);}
-.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.av.doc{background:#e8f0f8;border:0.5px solid rgba(100,140,200,0.2);}
-.av.ch{background:rgba(255,255,255,0.07);font-size:12px;font-weight:700;color:#8090a8;}
-.ans-name{font-size:13px;font-weight:600;color:var(--text-primary);}
-.ans-card.dark .ans-name{color:#d0dae8;}
-.ans-sub{font-size:10px;color:var(--text-muted);margin-top:1px;}
-.ans-card.dark .ans-sub{color:#3a4a62;}
-.ans-body{padding:13px 16px 15px;}
-.warn-tag{
-  display:inline-flex;align-items:center;gap:4px;
-  background:rgba(200,80,60,0.1);border:0.5px solid rgba(200,80,60,0.2);
-  border-radius:6px;padding:3px 8px;
-  font-size:10px;font-weight:600;color:#a04030;margin-bottom:8px;
-}
-.ans-text{font-size:13px;color:var(--text-primary);line-height:1.9;}
-.ans-text.light{color:#c0ccd8;}
-.loading-card{
+.ez-section{
   background:var(--card);border-radius:var(--radius-md);
   border:0.5px solid var(--card-border);
-  padding:18px 16px;display:flex;align-items:center;gap:10px;
+  padding:16px 18px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:14px;
+  margin-bottom:10px;
 }
-.sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:12px;color:var(--text-muted);}
+.ez-label{font-size:9px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.kw-tag{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;
+  background:var(--btn-idle);color:var(--btn-idle-text);
+  border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;
+}
+.kw-tag .hash{font-size:11px;color:var(--text-muted);}
+.kw-tag .x{font-size:11px;color:var(--text-muted);margin-left:1px;}
+.kw-tag:hover .x{color:#c04030;}
+.add-tag{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;
+  background:transparent;color:var(--text-muted);
+  border:0.5px dashed rgba(160,190,220,0.5);
+  cursor:pointer;font-family:inherit;
+}
+.add-tag:hover{background:var(--btn-idle);border-style:solid;}
+.ez-bottom-row{display:flex;gap:10px;margin-top:4px;}
+.ez-bottom-row .save-btn{flex:1;border-radius:var(--radius-md);padding:14px;font-size:13px;font-weight:700;}
 
 /* ══════════════════════════════
    PRIVATE VAULT
@@ -399,6 +332,16 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 .vault-icon svg{width:28px;height:28px;}
 .vault-title{font-size:15px;font-weight:600;color:var(--text-secondary);}
 .vault-desc{font-size:12px;color:var(--text-muted);line-height:1.7;max-width:240px;}
+
+/* loading spinner */
+.sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-card{
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  padding:18px 16px;display:flex;align-items:center;gap:10px;
+}
+.loading-text{font-size:12px;color:var(--text-muted);}
 </style>
 </head>
 <body>
@@ -423,6 +366,22 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
     <div id="screen-home">
       <div class="section-label">APPS</div>
       <div class="app-grid">
+        <div class="app-card" onclick="goTo('profile')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <span class="app-name">Profile</span>
+        </div>
+        <div class="app-card" onclick="goTo('erogenous')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <span class="app-name">Erogenous Zone</span>
+        </div>
         <div class="app-card" onclick="goTo('lasttouch')">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -430,22 +389,6 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
             </svg>
           </div>
           <span class="app-name">Last Touch</span>
-        </div>
-        <div class="app-card" onclick="goTo('profile')">
-          <div class="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
-          <span class="app-name">My Profile</span>
-        </div>
-        <div class="app-card" onclick="goTo('clinic')">
-          <div class="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-          </div>
-          <span class="app-name">Clinic</span>
         </div>
         <div class="app-card" onclick="goTo('vault')">
           <div class="app-icon">
@@ -486,59 +429,59 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
       </div>
     </div>
 
-    <!-- ── MY PROFILE ── -->
+    <!-- ── PROFILE (new) ── -->
     <div id="screen-profile" style="display:none;">
 
-      <!-- 기본 신체 정보 -->
+      <!-- Basic Info -->
       <div class="profile-section">
-        <div class="ps-label">기본 신체 정보</div>
+        <div class="ps-label">Basic Info</div>
         <div class="ps-row">
-          <span class="ps-row-label">키</span>
+          <span class="ps-row-label">Height</span>
           <div class="ps-input-wrap">
             <input class="ps-input" id="p-height" type="number" placeholder="165"/>
             <span class="ps-unit">cm</span>
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">몸무게</span>
+          <span class="ps-row-label">Weight</span>
           <div class="ps-input-wrap">
             <input class="ps-input" id="p-weight" type="number" placeholder="52"/>
             <span class="ps-unit">kg</span>
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">눈 색깔</span>
-          <input class="ps-text-input" id="p-eye" type="text" placeholder="다크 브라운"/>
+          <span class="ps-row-label">Eye color</span>
+          <input class="ps-text-input" id="p-eye" type="text" placeholder="Dark brown"/>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">헤어</span>
-          <input class="ps-text-input" id="p-hair" type="text" placeholder="블랙, 롱"/>
+          <span class="ps-row-label">Hair</span>
+          <input class="ps-text-input" id="p-hair" type="text" placeholder="Black, long"/>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">피부 톤</span>
-          <div class="btn-group" id="bg-skinTone" data-key="skinTone">
-            <button class="pg-btn" data-val="밝음">밝음</button>
-            <button class="pg-btn" data-val="보통">보통</button>
-            <button class="pg-btn" data-val="어두움">어두움</button>
+          <span class="ps-row-label">Skin tone</span>
+          <div class="btn-group" id="bg-skinTone">
+            <button class="pg-btn" data-val="Light">Light</button>
+            <button class="pg-btn" data-val="Medium">Medium</button>
+            <button class="pg-btn" data-val="Dark">Dark</button>
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">체형</span>
-          <div class="btn-group" id="bg-bodyType" data-key="bodyType">
-            <button class="pg-btn" data-val="슬림">슬림</button>
-            <button class="pg-btn" data-val="보통">보통</button>
-            <button class="pg-btn" data-val="글래머">글래머</button>
-            <button class="pg-btn" data-val="근육질">근육질</button>
+          <span class="ps-row-label">Body type</span>
+          <div class="btn-group" id="bg-bodyType">
+            <button class="pg-btn" data-val="Slim">Slim</button>
+            <button class="pg-btn" data-val="Average">Average</button>
+            <button class="pg-btn" data-val="Glamorous">Glamorous</button>
+            <button class="pg-btn" data-val="Athletic">Athletic</button>
           </div>
         </div>
       </div>
 
-      <!-- 성적 특징 -->
+      <!-- Physical Features -->
       <div class="profile-section">
-        <div class="ps-label">성적 특징</div>
+        <div class="ps-label">Physical Features</div>
         <div class="ps-row">
-          <span class="ps-row-label">가슴</span>
-          <div class="btn-group" id="bg-chest" data-key="chest">
+          <span class="ps-row-label">Bust</span>
+          <div class="btn-group" id="bg-chest">
             <button class="pg-btn" data-val="A">A</button>
             <button class="pg-btn" data-val="B">B</button>
             <button class="pg-btn" data-val="C">C</button>
@@ -547,67 +490,56 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">엉덩이</span>
-          <div class="btn-group" id="bg-butt" data-key="butt">
-            <button class="pg-btn" data-val="작고 탄탄">작고 탄탄</button>
-            <button class="pg-btn" data-val="크고 볼륨">크고 볼륨</button>
-            <button class="pg-btn" data-val="보통">보통</button>
+          <span class="ps-row-label">Butt</span>
+          <div class="btn-group" id="bg-butt">
+            <button class="pg-btn" data-val="Small &amp; firm">Small &amp; firm</button>
+            <button class="pg-btn" data-val="Large &amp; full">Large &amp; full</button>
+            <button class="pg-btn" data-val="Average">Average</button>
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">허리-골반</span>
-          <div class="btn-group" id="bg-waistHip" data-key="waistHip">
-            <button class="pg-btn" data-val="슬림">슬림</button>
-            <button class="pg-btn" data-val="잘록">잘록</button>
-            <button class="pg-btn" data-val="풍성">풍성</button>
+          <span class="ps-row-label">Waist-hip</span>
+          <div class="btn-group" id="bg-waistHip">
+            <button class="pg-btn" data-val="Slim">Slim</button>
+            <button class="pg-btn" data-val="Hourglass">Hourglass</button>
+            <button class="pg-btn" data-val="Full">Full</button>
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">피부 질감</span>
-          <div class="btn-group" id="bg-skinTexture" data-key="skinTexture">
-            <button class="pg-btn" data-val="부드러운">부드러운</button>
-            <button class="pg-btn" data-val="탄탄한">탄탄한</button>
-            <button class="pg-btn" data-val="보통">보통</button>
+          <span class="ps-row-label">Skin texture</span>
+          <div class="btn-group" id="bg-skinTexture">
+            <button class="pg-btn" data-val="Soft">Soft</button>
+            <button class="pg-btn" data-val="Firm">Firm</button>
+            <button class="pg-btn" data-val="Average">Average</button>
           </div>
         </div>
         <div class="ps-row">
-          <span class="ps-row-label">체모</span>
-          <div class="btn-group" id="bg-bodyHair" data-key="bodyHair">
-            <button class="pg-btn" data-val="있음">있음</button>
-            <button class="pg-btn" data-val="없음">없음</button>
-            <button class="pg-btn" data-val="적음">적음</button>
+          <span class="ps-row-label">Body hair</span>
+          <div class="btn-group" id="bg-bodyHair">
+            <button class="pg-btn" data-val="Yes">Yes</button>
+            <button class="pg-btn" data-val="None">None</button>
+            <button class="pg-btn" data-val="A little">A little</button>
           </div>
         </div>
-        <div class="ps-row" style="align-items:flex-start;">
-          <span class="ps-row-label" style="padding-top:4px;">민감 부위</span>
-          <div class="sensitive-wrap" id="sensitive-wrap"></div>
-        </div>
-      </div>
-
-      <!-- 분위기/향 -->
-      <div class="profile-section">
-        <div class="ps-label">분위기 / 향</div>
         <div class="ps-row">
-          <span class="ps-row-label">체향 타입</span>
-          <div class="btn-group" id="bg-bodyScent" data-key="bodyScent">
-            <button class="pg-btn" data-val="달콤">달콤</button>
-            <button class="pg-btn" data-val="중성">중성</button>
-            <button class="pg-btn" data-val="머스크">머스크</button>
-            <button class="pg-btn" data-val="없음">없음</button>
+          <span class="ps-row-label">Peach color</span>
+          <input class="ps-text-input" id="p-peachcolor" type="text" placeholder="e.g. pink, peach"/>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Venus dimples</span>
+          <div class="btn-group" id="bg-venusDimples">
+            <button class="pg-btn" data-val="Yes">Yes</button>
+            <button class="pg-btn" data-val="No">No</button>
           </div>
         </div>
       </div>
 
-      <!-- 소리 -->
+      <!-- Vibe / Scent -->
       <div class="profile-section">
-        <div class="ps-label">소리</div>
+        <div class="ps-label">Vibe / Scent</div>
         <div class="ps-row">
-          <span class="ps-row-label">신음 타입</span>
-          <div class="btn-group" id="bg-moanType" data-key="moanType">
-            <button class="pg-btn" data-val="참는 편">참는 편</button>
-            <button class="pg-btn" data-val="소리 내는 편">소리 내는 편</button>
-            <button class="pg-btn" data-val="거의 없음">거의 없음</button>
-          </div>
+          <span class="ps-row-label">Scent type</span>
+          <input class="ps-text-input" id="p-scent" type="text" placeholder="Enter your scent type"/>
         </div>
       </div>
 
@@ -616,26 +548,110 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
       </div>
     </div>
 
-    <!-- ── CLINIC ── -->
-    <div id="screen-clinic" style="display:none;">
-      <div class="data-card">
-        <div class="data-label">연동된 데이터</div>
-        <div class="data-tags" id="clinic-tags"></div>
-      </div>
-      <div class="input-card">
-        <div class="input-lbl">고민이나 궁금한 점을 적어봐요 🩺</div>
-        <textarea class="q-input" id="clinic-q" placeholder="예: 거친 섹스를 자주 하는데 괜찮을까요?" rows="3"></textarea>
-        <div class="eq-row">
-          <div class="eq" onclick="setQ('거친 섹스 자주 해도 괜찮아?')">거친 섹스 자주 해도 괜찮아?</div>
-          <div class="eq" onclick="setQ('콘돔 안 쓰면 얼마나 위험해?')">콘돔 안 쓰면 얼마나 위험해?</div>
-          <div class="eq" onclick="setQ('수갑 쓸 때 주의할 점은?')">수갑 주의사항</div>
+    <!-- ── EROGENOUS ZONE (new) ── -->
+    <div id="screen-erogenous" style="display:none;">
+
+      <div class="ez-section">
+        <div class="ez-label">Body Response</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Tightness</span>
+          <div class="btn-group" id="bg-tightness">
+            <button class="pg-btn" data-val="Normal">Normal</button>
+            <button class="pg-btn" data-val="Tight">Tight</button>
+            <button class="pg-btn" data-val="Extreme">Extreme</button>
+          </div>
         </div>
-        <button class="ask-btn" id="clinic-ask-btn" onclick="clinicAsk()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          답변 받기
-        </button>
+        <div class="ps-row">
+          <span class="ps-row-label">Lubrication</span>
+          <div class="btn-group" id="bg-lubrication">
+            <button class="pg-btn" data-val="Dry">Dry</button>
+            <button class="pg-btn" data-val="Low">Low</button>
+            <button class="pg-btn" data-val="Normal">Normal</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Texture</span>
+          <div class="btn-group" id="bg-texture">
+            <button class="pg-btn" data-val="Creamy">Creamy</button>
+            <button class="pg-btn" data-val="Watery">Watery</button>
+            <button class="pg-btn" data-val="Mixed">Mixed</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Squirting</span>
+          <div class="btn-group" id="bg-squirting">
+            <button class="pg-btn" data-val="None">None</button>
+            <button class="pg-btn" data-val="Rare">Rare</button>
+            <button class="pg-btn" data-val="Frequent">Frequent</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Responsivity</span>
+          <div class="btn-group" id="bg-responsivity">
+            <button class="pg-btn" data-val="Normal">Normal</button>
+            <button class="pg-btn" data-val="High">High</button>
+            <button class="pg-btn" data-val="Extreme">Extreme</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Moaning</span>
+          <div class="btn-group" id="bg-moaning">
+            <button class="pg-btn" data-val="Muted">Muted</button>
+            <button class="pg-btn" data-val="Vocal">Vocal</button>
+            <button class="pg-btn" data-val="Passionate">Passionate</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Flushing</span>
+          <div class="btn-group" id="bg-flushing">
+            <button class="pg-btn" data-val="Pale">Pale</button>
+            <button class="pg-btn" data-val="Rosy">Rosy</button>
+            <button class="pg-btn" data-val="Deep">Deep</button>
+          </div>
+        </div>
       </div>
-      <div class="answers" id="clinic-answers"></div>
+
+      <div class="ez-section">
+        <div class="ez-label">Sexual Traits</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Experience</span>
+          <div class="btn-group" id="bg-experience">
+            <button class="pg-btn" data-val="Novice">Novice</button>
+            <button class="pg-btn" data-val="Skilled">Skilled</button>
+            <button class="pg-btn" data-val="Master">Master</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Preferred Vibe</span>
+          <div class="btn-group" id="bg-vibe">
+            <button class="pg-btn" data-val="Romantic">Romantic</button>
+            <button class="pg-btn" data-val="Rough">Rough</button>
+            <button class="pg-btn" data-val="Slow">Slow</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ez-section">
+        <div class="ez-label">Sensitive Zones</div>
+        <div class="tag-wrap" id="ez-sensitive-wrap">
+          <button class="add-tag" onclick="ezAddTag('ez-sensitive-wrap')">+ Add</button>
+        </div>
+      </div>
+
+      <div class="ez-section">
+        <div class="ez-label">Sensory Feedback</div>
+        <div class="tag-wrap" id="ez-sensory-wrap">
+          <button class="add-tag" onclick="ezAddTag('ez-sensory-wrap')">+ Add</button>
+        </div>
+      </div>
+
+      <div class="ez-bottom-row">
+        <button class="ai-btn" id="ez-ai-btn" onclick="ezAIFetch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
+          AI 불러오기
+        </button>
+        <button class="save-btn" onclick="saveErogenous()">Save</button>
+      </div>
     </div>
 
     <!-- ── PRIVATE VAULT ── -->
@@ -659,15 +675,13 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Pretendard','
 
 <script>
 // ─────────────────────────────────────────────
-// Bridge — index.js에서 주입된 값 읽기
-// iframe load 후 index.js가 __PC_ON_BRIDGE__를 호출해서 초기화
+// Bridge
 // ─────────────────────────────────────────────
-let store    = { config:{}, profile:{}, lastTouch:{ cards:[], pinned:[] } };
+let store    = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
 let charName = '{{char}}';
 let generate = null;
 let getChat  = null;
 
-// iframe 안에서 parent의 데이터를 읽어옴
 function syncStore() {
   if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
 }
@@ -681,33 +695,30 @@ function initBridge() {
   console.log('[PC] bridge initialized, char:', charName);
 }
 
-// index.js가 iframe.contentWindow.__PC_ON_BRIDGE__() 를 호출
-// → 여기 window (iframe) 에 등록해야 함
 window.__PC_ON_BRIDGE__ = function() {
   initBridge();
 };
 
-// 이미 주입된 경우 즉시 초기화
 if (window.parent && window.parent.__PC_STORE__) initBridge();
 
 // ─────────────────────────────────────────────
 // 화면 라우터
 // ─────────────────────────────────────────────
 let currentScreen = 'home';
-const screens = ['home','lasttouch','profile','clinic','vault'];
+const screens = ['home','lasttouch','profile','erogenous','vault'];
 
 function goTo(id) {
   screens.forEach(s => {
     document.getElementById('screen-' + s).style.display = 'none';
   });
-  document.getElementById('screen-' + id).style.display = (id === 'clinic') ? 'flex' : 'block';
+  document.getElementById('screen-' + id).style.display = 'block';
   currentScreen = id;
   updateTopbar(id);
   document.getElementById('scroll-area').scrollTop = 0;
 
   if (id === 'lasttouch') renderLTList();
   if (id === 'profile')   loadProfile();
-  if (id === 'clinic')    loadClinicTags();
+  if (id === 'erogenous') loadErogenous();
 }
 
 function updateTopbar(id) {
@@ -716,8 +727,8 @@ function updateTopbar(id) {
   const labels = {
     home:      '',
     lasttouch: 'LAST TOUCH',
-    profile:   'MY PROFILE',
-    clinic:    'CLINIC',
+    profile:   'PROFILE',
+    erogenous: 'EROGENOUS ZONE',
     vault:     'PRIVATE VAULT',
   };
 
@@ -725,7 +736,7 @@ function updateTopbar(id) {
     left.innerHTML  = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
     right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
   } else {
-    left.innerHTML  = `<div class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</div>`;
+    left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
     right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">${labels[id]}</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
   }
 }
@@ -836,7 +847,6 @@ function ltTogglePin(id, e) {
   if (e) e.stopPropagation();
   const targetId = id || (ltActiveCard && ltActiveCard.id);
   if (!targetId) return;
-  // parent store에 반영
   if (window.parent.__PC_STORE__) {
     const pinned = window.parent.__PC_STORE__.lastTouch.pinned;
     const idx    = pinned.indexOf(targetId);
@@ -871,7 +881,6 @@ async function ltAIFetch() {
     const messages = getChat(20);
     const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
 
-    // NSFW 감지 + 카드 생성 프롬프트
     const systemPrompt = `You are an analyst for a sexual roleplay chat logger.
 Analyze the provided chat log and extract sexual encounter records.
 For each distinct sexual encounter found, output a JSON object.
@@ -906,12 +915,11 @@ Maximum 5 records. Most recent first.`;
       return;
     }
 
-    // store에 저장
     if (window.parent.__PC_STORE__) {
-      const existing = window.parent.__PC_STORE__.lastTouch.cards;
-      const pinnedIds = window.parent.__PC_STORE__.lastTouch.pinned;
-      const pinnedCards   = existing.filter(c => pinnedIds.includes(c.id));
-      const newCards      = [...cards, ...pinnedCards].slice(0, 5);
+      const existing    = window.parent.__PC_STORE__.lastTouch.cards;
+      const pinnedIds   = window.parent.__PC_STORE__.lastTouch.pinned;
+      const pinnedCards = existing.filter(c => pinnedIds.includes(c.id));
+      const newCards    = [...cards, ...pinnedCards].slice(0, 5);
       window.parent.__PC_STORE__.lastTouch.cards = newCards;
       if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
     }
@@ -926,89 +934,212 @@ Maximum 5 records. Most recent first.`;
 }
 
 // ─────────────────────────────────────────────
-// MY PROFILE
+// PROFILE
 // ─────────────────────────────────────────────
-const DEFAULT_SENSITIVE = ['목','귀','허벅지'];
-let sensitiveParts = [];
-
 function loadProfile() {
   syncStore();
   const p = store.profile || {};
 
-  // 텍스트 입력
-  document.getElementById('p-height').value = p.height || '';
-  document.getElementById('p-weight').value = p.weight || '';
-  document.getElementById('p-eye').value    = p.eyeColor || '';
-  document.getElementById('p-hair').value   = p.hair    || '';
+  document.getElementById('p-height').value    = p.height     || '';
+  document.getElementById('p-weight').value    = p.weight     || '';
+  document.getElementById('p-eye').value       = p.eyeColor   || '';
+  document.getElementById('p-hair').value      = p.hair       || '';
+  document.getElementById('p-peachcolor').value = p.peachColor || '';
+  document.getElementById('p-scent').value     = p.scent      || '';
 
-  // 버튼 그룹
-  ['skinTone','bodyType','chest','butt','waistHip','skinTexture','bodyHair','bodyScent','moanType'].forEach(key => {
+  ['skinTone','bodyType','chest','butt','waistHip','skinTexture','bodyHair','venusDimples'].forEach(key => {
     const group = document.getElementById('bg-' + key);
     if (!group) return;
     group.querySelectorAll('.pg-btn').forEach(btn => {
       btn.classList.toggle('sel', btn.dataset.val === p[key]);
     });
-    group.addEventListener('click', e => {
+  });
+
+  // btn-group click handlers (re-bind each load)
+  document.querySelectorAll('#screen-profile .btn-group').forEach(group => {
+    group.onclick = e => {
       const btn = e.target.closest('.pg-btn');
       if (!btn) return;
       group.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('sel'));
       btn.classList.add('sel');
-    });
+    };
   });
-
-  // 민감 부위
-  sensitiveParts = [...(p.sensitiveParts || DEFAULT_SENSITIVE)];
-  renderSensitive();
-}
-
-function renderSensitive() {
-  const wrap = document.getElementById('sensitive-wrap');
-  wrap.innerHTML = sensitiveParts.map(s => `
-    <div class="sens-tag sel" onclick="sensRemove('${s}')">${esc(s)} ×</div>
-  `).join('') + `<div class="sens-add" onclick="sensAdd()">+ 추가</div>`;
-}
-
-function sensRemove(val) {
-  sensitiveParts = sensitiveParts.filter(s => s !== val);
-  renderSensitive();
-}
-
-function sensAdd() {
-  const val = prompt('민감 부위 추가 (예: 쇄골)');
-  if (val && val.trim() && !sensitiveParts.includes(val.trim())) {
-    sensitiveParts.push(val.trim());
-    renderSensitive();
-  }
 }
 
 function saveProfile() {
   const profile = {
-    height:       document.getElementById('p-height').value,
-    weight:       document.getElementById('p-weight').value,
-    eyeColor:     document.getElementById('p-eye').value,
-    hair:         document.getElementById('p-hair').value,
-    skinTone:     getSelected('bg-skinTone'),
-    bodyType:     getSelected('bg-bodyType'),
-    chest:        getSelected('bg-chest'),
-    butt:         getSelected('bg-butt'),
-    waistHip:     getSelected('bg-waistHip'),
-    skinTexture:  getSelected('bg-skinTexture'),
-    bodyHair:     getSelected('bg-bodyHair'),
-    sensitiveParts: [...sensitiveParts],
-    bodyScent:    getSelected('bg-bodyScent'),
-    moanType:     getSelected('bg-moanType'),
+    height:      document.getElementById('p-height').value,
+    weight:      document.getElementById('p-weight').value,
+    eyeColor:    document.getElementById('p-eye').value,
+    hair:        document.getElementById('p-hair').value,
+    peachColor:  document.getElementById('p-peachcolor').value,
+    scent:       document.getElementById('p-scent').value,
+    skinTone:    getSelected('bg-skinTone'),
+    bodyType:    getSelected('bg-bodyType'),
+    chest:       getSelected('bg-chest'),
+    butt:        getSelected('bg-butt'),
+    waistHip:    getSelected('bg-waistHip'),
+    skinTexture: getSelected('bg-skinTexture'),
+    bodyHair:    getSelected('bg-bodyHair'),
+    venusDimples:getSelected('bg-venusDimples'),
   };
 
   if (window.parent.__PC_STORE__) {
     window.parent.__PC_STORE__.profile = { ...(window.parent.__PC_STORE__.profile || {}), ...profile };
     if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
-    // 프롬프트 갱신
     if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
   }
-
-  showToast('저장됐어요 ✓');
+  showToast('Saved ✓');
 }
 
+// ─────────────────────────────────────────────
+// EROGENOUS ZONE
+// ─────────────────────────────────────────────
+function loadErogenous() {
+  syncStore();
+  const ez = store.erogenous || {};
+
+  ['tightness','lubrication','texture','squirting','responsivity','moaning','flushing','experience','vibe'].forEach(key => {
+    const group = document.getElementById('bg-' + key);
+    if (!group) return;
+    group.querySelectorAll('.pg-btn').forEach(btn => {
+      btn.classList.toggle('sel', btn.dataset.val === ez[key]);
+    });
+  });
+
+  // btn-group click handlers
+  document.querySelectorAll('#screen-erogenous .btn-group').forEach(group => {
+    group.onclick = e => {
+      const btn = e.target.closest('.pg-btn');
+      if (!btn) return;
+      group.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    };
+  });
+
+  // Sensitive Zones tags
+  const sensitiveWrap = document.getElementById('ez-sensitive-wrap');
+  const addSensBtn = sensitiveWrap.querySelector('.add-tag');
+  // clear existing tags
+  sensitiveWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
+  (ez.sensitiveZones || []).forEach(val => {
+    sensitiveWrap.insertBefore(makeKwTag(val, 'ez-sensitive-wrap'), addSensBtn);
+  });
+
+  // Sensory Feedback tags
+  const sensoryWrap = document.getElementById('ez-sensory-wrap');
+  const addSensoryBtn = sensoryWrap.querySelector('.add-tag');
+  sensoryWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
+  (ez.sensoryFeedback || []).forEach(val => {
+    sensoryWrap.insertBefore(makeKwTag(val, 'ez-sensory-wrap'), addSensoryBtn);
+  });
+}
+
+function makeKwTag(val, wrapId) {
+  const tag = document.createElement('div');
+  tag.className = 'kw-tag';
+  tag.innerHTML = `<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
+  tag.onclick = () => tag.remove();
+  return tag;
+}
+
+function ezAddTag(wrapId) {
+  const val = prompt('Add:');
+  if (!val || !val.trim()) return;
+  const wrap   = document.getElementById(wrapId);
+  const addBtn = wrap.querySelector('.add-tag');
+  wrap.insertBefore(makeKwTag(val.trim(), wrapId), addBtn);
+}
+
+function getEzTags(wrapId) {
+  const wrap = document.getElementById(wrapId);
+  return Array.from(wrap.querySelectorAll('.kw-tag')).map(t => {
+    return t.textContent.replace('×','').replace('#','').trim();
+  });
+}
+
+function saveErogenous() {
+  const erogenous = {
+    tightness:      getSelected('bg-tightness'),
+    lubrication:    getSelected('bg-lubrication'),
+    texture:        getSelected('bg-texture'),
+    squirting:      getSelected('bg-squirting'),
+    responsivity:   getSelected('bg-responsivity'),
+    moaning:        getSelected('bg-moaning'),
+    flushing:       getSelected('bg-flushing'),
+    experience:     getSelected('bg-experience'),
+    vibe:           getSelected('bg-vibe'),
+    sensitiveZones: getEzTags('ez-sensitive-wrap'),
+    sensoryFeedback:getEzTags('ez-sensory-wrap'),
+  };
+
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...erogenous };
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  }
+  showToast('Saved ✓');
+}
+
+async function ezAIFetch() {
+  if (!generate || !getChat) {
+    alert('ST와 연결되지 않았어요.');
+    return;
+  }
+  const btn = document.getElementById('ez-ai-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="sp"></div> 분석 중...';
+
+  try {
+    const messages = getChat(20);
+    const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
+
+    const systemPrompt = `You are an analyst extracting erogenous zone and body response data from a sexual roleplay chat.
+Analyze the chat and return ONLY a JSON object (no markdown) with these keys if found:
+- tightness: "Normal"|"Tight"|"Extreme"
+- lubrication: "Dry"|"Low"|"Normal"
+- texture: "Creamy"|"Watery"|"Mixed"
+- squirting: "None"|"Rare"|"Frequent"
+- responsivity: "Normal"|"High"|"Extreme"
+- moaning: "Muted"|"Vocal"|"Passionate"
+- flushing: "Pale"|"Rosy"|"Deep"
+- experience: "Novice"|"Skilled"|"Master"
+- vibe: "Romantic"|"Rough"|"Slow"
+- sensitiveZones: array of body parts mentioned as sensitive (English)
+- sensoryFeedback: array of sensory keywords mentioned (English)
+Only include keys where evidence exists in chat. If nothing found return {}.`;
+
+    const result = await generate(systemPrompt, `Chat log:\n${chatText}`);
+    let data = {};
+    try {
+      const clean = result.replace(/```json|```/g, '').trim();
+      data = JSON.parse(clean);
+    } catch(e) {
+      console.warn('[PC] EZ JSON parse error', e);
+    }
+
+    if (Object.keys(data).length === 0) {
+      showToast('데이터를 찾지 못했어요');
+    } else {
+      if (window.parent.__PC_STORE__) {
+        window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...data };
+        if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+      }
+      loadErogenous();
+      showToast('AI 불러오기 완료 ✓');
+    }
+  } catch(err) {
+    console.error('[PC] ezAIFetch error', err);
+    alert('AI 호출 중 오류가 발생했어요.');
+  }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+}
+
+// ─────────────────────────────────────────────
+// 유틸
+// ─────────────────────────────────────────────
 function getSelected(groupId) {
   const group = document.getElementById(groupId);
   if (!group) return '';
@@ -1023,115 +1154,6 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-// ─────────────────────────────────────────────
-// CLINIC
-// ─────────────────────────────────────────────
-function loadClinicTags() {
-  syncStore();
-  const tags    = [];
-  const cards   = store.lastTouch.cards  || [];
-  const profile = store.profile          || {};
-  const recent  = cards[0];
-
-  if (recent) {
-    if (recent.condom === false) tags.push({ label: '콘돔 미사용 (최근)', type: 'w' });
-    (recent.positions || []).forEach(p => tags.push({ label: p, type: 'w' }));
-    if (recent.date) tags.push({ label: recent.date + ' 관계', type: 'n' });
-  }
-  if (profile.chest)                   tags.push({ label: profile.chest + '컵', type: 'n' });
-  if (profile.bodyHair === '없음')     tags.push({ label: '제모 완료', type: 'g' });
-  if (recent && recent.mood)           tags.push({ label: recent.mood, type: 'n' });
-
-  const wrap = document.getElementById('clinic-tags');
-  if (tags.length === 0) {
-    wrap.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">연동된 데이터 없음</span>';
-    return;
-  }
-  wrap.innerHTML = tags.map(t => `<div class="dtag ${t.type}">${esc(t.label)}</div>`).join('');
-}
-
-function setQ(q) {
-  document.getElementById('clinic-q').value = q;
-}
-
-async function clinicAsk() {
-  const q = document.getElementById('clinic-q').value.trim();
-  if (!q) return;
-  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
-
-  const btn = document.getElementById('clinic-ask-btn');
-  btn.disabled = true;
-
-  const answers = document.getElementById('clinic-answers');
-  answers.innerHTML = `
-    <div class="loading-card"><div class="sp"></div><span class="loading-text">산부인과 선생님 호출 중...</span></div>`;
-
-  // 컨텍스트 구성
-  syncStore();
-  const tags    = document.getElementById('clinic-tags').innerText;
-  const context = `User data context:\n${tags}\n\nQuestion: ${q}`;
-
-  try {
-    // 1차: 의사
-    const docSystem = `You are a strict, caring OB/GYN doctor (산부인과 전문의).
-Answer the user's sexual health question in Korean.
-Be medically accurate, warn about risks, reference the provided user data context.
-If condom is not used, always warn. Be direct and clinical.
-Do NOT roleplay. 3~5 sentences.`;
-
-    const docAnswer = await generate(docSystem, context);
-
-    answers.innerHTML = `
-      <div class="loading-card"><div class="sp"></div><span class="loading-text">${esc(charName)} 반응 기다리는 중...</span></div>`;
-
-    // 2차: 캐릭터
-    const charSystem = `You are ${charName}, a character in a romantic/sexual roleplay.
-You just read the doctor's answer below. React in character — either brazenly argue back or sheepishly admit fault.
-Be in-character, casual, a bit vulgar. Korean. 2~4 sentences.
-Doctor's answer: ${docAnswer}`;
-
-    const charAnswer = await generate(charSystem, `User asked: ${q}`);
-
-    // 경고 감지
-    const hasWarn = /콘돔|위험|감염|주의|경고|손상/.test(docAnswer);
-
-    answers.innerHTML = `
-      <div class="ans-card">
-        <div class="ans-header">
-          <div class="av doc">👩‍⚕️</div>
-          <div>
-            <div class="ans-name">산부인과 전문의</div>
-            <div class="ans-sub">연동 데이터 기반 분석</div>
-          </div>
-        </div>
-        <div class="ans-body">
-          ${hasWarn ? '<div class="warn-tag">⚠️ 주의 필요</div><br>' : ''}
-          <div class="ans-text">${esc(docAnswer)}</div>
-        </div>
-      </div>
-      <div class="ans-card dark">
-        <div class="ans-header">
-          <div class="av ch">${esc(charName.charAt(0))}</div>
-          <div>
-            <div class="ans-name">${esc(charName)}의 한마디</div>
-            <div class="ans-sub">방금 읽고 반응</div>
-          </div>
-        </div>
-        <div class="ans-body">
-          <div class="ans-text light">${esc(charAnswer)}</div>
-        </div>
-      </div>`;
-  } catch(err) {
-    console.error('[PC] clinicAsk error', err);
-    answers.innerHTML = '<div style="font-size:12px;color:#c04030;padding:12px;">오류가 발생했어요. 다시 시도해주세요.</div>';
-  }
-
-  btn.disabled = false;
-}
-
-// ─────────────────────────────────────────────
-// 유틸
-// ─────────────────────────────────────────────
 function esc(str) {
   if (!str) return '';
   return String(str)
