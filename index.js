@@ -331,17 +331,19 @@ function addWandMenuItem() {
 // ═══════════════════════════════════════════════
 // 메인 허브 팝업
 // ═══════════════════════════════════════════════
-const POPUP_ID = 'pc-popup-overlay';
+const POPUP_ID    = 'pc-popup-overlay';
+const RF_POPUP_ID = 'pc-rf-popup-overlay';
 
 async function openMainHub() {
     if ($(`#${POPUP_ID}`).length) return;
 
-    window.__PC_STORE__    = getStore();
-    window.__PC_CLOSE__    = closeMainHub;
-    window.__PC_GENERATE__ = generateWithRole;
-    window.__PC_GET_CHAT__ = getRecentChat;
-    window.__PC_CHAR__     = getCurrentCharName();
-    window.__PC_SAVE__     = saveStore;
+    window.__PC_STORE__         = getStore();
+    window.__PC_CLOSE__         = closeMainHub;
+    window.__PC_GENERATE__      = generateWithRole;
+    window.__PC_GET_CHAT__      = getRecentChat;
+    window.__PC_CHAR__          = getCurrentCharName();
+    window.__PC_SAVE__          = saveStore;
+    window.__PC_OPEN_REDFLAG__  = openRedFlag;
 
     const extUrl = `scripts/extensions/third-party/${MODULE_NAME}/main.html`;
 
@@ -375,12 +377,13 @@ async function openMainHub() {
     iframe.addEventListener('load', function() {
         try {
             const iw = iframe.contentWindow;
-            iw.__PC_STORE__    = getStore();
-            iw.__PC_CLOSE__    = closeMainHub;
-            iw.__PC_GENERATE__ = generateWithRole;
-            iw.__PC_GET_CHAT__ = getRecentChat;
-            iw.__PC_CHAR__     = getCurrentCharName();
-            iw.__PC_SAVE__     = saveStore;
+            iw.__PC_STORE__         = getStore();
+            iw.__PC_CLOSE__         = closeMainHub;
+            iw.__PC_GENERATE__      = generateWithRole;
+            iw.__PC_GET_CHAT__      = getRecentChat;
+            iw.__PC_CHAR__          = getCurrentCharName();
+            iw.__PC_SAVE__          = saveStore;
+            iw.__PC_OPEN_REDFLAG__  = openRedFlag;
             if (typeof iw.__PC_ON_BRIDGE__ === 'function') {
                 iw.__PC_ON_BRIDGE__();
             }
@@ -398,6 +401,67 @@ async function openMainHub() {
 function closeMainHub() {
     $(`#${POPUP_ID}`).remove();
     refreshPrompt();
+}
+
+// ═══════════════════════════════════════════════
+// Red Flag 팝업
+// ═══════════════════════════════════════════════
+async function openRedFlag() {
+    if ($(`#${RF_POPUP_ID}`).length) return;
+
+    const extUrl = `scripts/extensions/third-party/${MODULE_NAME}/red_flag.html`;
+
+    const overlay = document.createElement('div');
+    overlay.id = RF_POPUP_ID;
+    overlay.style.cssText = [
+        'position:fixed', 'inset:0', 'z-index:10000',
+        'display:flex', 'align-items:center', 'justify-content:center',
+        'background:rgba(0,0,0,0.6)', 'backdrop-filter:blur(4px)',
+    ].join(';');
+
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeRedFlag();
+    });
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = [
+        'position:relative',
+        'width:min(520px,95vw)',
+        'height:min(90vh,800px)',
+        'border-radius:28px',
+        'overflow:hidden',
+        'box-shadow:0 24px 64px rgba(0,0,0,0.5)',
+    ].join(';');
+
+    const iframe = document.createElement('iframe');
+    iframe.src = extUrl;
+    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+    iframe.setAttribute('id', 'pc-rf-iframe');
+
+    iframe.addEventListener('load', function() {
+        try {
+            const iw = iframe.contentWindow;
+            iw.__PC_CHAR__       = getCurrentCharName();
+            iw.__PC_USER__       = ctx().name1 || '{{user}}';
+            iw.__PC_GENERATE__   = generateWithRole;
+            iw.__PC_GET_CHAT__   = getRecentChat;
+            iw.__PC_CLOSE_RF__   = closeRedFlag;
+            if (typeof iw.__PC_ON_BRIDGE__ === 'function') {
+                iw.__PC_ON_BRIDGE__();
+            }
+            console.log(`[${MODULE_NAME}] RF iframe bridge OK`);
+        } catch(e) {
+            console.error(`[${MODULE_NAME}] RF iframe bridge error`, e);
+        }
+    });
+
+    wrap.appendChild(iframe);
+    overlay.appendChild(wrap);
+    document.body.appendChild(overlay);
+}
+
+function closeRedFlag() {
+    $(`#${RF_POPUP_ID}`).remove();
 }
 
 // ═══════════════════════════════════════════════

@@ -29,326 +29,148 @@
 }
 html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;}
 
-/* ── 스크롤 ── */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(160,180,210,0.35);border-radius:4px;}
 
-/* ── 레이아웃 ── */
-.shell{
-  width:100%;height:100%;
-  display:flex;align-items:stretch;justify-content:center;
-  padding:0;
-}
-.popup{
-  width:100%;max-width:100%;
-  height:100%;max-height:100%;
-  background:var(--surface);
-  border-radius:var(--radius-lg);
-  border:0.5px solid rgba(255,255,255,0.9);
-  overflow:hidden;
-  box-shadow:0 12px 40px rgba(140,160,200,0.3);
-  display:flex;flex-direction:column;
-}
+.shell{width:100%;height:100%;display:flex;align-items:stretch;justify-content:center;padding:0;}
+.popup{width:100%;max-width:100%;height:100%;max-height:100%;background:var(--surface);border-radius:var(--radius-lg);border:0.5px solid rgba(255,255,255,0.9);overflow:hidden;box-shadow:0 12px 40px rgba(140,160,200,0.3);display:flex;flex-direction:column;}
 
-/* ── 모바일 ── */
 @media(max-width:600px){
   .shell{padding:0;align-items:flex-end;}
   .popup{max-width:100%;max-height:95vh;border-radius:24px 24px 0 0;}
 }
 
-/* ── 탑바 ── */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 24px 16px;flex-shrink:0;
-}
-.topbar-title{font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
-.topbar-sub{font-size:14px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
-.close-btn{
-  width:40px;height:40px;border-radius:12px;
-  background:var(--card);border:0.5px solid var(--card-border);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text-secondary);font-size:18px;
-  box-shadow:var(--shadow);transition:opacity .15s;
-}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0;}
+.topbar-title{font-size:22px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
+.topbar-sub{font-size:16px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+.close-btn{width:40px;height:40px;border-radius:12px;background:var(--card);border:0.5px solid var(--card-border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);font-size:20px;box-shadow:var(--shadow);transition:opacity .15s;}
 .close-btn:hover{opacity:.7;}
-.back-btn{
-  display:flex;align-items:center;gap:5px;
-  font-size:15px;color:var(--text-muted);cursor:pointer;
-  padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;
-}
+.back-btn{display:flex;align-items:center;gap:5px;font-size:17px;color:var(--text-muted);cursor:pointer;padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;}
 .back-btn:hover{color:var(--text-secondary);}
 .back-btn svg{width:14px;height:14px;}
 .dots{display:flex;gap:4px;}
 .dot{width:4px;height:4px;border-radius:50%;background:var(--text-muted);opacity:.5;}
 
 .hdivider{height:0.5px;background:var(--divider);flex-shrink:0;}
-
-/* ── 스크롤 영역 ── */
 .scroll-area{flex:1;overflow-y:auto;padding:18px 20px 28px;}
 
-/* ══════════════════════════════
-   HOME
-══════════════════════════════ */
-.section-label{font-size:12px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
+/* HOME */
+.section-label{font-size:14px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
 .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.app-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:20px 16px 18px;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  cursor:pointer;box-shadow:var(--shadow);
-  transition:transform .15s,box-shadow .15s;
-}
+.app-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:20px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;}
 .app-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(140,160,200,0.22);}
 .app-card:active{transform:translateY(0);}
-.app-icon{
-  width:60px;height:60px;border-radius:16px;
-  background:var(--surface);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-secondary);
-}
+.app-card-full{grid-column:1/-1;}
+.app-icon{width:60px;height:60px;border-radius:16px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);}
 .app-icon svg{width:26px;height:26px;}
-.app-name{font-size:16px;font-weight:500;color:var(--text-primary);}
+.app-name{font-size:18px;font-weight:500;color:var(--text-primary);}
 
-/* ══════════════════════════════
-   LAST TOUCH
-══════════════════════════════ */
-.lt-counter{font-size:13px;color:var(--text-muted);}
+/* LAST TOUCH */
+.lt-counter{font-size:15px;color:var(--text-muted);}
 .lt-list{display:flex;flex-direction:column;gap:8px;}
-.lt-item{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:14px 16px;
-  display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s;
-}
+.lt-item{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s;}
 .lt-item.active{border-color:#e8a030;background:#fdf8f0;}
 .lt-item-left{display:flex;align-items:center;gap:10px;}
 .lt-dot{width:8px;height:8px;border-radius:50%;background:var(--divider);flex-shrink:0;}
 .lt-item.active .lt-dot{background:#e8a030;}
-.lt-item-title{font-size:16px;font-weight:500;color:var(--text-primary);}
-.lt-item-date{font-size:13px;color:var(--text-muted);}
+.lt-item-title{font-size:18px;font-weight:500;color:var(--text-primary);}
+.lt-item-date{font-size:15px;color:var(--text-muted);}
 .lt-item-right{display:flex;align-items:center;gap:8px;}
-.lt-menu-btn{
-  width:28px;height:28px;border-radius:8px;
-  background:var(--surface);border:none;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text-muted);font-size:15px;
-  position:relative;
-}
-.lt-dropdown{
-  position:absolute;right:0;top:32px;z-index:10;
-  background:var(--card);border-radius:10px;
-  border:0.5px solid var(--card-border);
-  box-shadow:0 8px 24px rgba(140,160,200,0.25);
-  overflow:hidden;min-width:110px;display:none;
-}
+.lt-menu-btn{width:28px;height:28px;border-radius:8px;background:var(--surface);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);font-size:17px;position:relative;}
+.lt-dropdown{position:absolute;right:0;top:32px;z-index:10;background:var(--card);border-radius:10px;border:0.5px solid var(--card-border);box-shadow:0 8px 24px rgba(140,160,200,0.25);overflow:hidden;min-width:110px;display:none;}
 .lt-dropdown.open{display:block;}
-.lt-dd-item{
-  padding:9px 14px;font-size:14px;color:var(--text-secondary);
-  cursor:pointer;white-space:nowrap;
-}
+.lt-dd-item{padding:9px 14px;font-size:16px;color:var(--text-secondary);cursor:pointer;white-space:nowrap;}
 .lt-dd-item:hover{background:var(--surface);}
 .lt-dd-item.danger{color:#c04030;}
 
-.ai-btn{
-  background:var(--card);border:0.5px solid var(--card-border);
-  border-radius:var(--radius-md);padding:14px;
-  font-size:15px;font-weight:500;color:var(--text-secondary);
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:var(--shadow);transition:opacity .15s;font-family:inherit;flex:1;
-}
+.ai-btn{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius-md);padding:14px;font-size:17px;font-weight:500;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow);transition:opacity .15s;font-family:inherit;flex:1;}
 .ai-btn:hover{opacity:.8;}
 .ai-btn svg{width:15px;height:15px;}
 .ai-btn.loading{opacity:.6;pointer-events:none;}
 #screen-lasttouch .ai-btn{flex:unset;width:100%;margin-top:10px;}
 
-/* ── Last Touch 카드 팝업 ── */
-.card-overlay{
-  position:absolute;inset:0;z-index:20;
-  background:rgba(180,195,215,0.6);
-  backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;
-  padding:16px;
-}
-.touch-card{
-  width:100%;max-width:400px;max-height:80vh;
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  box-shadow:0 12px 36px rgba(130,155,195,0.3);
-  overflow:hidden;display:flex;flex-direction:column;
-  position:relative;
-}
+/* Last Touch 카드 팝업 */
+.card-overlay{position:absolute;inset:0;z-index:20;background:rgba(180,195,215,0.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;}
+.touch-card{width:100%;max-width:400px;max-height:80vh;background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);box-shadow:0 12px 36px rgba(130,155,195,0.3);overflow:hidden;display:flex;flex-direction:column;position:relative;}
 .tc-top-bar{height:4px;background:linear-gradient(90deg,#e05040,#e07030);flex-shrink:0;}
 .tc-body{padding:20px 20px 16px;overflow-y:auto;flex:1;}
-.tc-title{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
-.tc-meta{font-size:14px;color:var(--text-muted);margin-bottom:14px;}
+.tc-title{font-size:24px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
+.tc-meta{font-size:16px;color:var(--text-muted);margin-bottom:14px;}
 .tc-tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
-.tc-tag{padding:4px 10px;border-radius:6px;font-size:13px;font-weight:500;}
+.tc-tag{padding:4px 10px;border-radius:6px;font-size:15px;font-weight:500;}
 .tc-tag.mood{background:#f5ead0;color:#8a6020;border:0.5px solid rgba(200,150,40,0.2);}
 .tc-tag.pos{background:var(--surface);color:var(--text-secondary);border:0.5px solid var(--divider);}
-.tc-section-label{font-size:11px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
-.tc-review{
-  background:var(--surface);border-radius:10px;
-  padding:12px 14px;font-size:15px;color:var(--text-secondary);line-height:1.8;
-}
-.tc-genital{
-  background:var(--surface);border-radius:10px;
-  padding:12px 14px;margin-top:8px;
-}
+.tc-section-label{font-size:13px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
+.tc-review{background:var(--surface);border-radius:10px;padding:12px 14px;font-size:17px;color:var(--text-secondary);line-height:1.8;}
+.tc-genital{background:var(--surface);border-radius:10px;padding:12px 14px;margin-top:8px;}
 .tc-gen-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.tc-gen-emoji{font-size:18px;}
-.tc-condom-badge{
-  padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;
-  background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;
-}
+.tc-gen-emoji{font-size:20px;}
+.tc-condom-badge{padding:2px 8px;border-radius:5px;font-size:14px;font-weight:700;background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;}
 .tc-condom-badge.safe{background:rgba(50,140,70,0.1);border-color:rgba(50,140,70,0.2);color:#307040;}
-.tc-gen-text{font-size:15px;color:var(--text-secondary);line-height:1.7;}
-.tc-gen-ko{font-size:13px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
-.tc-footer{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 20px 16px;flex-shrink:0;
-  border-top:0.5px solid var(--divider);
-}
-.tc-pin-btn{
-  display:flex;align-items:center;gap:5px;
-  font-size:14px;color:var(--text-muted);cursor:pointer;
-  background:none;border:none;padding:0;transition:color .15s;
-}
+.tc-gen-text{font-size:17px;color:var(--text-secondary);line-height:1.7;}
+.tc-gen-ko{font-size:15px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
+.tc-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 16px;flex-shrink:0;border-top:0.5px solid var(--divider);}
+.tc-pin-btn{display:flex;align-items:center;gap:5px;font-size:16px;color:var(--text-muted);cursor:pointer;background:none;border:none;padding:0;transition:color .15s;}
 .tc-pin-btn.pinned{color:#e8a030;}
 .tc-pin-btn svg{width:13px;height:13px;}
-.tc-date{font-size:13px;color:var(--text-muted);}
-.tc-close{
-  position:absolute;top:12px;right:12px;
-  width:28px;height:28px;border-radius:8px;
-  background:var(--surface);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-muted);font-size:16px;
-}
+.tc-date{font-size:15px;color:var(--text-muted);}
+.tc-close{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:var(--surface);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:18px;}
 
-/* ══════════════════════════════
-   PROFILE (new)
-══════════════════════════════ */
-.profile-section{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:16px 18px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:14px;
-  margin-bottom:10px;
-}
-.ps-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+/* PROFILE */
+.profile-section{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;margin-bottom:10px;}
+.ps-label{font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
 .ps-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.ps-row-label{display:flex;align-items:center;gap:6px;font-size:15px;color:var(--text-secondary);min-width:90px;flex-shrink:0;}
+.ps-row-label{display:flex;align-items:center;gap:6px;font-size:17px;color:var(--text-secondary);min-width:90px;flex-shrink:0;}
 .ps-row-label svg{width:14px;height:14px;color:var(--text-muted);}
 .ps-input-wrap{display:flex;align-items:center;gap:4px;}
-.ps-input{
-  width:72px;padding:5px 8px;border-radius:8px;
-  border:0.5px solid var(--divider);
-  background:var(--surface);color:var(--text-primary);
-  font-size:15px;text-align:right;outline:none;
-}
+.ps-input{width:72px;padding:5px 8px;border-radius:8px;border:0.5px solid var(--divider);background:var(--surface);color:var(--text-primary);font-size:17px;text-align:right;outline:none;}
 .ps-input:focus{border-color:rgba(100,140,200,0.4);}
-.ps-unit{font-size:13px;color:var(--text-muted);}
-.ps-text-input{
-  flex:1;padding:5px 10px;border-radius:8px;
-  border:0.5px solid var(--divider);
-  background:var(--surface);color:var(--text-primary);
-  font-size:15px;outline:none;font-family:inherit;
-}
+.ps-unit{font-size:15px;color:var(--text-muted);}
+.ps-text-input{flex:1;padding:5px 10px;border-radius:8px;border:0.5px solid var(--divider);background:var(--surface);color:var(--text-primary);font-size:17px;outline:none;font-family:inherit;}
 .ps-text-input:focus{border-color:rgba(100,140,200,0.4);}
 .btn-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
-.pg-btn{
-  padding:5px 11px;border-radius:7px;font-size:13px;font-weight:500;
-  background:var(--btn-idle);color:var(--btn-idle-text);
-  border:0.5px solid rgba(160,190,220,0.3);
-  cursor:pointer;transition:all .12s;font-family:inherit;
-}
+.pg-btn{padding:5px 11px;border-radius:7px;font-size:15px;font-weight:500;background:var(--btn-idle);color:var(--btn-idle-text);border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;transition:all .12s;font-family:inherit;}
 .pg-btn.sel{background:var(--btn-select);color:var(--btn-select-text);border-color:transparent;}
 .pg-btn:hover:not(.sel){background:#dce6f0;}
 
-/* 저장 버튼 */
 .save-row{display:flex;gap:8px;margin-top:4px;}
-.save-btn{
-  flex:1;background:var(--accent);color:var(--accent-text);
-  border:none;border-radius:var(--radius-sm);padding:13px;
-  font-size:15px;font-weight:600;cursor:pointer;
-  font-family:inherit;transition:opacity .15s;
-}
+.save-btn{flex:1;background:var(--accent);color:var(--accent-text);border:none;border-radius:var(--radius-sm);padding:13px;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;}
 .save-btn:hover{opacity:.85;}
-.save-toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:var(--accent);color:#fff;
-  padding:8px 20px;border-radius:20px;font-size:14px;font-weight:500;
-  opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;
-}
+.save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:8px 20px;border-radius:20px;font-size:16px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;}
 .save-toast.show{opacity:1;}
 
-/* ══════════════════════════════
-   EROGENOUS ZONE (new)
-══════════════════════════════ */
-.ez-section{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:16px 18px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:14px;
-  margin-bottom:10px;
-}
-.ez-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+/* EROGENOUS ZONE */
+.ez-section{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;margin-bottom:10px;}
+.ez-label{font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
 .tag-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-.kw-tag{
-  display:flex;align-items:center;gap:4px;
-  padding:5px 12px;border-radius:20px;font-size:14px;font-weight:500;
-  background:var(--btn-idle);color:var(--btn-idle-text);
-  border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;
-}
-.kw-tag .hash{font-size:13px;color:var(--text-muted);}
-.kw-tag .x{font-size:13px;color:var(--text-muted);margin-left:1px;}
+.kw-tag{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:16px;font-weight:500;background:var(--btn-idle);color:var(--btn-idle-text);border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;}
+.kw-tag .hash{font-size:15px;color:var(--text-muted);}
+.kw-tag .x{font-size:15px;color:var(--text-muted);margin-left:1px;}
 .kw-tag:hover .x{color:#c04030;}
-.add-tag{
-  display:flex;align-items:center;gap:4px;
-  padding:5px 12px;border-radius:20px;font-size:14px;font-weight:500;
-  background:transparent;color:var(--text-muted);
-  border:0.5px dashed rgba(160,190,220,0.5);
-  cursor:pointer;font-family:inherit;
-}
+.add-tag{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:16px;font-weight:500;background:transparent;color:var(--text-muted);border:0.5px dashed rgba(160,190,220,0.5);cursor:pointer;font-family:inherit;}
 .add-tag:hover{background:var(--btn-idle);border-style:solid;}
 .ez-bottom-row{display:flex;gap:10px;margin-top:4px;}
-.ez-bottom-row .save-btn{flex:1;border-radius:var(--radius-md);padding:14px;font-size:15px;font-weight:700;}
+.ez-bottom-row .save-btn{flex:1;border-radius:var(--radius-md);padding:14px;font-size:17px;font-weight:700;}
 
-/* ══════════════════════════════
-   PRIVATE VAULT
-══════════════════════════════ */
-.vault-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;padding:60px 20px;text-align:center;
-}
-.vault-icon{
-  width:64px;height:64px;border-radius:18px;
-  background:var(--card);border:0.5px solid var(--card-border);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-muted);
-}
+/* PRIVATE VAULT */
+.vault-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:60px 20px;text-align:center;}
+.vault-icon{width:64px;height:64px;border-radius:18px;background:var(--card);border:0.5px solid var(--card-border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);}
 .vault-icon svg{width:28px;height:28px;}
-.vault-title{font-size:17px;font-weight:600;color:var(--text-secondary);}
-.vault-desc{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:240px;}
+.vault-title{font-size:19px;font-weight:600;color:var(--text-secondary);}
+.vault-desc{font-size:16px;color:var(--text-muted);line-height:1.7;max-width:240px;}
 
-/* loading spinner */
+/* spinner */
 .sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:18px 16px;display:flex;align-items:center;gap:10px;
-}
-.loading-text{font-size:14px;color:var(--text-muted);}
+.loading-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:18px 16px;display:flex;align-items:center;gap:10px;}
+.loading-text{font-size:16px;color:var(--text-muted);}
 </style>
 </head>
 <body>
 <div class="shell">
 <div class="popup" id="popup">
 
-  <!-- ══ TOPBAR ══ -->
   <div class="topbar" id="topbar">
     <div id="topbar-left">
       <span class="topbar-title">🍑 Peaches &amp; Cream</span>
@@ -359,10 +181,9 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
   </div>
   <div class="hdivider"></div>
 
-  <!-- ══ 스크롤 영역 ══ -->
   <div class="scroll-area" id="scroll-area">
 
-    <!-- ── HOME ── -->
+    <!-- HOME -->
     <div id="screen-home">
       <div class="section-label">APPS</div>
       <div class="app-grid">
@@ -390,7 +211,16 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
           </div>
           <span class="app-name">Last Touch</span>
         </div>
-        <div class="app-card" onclick="goTo('vault')">
+        <div class="app-card" onclick="goTo('redflag')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="6" y1="3" x2="6" y2="21" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 3 L18 8 L6 13" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <span class="app-name">Red Flag</span>
+        </div>
+        <div class="app-card app-card-full" onclick="goTo('vault')">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -401,7 +231,7 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       </div>
     </div>
 
-    <!-- ── LAST TOUCH ── -->
+    <!-- LAST TOUCH -->
     <div id="screen-lasttouch" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <span class="section-label" style="margin:0;">기록</span>
@@ -412,7 +242,6 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
         AI 불러오기
       </button>
-      <!-- 카드 팝업 -->
       <div class="card-overlay" id="lt-card-overlay" style="display:none;" onclick="ltCloseCard(event)">
         <div class="touch-card" id="lt-touch-card" onclick="event.stopPropagation()">
           <div class="tc-top-bar"></div>
@@ -429,10 +258,8 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       </div>
     </div>
 
-    <!-- ── PROFILE (new) ── -->
+    <!-- PROFILE -->
     <div id="screen-profile" style="display:none;">
-
-      <!-- Basic Info -->
       <div class="profile-section">
         <div class="ps-label">Basic Info</div>
         <div class="ps-row">
@@ -476,7 +303,6 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
         </div>
       </div>
 
-      <!-- Physical Features -->
       <div class="profile-section">
         <div class="ps-label">Physical Features</div>
         <div class="ps-row">
@@ -534,7 +360,6 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
         </div>
       </div>
 
-      <!-- Vibe / Scent -->
       <div class="profile-section">
         <div class="ps-label">Vibe / Scent</div>
         <div class="ps-row">
@@ -548,9 +373,8 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       </div>
     </div>
 
-    <!-- ── EROGENOUS ZONE (new) ── -->
+    <!-- EROGENOUS ZONE -->
     <div id="screen-erogenous" style="display:none;">
-
       <div class="ez-section">
         <div class="ez-label">Body Response</div>
         <div class="ps-row">
@@ -646,15 +470,25 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       </div>
 
       <div class="ez-bottom-row">
-        <button class="ai-btn" id="ez-ai-btn" onclick="ezAIFetch()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
-          AI 불러오기
-        </button>
         <button class="save-btn" onclick="saveErogenous()">Save</button>
       </div>
     </div>
 
-    <!-- ── PRIVATE VAULT ── -->
+    <!-- RED FLAG -->
+    <div id="screen-redflag" style="display:none;">
+      <div class="vault-empty">
+        <div class="vault-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="6" y1="3" x2="6" y2="21" stroke-width="2"/>
+            <path d="M6 3 L18 8 L6 13" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="vault-title">Red Flag 🚩</div>
+        <div class="vault-desc">별도 파일로 실행돼요.<br/>index.js에서 openRedFlag()를 호출하세요.</div>
+      </div>
+    </div>
+
+    <!-- PRIVATE VAULT -->
     <div id="screen-vault" style="display:none;">
       <div class="vault-empty">
         <div class="vault-icon">
@@ -667,16 +501,13 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       </div>
     </div>
 
-  </div><!-- /scroll-area -->
-</div><!-- /popup -->
-</div><!-- /shell -->
+  </div>
+</div>
+</div>
 
 <div class="save-toast" id="save-toast">저장됐어요 ✓</div>
 
 <script>
-// ─────────────────────────────────────────────
-// Bridge
-// ─────────────────────────────────────────────
 let store    = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
 let charName = '{{char}}';
 let generate = null;
@@ -695,17 +526,11 @@ function initBridge() {
   console.log('[PC] bridge initialized, char:', charName);
 }
 
-window.__PC_ON_BRIDGE__ = function() {
-  initBridge();
-};
-
+window.__PC_ON_BRIDGE__ = function() { initBridge(); };
 if (window.parent && window.parent.__PC_STORE__) initBridge();
 
-// ─────────────────────────────────────────────
-// 화면 라우터
-// ─────────────────────────────────────────────
 let currentScreen = 'home';
-const screens = ['home','lasttouch','profile','erogenous','vault'];
+const screens = ['home','lasttouch','profile','erogenous','redflag','vault'];
 
 function goTo(id) {
   screens.forEach(s => {
@@ -719,19 +544,16 @@ function goTo(id) {
   if (id === 'lasttouch') renderLTList();
   if (id === 'profile')   loadProfile();
   if (id === 'erogenous') loadErogenous();
+  if (id === 'redflag')   openRedFlag();
 }
 
 function updateTopbar(id) {
   const left  = document.getElementById('topbar-left');
   const right = document.getElementById('topbar-right');
   const labels = {
-    home:      '',
-    lasttouch: 'LAST TOUCH',
-    profile:   'PROFILE',
-    erogenous: 'EROGENOUS ZONE',
-    vault:     'PRIVATE VAULT',
+    home:'', lasttouch:'LAST TOUCH', profile:'PROFILE',
+    erogenous:'EROGENOUS ZONE', redflag:'RED FLAG', vault:'PRIVATE VAULT',
   };
-
   if (id === 'home') {
     left.innerHTML  = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
     right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
@@ -746,9 +568,13 @@ function closeApp() {
   else window.close();
 }
 
-// ─────────────────────────────────────────────
+function openRedFlag() {
+  if (window.parent && window.parent.__PC_OPEN_REDFLAG__) {
+    window.parent.__PC_OPEN_REDFLAG__();
+  }
+}
+
 // LAST TOUCH
-// ─────────────────────────────────────────────
 let ltActiveCard = null;
 
 function renderLTList() {
@@ -760,7 +586,7 @@ function renderLTList() {
 
   const list = document.getElementById('lt-list');
   if (total === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">아직 기록이 없어요</div>';
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:16px;padding:20px 0;">아직 기록이 없어요</div>';
     return;
   }
 
@@ -804,7 +630,7 @@ function ltOpenCard(id) {
   if (!card) return;
   ltActiveCard = card;
 
-  const pinned  = store.lastTouch.pinned || [];
+  const pinned   = store.lastTouch.pinned || [];
   const isPinned = pinned.includes(id);
 
   const body = document.getElementById('tc-body');
@@ -820,7 +646,7 @@ function ltOpenCard(id) {
     ${card.genitalComment ? `
       <div class="tc-genital">
         <div class="tc-gen-header">
-          <span class="tc-gen-emoji">🍆</span>
+          <span class="tc-gen-emoji">💬</span>
           <span class="tc-condom-badge ${card.condom ? 'safe' : ''}">${card.condom ? 'CONDOM' : 'NO CONDOM'}</span>
         </div>
         <div class="tc-gen-text">${esc(card.genitalComment)}</div>
@@ -869,10 +695,7 @@ function ltDelete(id, e) {
 }
 
 async function ltAIFetch() {
-  if (!generate || !getChat) {
-    alert('ST와 연결되지 않았어요.');
-    return;
-  }
+  if (!generate || !getChat) { alert('ST와 연결되지 않았어요.'); return; }
   const btn = document.getElementById('lt-ai-btn');
   btn.classList.add('loading');
   btn.innerHTML = '<div class="sp"></div> 분석 중...';
@@ -893,7 +716,7 @@ Each object must have:
 - mood: atmosphere/mood in Korean (e.g. "앵그리 섹스")
 - positions: array of up to 3 sex positions mentioned (Korean or English)
 - charReview: 4-sentence explicit review from {{char}}'s perspective in Korean
-- genitalComment: explicit comment about genitals in English
+- genitalComment: a first-person monologue in English — written as if the genitals themselves could speak, expressing what they would say or feel in that moment (e.g. cravings, sensations, thoughts, reactions). Vivid and explicit.
 - genitalCommentKo: Korean translation of genitalComment
 - condom: boolean (true if condom used, false if not)
 If no sexual content found, return empty array [].
@@ -904,9 +727,7 @@ Maximum 5 records. Most recent first.`;
     try {
       const clean = result.replace(/```json|```/g, '').trim();
       cards = JSON.parse(clean);
-    } catch(e) {
-      console.warn('[PC] JSON parse error', e, result);
-    }
+    } catch(e) { console.warn('[PC] JSON parse error', e, result); }
 
     if (!Array.isArray(cards) || cards.length === 0) {
       btn.classList.remove('loading');
@@ -933,19 +754,16 @@ Maximum 5 records. Most recent first.`;
   btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
 }
 
-// ─────────────────────────────────────────────
 // PROFILE
-// ─────────────────────────────────────────────
 function loadProfile() {
   syncStore();
   const p = store.profile || {};
-
-  document.getElementById('p-height').value    = p.height     || '';
-  document.getElementById('p-weight').value    = p.weight     || '';
-  document.getElementById('p-eye').value       = p.eyeColor   || '';
-  document.getElementById('p-hair').value      = p.hair       || '';
+  document.getElementById('p-height').value     = p.height     || '';
+  document.getElementById('p-weight').value     = p.weight     || '';
+  document.getElementById('p-eye').value        = p.eyeColor   || '';
+  document.getElementById('p-hair').value       = p.hair       || '';
   document.getElementById('p-peachcolor').value = p.peachColor || '';
-  document.getElementById('p-scent').value     = p.scent      || '';
+  document.getElementById('p-scent').value      = p.scent      || '';
 
   ['skinTone','bodyType','chest','butt','waistHip','skinTexture','bodyHair','venusDimples'].forEach(key => {
     const group = document.getElementById('bg-' + key);
@@ -955,7 +773,6 @@ function loadProfile() {
     });
   });
 
-  // btn-group click handlers (re-bind each load)
   document.querySelectorAll('#screen-profile .btn-group').forEach(group => {
     group.onclick = e => {
       const btn = e.target.closest('.pg-btn');
@@ -968,22 +785,21 @@ function loadProfile() {
 
 function saveProfile() {
   const profile = {
-    height:      document.getElementById('p-height').value,
-    weight:      document.getElementById('p-weight').value,
-    eyeColor:    document.getElementById('p-eye').value,
-    hair:        document.getElementById('p-hair').value,
-    peachColor:  document.getElementById('p-peachcolor').value,
-    scent:       document.getElementById('p-scent').value,
-    skinTone:    getSelected('bg-skinTone'),
-    bodyType:    getSelected('bg-bodyType'),
-    chest:       getSelected('bg-chest'),
-    butt:        getSelected('bg-butt'),
-    waistHip:    getSelected('bg-waistHip'),
-    skinTexture: getSelected('bg-skinTexture'),
-    bodyHair:    getSelected('bg-bodyHair'),
-    venusDimples:getSelected('bg-venusDimples'),
+    height:       document.getElementById('p-height').value,
+    weight:       document.getElementById('p-weight').value,
+    eyeColor:     document.getElementById('p-eye').value,
+    hair:         document.getElementById('p-hair').value,
+    peachColor:   document.getElementById('p-peachcolor').value,
+    scent:        document.getElementById('p-scent').value,
+    skinTone:     getSelected('bg-skinTone'),
+    bodyType:     getSelected('bg-bodyType'),
+    chest:        getSelected('bg-chest'),
+    butt:         getSelected('bg-butt'),
+    waistHip:     getSelected('bg-waistHip'),
+    skinTexture:  getSelected('bg-skinTexture'),
+    bodyHair:     getSelected('bg-bodyHair'),
+    venusDimples: getSelected('bg-venusDimples'),
   };
-
   if (window.parent.__PC_STORE__) {
     window.parent.__PC_STORE__.profile = { ...(window.parent.__PC_STORE__.profile || {}), ...profile };
     if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
@@ -992,9 +808,7 @@ function saveProfile() {
   showToast('Saved ✓');
 }
 
-// ─────────────────────────────────────────────
 // EROGENOUS ZONE
-// ─────────────────────────────────────────────
 function loadErogenous() {
   syncStore();
   const ez = store.erogenous || {};
@@ -1007,7 +821,6 @@ function loadErogenous() {
     });
   });
 
-  // btn-group click handlers
   document.querySelectorAll('#screen-erogenous .btn-group').forEach(group => {
     group.onclick = e => {
       const btn = e.target.closest('.pg-btn');
@@ -1017,16 +830,13 @@ function loadErogenous() {
     };
   });
 
-  // Sensitive Zones tags
   const sensitiveWrap = document.getElementById('ez-sensitive-wrap');
   const addSensBtn = sensitiveWrap.querySelector('.add-tag');
-  // clear existing tags
   sensitiveWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
   (ez.sensitiveZones || []).forEach(val => {
     sensitiveWrap.insertBefore(makeKwTag(val, 'ez-sensitive-wrap'), addSensBtn);
   });
 
-  // Sensory Feedback tags
   const sensoryWrap = document.getElementById('ez-sensory-wrap');
   const addSensoryBtn = sensoryWrap.querySelector('.add-tag');
   sensoryWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
@@ -1060,19 +870,18 @@ function getEzTags(wrapId) {
 
 function saveErogenous() {
   const erogenous = {
-    tightness:      getSelected('bg-tightness'),
-    lubrication:    getSelected('bg-lubrication'),
-    texture:        getSelected('bg-texture'),
-    squirting:      getSelected('bg-squirting'),
-    responsivity:   getSelected('bg-responsivity'),
-    moaning:        getSelected('bg-moaning'),
-    flushing:       getSelected('bg-flushing'),
-    experience:     getSelected('bg-experience'),
-    vibe:           getSelected('bg-vibe'),
-    sensitiveZones: getEzTags('ez-sensitive-wrap'),
-    sensoryFeedback:getEzTags('ez-sensory-wrap'),
+    tightness:       getSelected('bg-tightness'),
+    lubrication:     getSelected('bg-lubrication'),
+    texture:         getSelected('bg-texture'),
+    squirting:       getSelected('bg-squirting'),
+    responsivity:    getSelected('bg-responsivity'),
+    moaning:         getSelected('bg-moaning'),
+    flushing:        getSelected('bg-flushing'),
+    experience:      getSelected('bg-experience'),
+    vibe:            getSelected('bg-vibe'),
+    sensitiveZones:  getEzTags('ez-sensitive-wrap'),
+    sensoryFeedback: getEzTags('ez-sensory-wrap'),
   };
-
   if (window.parent.__PC_STORE__) {
     window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...erogenous };
     if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
@@ -1081,65 +890,7 @@ function saveErogenous() {
   showToast('Saved ✓');
 }
 
-async function ezAIFetch() {
-  if (!generate || !getChat) {
-    alert('ST와 연결되지 않았어요.');
-    return;
-  }
-  const btn = document.getElementById('ez-ai-btn');
-  btn.classList.add('loading');
-  btn.innerHTML = '<div class="sp"></div> 분석 중...';
-
-  try {
-    const messages = getChat(20);
-    const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
-
-    const systemPrompt = `You are an analyst extracting erogenous zone and body response data from a sexual roleplay chat.
-Analyze the chat and return ONLY a JSON object (no markdown) with these keys if found:
-- tightness: "Normal"|"Tight"|"Extreme"
-- lubrication: "Dry"|"Moist"|"Soaking"
-- texture: "Creamy"|"Watery"|"Mixed"
-- squirting: "None"|"Rare"|"Frequent"
-- responsivity: "Normal"|"High"|"Extreme"
-- moaning: "Muted"|"Vocal"|"Passionate"
-- flushing: "Pale"|"Rosy"|"Deep"
-- experience: "Novice"|"Skilled"|"Master"
-- vibe: "Romantic"|"Rough"|"Slow"
-- sensitiveZones: array of body parts mentioned as sensitive (English)
-- sensoryFeedback: array of sensory keywords mentioned (English)
-Only include keys where evidence exists in chat. If nothing found return {}.`;
-
-    const result = await generate(systemPrompt, `Chat log:\n${chatText}`);
-    let data = {};
-    try {
-      const clean = result.replace(/```json|```/g, '').trim();
-      data = JSON.parse(clean);
-    } catch(e) {
-      console.warn('[PC] EZ JSON parse error', e);
-    }
-
-    if (Object.keys(data).length === 0) {
-      showToast('데이터를 찾지 못했어요');
-    } else {
-      if (window.parent.__PC_STORE__) {
-        window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...data };
-        if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
-      }
-      loadErogenous();
-      showToast('AI 불러오기 완료 ✓');
-    }
-  } catch(err) {
-    console.error('[PC] ezAIFetch error', err);
-    alert('AI 호출 중 오류가 발생했어요.');
-  }
-
-  btn.classList.remove('loading');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
-}
-
-// ─────────────────────────────────────────────
 // 유틸
-// ─────────────────────────────────────────────
 function getSelected(groupId) {
   const group = document.getElementById(groupId);
   if (!group) return '';
