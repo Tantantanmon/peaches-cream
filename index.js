@@ -233,18 +233,63 @@ function refreshPrompt() {
 }
 
 // ═══════════════════════════════════════════════
-// generateRaw 래퍼
+// 멀티 API 목록 가져오기
 // ═══════════════════════════════════════════════
-async function generateWithRole(systemPrompt, userPrompt) {
-    const { generateRaw } = ctx();
-    return await generateRaw({
-        systemPrompt,
-        prompt: userPrompt,
-    });
+function getAvailableApis() {
+    try {
+        const c = ctx();
+        const apis = [{ value: 'main', label: 'Main API' }];
+
+        // ST extras / secondary connections
+        if (c.extensionSettings && c.extensionSettings.secondary_api) {
+            apis.push({ value: 'secondary', label: 'Secondary API' });
+        }
+
+        // openai compatible connections
+        const connections = c.openAICompatibleApis || c.oai_settings?.connections || [];
+        connections.forEach((conn, i) => {
+            if (conn && conn.name) {
+                apis.push({ value: `oai_${i}`, label: conn.name });
+            }
+        });
+
+        // kobold / horde / novel
+        const apiType = c.main_api || '';
+        if (apiType === 'kobold')  apis.push({ value: 'kobold',  label: 'KoboldAI' });
+        if (apiType === 'horde')   apis.push({ value: 'horde',   label: 'AI Horde' });
+        if (apiType === 'novel')   apis.push({ value: 'novel',   label: 'NovelAI' });
+
+        return apis;
+    } catch (e) {
+        console.warn(`[${MODULE_NAME}] getAvailableApis error`, e);
+        return [{ value: 'main', label: 'Main API' }];
+    }
 }
 
 // ═══════════════════════════════════════════════
-// ST 채팅 읽기
+// generateRaw 래퍼 (API 소스 반영)
+// ═══════════════════════════════════════════════
+async function generateWithRole(systemPrompt, userPrompt) {
+    const { generateRaw } = ctx();
+    const store = getStore();
+    const apiSource = store.config.apiSource || 'main';
+
+    const params = {
+        systemPrompt,
+        prompt: userPrompt,
+        max_new_tokens: store.config.maxTokens || 1500,
+    };
+
+    // main 이외의 소스 지정 시 파라미터 추가
+    if (apiSource !== 'main') {
+        params.api = apiSource;
+    }
+
+    return await generateRaw(params);
+}
+
+// ═══════════════════════════════════════════════
+// ST 채팅 읽기 — 범위 지정 지원
 // ═══════════════════════════════════════════════
 function getRecentChat(limit) {
     limit = limit || 20;
@@ -263,6 +308,86 @@ function getRecentChat(limit) {
     }
 }
 
+// 시작/끝 메시지 번호(#1 기준)로 범위 슬라이싱
+function getChatRange(startNum, endNum) {
+    try {
+        const { chat } = ctx();
+        const arr = chat || [];
+        const total = arr.length;
+
+        // 번호 미입력시 최근 20개 fallback
+        if (!startNum && !endNum) return getRecentChat(20);
+
+        const s = startNum ? Math.max(1, parseInt(startNum)) : 1;
+        const e = endNum   ? Math.min(total, parseInt(endNum)) : total;
+
+        return arr.slice(s - 1, e).map(function(m) {
+            return {
+                role:    m.is_user ? 'user' : 'assistant',
+                content: m.mes  || '',
+                name:    m.name || '',
+            };
+        });
+    } catch (err) {
+        console.warn(`[${MODULE_NAME}] getChatRange error`, err);
+        return getRecentChat(20);
+    }
+}
+
+// ═══════════════════════════════════════════════
+// 캐릭터 디스크립션 가져오기
+// ═══════════════════════════════════════════════
+function getCharDescription() {
+    try {
+        const c = ctx();
+        // 방법 1: characters 배열에서 현재 캐릭터 찾기
+        if (c.characters && c.characterId !== undefined) {
+            const char = c.characters[c.characterId];
+            if (char) {
+                const parts = [];
+                if (char.description)    parts.push(char.description);
+                if (char.personality)    parts.push(char.personality);
+                if (char.scenario)       parts.push(char.scenario);
+                if (char.mes_example)    parts.push(char.mes_example);
+                return parts.join('\n').trim();
+            }
+        }
+        // 방법 2: getCharacters() 함수
+        if (typeof c.getCharacters === 'function') {
+            const chars = c.getCharacters();
+            const cur   = chars.find(ch => ch.name === c.name2);
+            if (cur) return [cur.description, cur.personality].filter(Boolean).join('\n');
+        }
+        return '';
+    } catch (e) {
+        console.warn(`[${MODULE_NAME}] getCharDescription error`, e);
+        return '';
+    }
+}
+
+// ═══════════════════════════════════════════════
+// 유저 페르소나 디스크립션 가져오기
+// ═══════════════════════════════════════════════
+function getUserPersona() {
+    try {
+        const c = ctx();
+        // 방법 1: persona 직접 접근
+        if (c.persona) return c.persona;
+        // 방법 2: power_user 설정의 persona
+        if (c.powerUserSettings && c.powerUserSettings.persona_description) {
+            return c.powerUserSettings.persona_description;
+        }
+        // 방법 3: extension settings 내 persona
+        if (c.extensionSettings && c.extensionSettings.persona) {
+            return c.extensionSettings.persona;
+        }
+        return '';
+    } catch (e) {
+        console.warn(`[${MODULE_NAME}] getUserPersona error`, e);
+        return '';
+    }
+}
+
 function getCurrentCharName() {
     try {
         return ctx().name2 || '{{char}}';
@@ -271,11 +396,25 @@ function getCurrentCharName() {
     }
 }
 
+function getCurrentUserName() {
+    try {
+        return ctx().name1 || '{{user}}';
+    } catch (e) {
+        return '{{user}}';
+    }
+}
+
 // ═══════════════════════════════════════════════
 // 확장 탭 설정 패널
 // ═══════════════════════════════════════════════
 function renderSettingsPanel() {
     const store = getStore();
+    const apis  = getAvailableApis();
+
+    const apiOptions = apis.map(a =>
+        `<option value="${a.value}" ${store.config.apiSource === a.value ? 'selected' : ''}>${a.label}</option>`
+    ).join('');
+
     const settingsHtml = `
         <div id="pc-settings-panel">
             <div class="inline-drawer">
@@ -286,9 +425,10 @@ function renderSettingsPanel() {
                 <div class="inline-drawer-content">
                     <div class="pc-setting-row">
                         <label for="pc-api-source">API 소스</label>
-                        <select id="pc-api-source">
-                            <option value="main" ${store.config.apiSource === 'main' ? 'selected' : ''}>Main API</option>
-                        </select>
+                        <select id="pc-api-source">${apiOptions}</select>
+                    </div>
+                    <div class="pc-setting-row" style="margin-top:6px;">
+                        <button id="pc-api-refresh" style="font-size:12px;padding:3px 8px;cursor:pointer;">🔄 API 목록 새로고침</button>
                     </div>
                     <div class="pc-setting-row">
                         <label for="pc-max-tokens">최대 응답 토큰 수</label>
@@ -308,6 +448,19 @@ function renderSettingsPanel() {
     });
     $('#pc-max-tokens').on('change', function() {
         updateConfig({ maxTokens: parseInt($(this).val()) || 1500 });
+    });
+
+    // API 목록 새로고침 버튼
+    $('#pc-api-refresh').on('click', function() {
+        const currentVal = getStore().config.apiSource;
+        const freshApis  = getAvailableApis();
+        const $select    = $('#pc-api-source');
+        $select.empty();
+        freshApis.forEach(a => {
+            const opt = $(`<option value="${a.value}">${a.label}</option>`);
+            if (a.value === currentVal) opt.attr('selected', true);
+            $select.append(opt);
+        });
     });
 }
 
@@ -336,12 +489,16 @@ const POPUP_ID = 'pc-popup-overlay';
 async function openMainHub() {
     if ($(`#${POPUP_ID}`).length) return;
 
-    window.__PC_STORE__    = getStore();
-    window.__PC_CLOSE__    = closeMainHub;
-    window.__PC_GENERATE__ = generateWithRole;
-    window.__PC_GET_CHAT__ = getRecentChat;
-    window.__PC_CHAR__     = getCurrentCharName();
-    window.__PC_SAVE__     = saveStore;
+    window.__PC_STORE__          = getStore();
+    window.__PC_CLOSE__          = closeMainHub;
+    window.__PC_GENERATE__       = generateWithRole;
+    window.__PC_GET_CHAT__       = getRecentChat;
+    window.__PC_GET_CHAT_RANGE__ = getChatRange;
+    window.__PC_CHAR__           = getCurrentCharName();
+    window.__PC_USER__           = getCurrentUserName();
+    window.__PC_CHAR_DESC__      = getCharDescription();
+    window.__PC_USER_PERSONA__   = getUserPersona();
+    window.__PC_SAVE__           = saveStore;
 
     const extUrl = `scripts/extensions/third-party/${MODULE_NAME}/main.html`;
 
@@ -375,12 +532,16 @@ async function openMainHub() {
     iframe.addEventListener('load', function() {
         try {
             const iw = iframe.contentWindow;
-            iw.__PC_STORE__    = getStore();
-            iw.__PC_CLOSE__    = closeMainHub;
-            iw.__PC_GENERATE__ = generateWithRole;
-            iw.__PC_GET_CHAT__ = getRecentChat;
-            iw.__PC_CHAR__     = getCurrentCharName();
-            iw.__PC_SAVE__     = saveStore;
+            iw.__PC_STORE__          = getStore();
+            iw.__PC_CLOSE__          = closeMainHub;
+            iw.__PC_GENERATE__       = generateWithRole;
+            iw.__PC_GET_CHAT__       = getRecentChat;
+            iw.__PC_GET_CHAT_RANGE__ = getChatRange;
+            iw.__PC_CHAR__           = getCurrentCharName();
+            iw.__PC_USER__           = getCurrentUserName();
+            iw.__PC_CHAR_DESC__      = getCharDescription();
+            iw.__PC_USER_PERSONA__   = getUserPersona();
+            iw.__PC_SAVE__           = saveStore;
             if (typeof iw.__PC_ON_BRIDGE__ === 'function') {
                 iw.__PC_ON_BRIDGE__();
             }

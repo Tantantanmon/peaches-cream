@@ -62,6 +62,12 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 
 /* LAST TOUCH */
 .lt-counter{font-size:15px;color:var(--text-muted);}
+.lt-range-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;background:var(--card);border-radius:var(--radius-sm);border:0.5px solid var(--card-border);padding:10px 14px;}
+.lt-range-label{font-size:14px;color:var(--text-muted);white-space:nowrap;}
+.lt-range-input{width:64px;padding:4px 8px;border-radius:7px;border:0.5px solid var(--divider);background:var(--surface);color:var(--text-primary);font-size:15px;text-align:center;outline:none;font-family:inherit;}
+.lt-range-input:focus{border-color:rgba(100,140,200,0.4);}
+.lt-range-sep{font-size:14px;color:var(--text-muted);}
+.lt-range-hint{font-size:12px;color:var(--text-muted);margin-left:auto;}
 .lt-list{display:flex;flex-direction:column;gap:8px;}
 .lt-item{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s;}
 .lt-item.active{border-color:#e8a030;background:#fdf8f0;}
@@ -84,33 +90,64 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 .ai-btn.loading{opacity:.6;pointer-events:none;}
 #screen-lasttouch .ai-btn{flex:unset;width:100%;margin-top:10px;}
 
-/* Last Touch 카드 — 전체화면 */
-.card-overlay{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--surface);}
-.touch-card{width:100%;height:100%;background:var(--card);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+/* ── Last Touch 카드 전체화면 팝업 ── */
+.card-overlay{
+  position:absolute;inset:0;z-index:20;
+  display:flex;flex-direction:column;
+  background:var(--surface);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.touch-card{width:100%;height:100%;display:flex;flex-direction:column;background:var(--card);overflow:hidden;}
 .tc-top-bar{height:4px;background:linear-gradient(90deg,#e05040,#e07030);flex-shrink:0;}
-.tc-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0;border-bottom:0.5px solid var(--divider);}
-.tc-back{display:flex;align-items:center;gap:5px;font-size:17px;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:inherit;}
-.tc-back svg{width:14px;height:14px;}
-.tc-topbar-title{font-size:16px;font-weight:500;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;}
-.tc-pin-btn{display:flex;align-items:center;gap:5px;font-size:16px;color:var(--text-muted);cursor:pointer;background:none;border:none;padding:0;transition:color .15s;}
+.tc-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 12px;flex-shrink:0;
+  border-bottom:0.5px solid var(--divider);
+}
+.tc-topbar-title{font-size:13px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;}
+.tc-close-btn{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--surface);border:0.5px solid var(--card-border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-secondary);font-size:18px;
+  box-shadow:var(--shadow);transition:opacity .15s;
+}
+.tc-close-btn:hover{opacity:.7;}
+.tc-pin-btn{display:flex;align-items:center;gap:5px;font-size:15px;color:var(--text-muted);cursor:pointer;background:none;border:none;padding:0;transition:color .15s;font-family:inherit;}
 .tc-pin-btn.pinned{color:#e8a030;}
-.tc-pin-btn svg{width:15px;height:15px;}
-.tc-body{padding:20px 20px 16px;overflow-y:auto;flex:1;}
-.tc-title{font-size:24px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
-.tc-meta{font-size:16px;color:var(--text-muted);margin-bottom:14px;}
-.tc-tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
-.tc-tag{padding:4px 10px;border-radius:6px;font-size:15px;font-weight:500;}
+.tc-pin-btn svg{width:14px;height:14px;}
+
+/* 카드 바디 */
+.tc-body{padding:20px 22px 0;overflow-y:auto;flex:1;}
+.tc-title{font-size:26px;font-weight:700;color:var(--text-primary);margin-bottom:4px;line-height:1.3;}
+.tc-meta{font-size:15px;color:var(--text-muted);margin-bottom:16px;}
+.tc-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.tc-tag{padding:5px 13px;border-radius:20px;font-size:14px;font-weight:600;}
 .tc-tag.mood{background:#f5ead0;color:#8a6020;border:0.5px solid rgba(200,150,40,0.2);}
-.tc-tag.pos{background:var(--surface);color:var(--text-secondary);border:0.5px solid var(--divider);}
-.tc-section-label{font-size:13px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
-.tc-review{background:var(--surface);border-radius:10px;padding:12px 14px;font-size:17px;color:var(--text-secondary);line-height:1.8;}
-.tc-genital{background:#fff;border-radius:10px;padding:12px 14px;margin-top:8px;border:0.5px solid var(--card-border);}
-.tc-gen-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.tc-gen-emoji{font-size:18px;}
-.tc-condom-badge{padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;}
+.tc-tag.pos{background:var(--surface);color:var(--text-secondary);border:0.5px solid var(--divider);font-weight:500;font-size:13px;}
+.tc-section-label{font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.tc-review{background:var(--surface);border-radius:14px;padding:16px;font-size:15px;color:var(--text-secondary);line-height:1.9;margin-bottom:14px;}
+.tc-genital{background:#fff;border-radius:14px;border:0.5px solid var(--card-border);padding:16px;margin-bottom:8px;}
+.tc-gen-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.tc-gen-emoji{font-size:20px;}
+.tc-condom-badge{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;}
 .tc-condom-badge.safe{background:rgba(50,140,70,0.1);border-color:rgba(50,140,70,0.2);color:#307040;}
-.tc-gen-text{font-size:17px;color:var(--text-secondary);line-height:1.7;}
-.tc-gen-ko{font-size:15px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
+.tc-gen-en{font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;}
+.tc-gen-divider{height:0.5px;background:rgba(160,180,210,0.2);margin-bottom:10px;}
+.tc-gen-ko{font-size:14px;color:var(--text-muted);line-height:1.7;}
+
+/* 카드 푸터 */
+.tc-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 22px 18px;
+  border-top:0.5px solid rgba(160,180,210,0.2);
+  flex-shrink:0;
+}
+.tc-footer-pin{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-muted);cursor:pointer;background:none;border:none;font-family:inherit;transition:color .15s;}
+.tc-footer-pin.pinned{color:#e8a030;}
+.tc-footer-pin svg{width:13px;height:13px;}
+.tc-footer-date{font-size:13px;color:var(--text-muted);}
 
 /* PROFILE */
 .profile-section{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;margin-bottom:10px;}
@@ -295,31 +332,44 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 
     <!-- LAST TOUCH -->
     <div id="screen-lasttouch" style="display:none;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span class="section-label" style="margin:0;">기록</span>
         <span class="lt-counter" id="lt-counter">0 / 5</span>
+      </div>
+      <!-- 메시지 범위 입력 -->
+      <div class="lt-range-row">
+        <span class="lt-range-label">채팅 범위</span>
+        <input class="lt-range-input" id="lt-range-start" type="number" placeholder="#시작" min="1"/>
+        <span class="lt-range-sep">—</span>
+        <input class="lt-range-input" id="lt-range-end" type="number" placeholder="#끝" min="1"/>
+        <span class="lt-range-hint">비우면 최근 20개</span>
       </div>
       <div class="lt-list" id="lt-list"></div>
       <button class="ai-btn" id="lt-ai-btn" onclick="ltAIFetch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
         AI 불러오기
       </button>
-      <!-- 카드 팝업 — 전체화면 -->
+
+      <!-- 카드 팝업 — 앱 전체화면 -->
       <div class="card-overlay" id="lt-card-overlay" style="display:none;">
         <div class="touch-card" id="lt-touch-card">
           <div class="tc-top-bar"></div>
           <div class="tc-topbar">
-            <button class="tc-back" onclick="ltCloseCardDirect()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-              Back
-            </button>
-            <span class="tc-topbar-title">LAST TOUCH</span>
             <button class="tc-pin-btn" id="tc-pin-btn" onclick="ltTogglePin()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17z"/></svg>
               Pin
             </button>
+            <span class="tc-topbar-title">LAST TOUCH</span>
+            <div class="tc-close-btn" onclick="ltCloseCard()">✕</div>
           </div>
           <div class="tc-body" id="tc-body"></div>
+          <div class="tc-footer">
+            <button class="tc-footer-pin" id="tc-footer-pin" onclick="ltTogglePin()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17z"/></svg>
+              Pin
+            </button>
+            <span class="tc-footer-date" id="tc-footer-date"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -495,22 +545,28 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 
 <script>
 // ── Bridge ──
-let store    = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
-let charName = '{{char}}';
-let userName = '{{user}}';
-let generate = null;
-let getChat  = null;
+let store       = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
+let charName    = '{{char}}';
+let userName    = '{{user}}';
+let charDesc    = '';
+let userPersona = '';
+let generate    = null;
+let getChat     = null;
+let getChatRange= null;
 
 function syncStore() {
   if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
 }
 function initBridge() {
   const p = window.parent;
-  store    = (p && p.__PC_STORE__)    || store;
-  charName = (p && p.__PC_CHAR__)     || charName;
-  userName = (p && p.__PC_USER__)     || userName;
-  generate = (p && p.__PC_GENERATE__) || null;
-  getChat  = (p && p.__PC_GET_CHAT__) || null;
+  store       = (p && p.__PC_STORE__)          || store;
+  charName    = (p && p.__PC_CHAR__)           || charName;
+  userName    = (p && p.__PC_USER__)           || userName;
+  charDesc    = (p && p.__PC_CHAR_DESC__)      || '';
+  userPersona = (p && p.__PC_USER_PERSONA__)   || '';
+  generate    = (p && p.__PC_GENERATE__)       || null;
+  getChat     = (p && p.__PC_GET_CHAT__)       || null;
+  getChatRange= (p && p.__PC_GET_CHAT_RANGE__) || null;
   document.getElementById('rf-char-name').textContent   = charName;
   document.getElementById('rf-char-avatar').textContent = charName.charAt(0);
   document.getElementById('rf-flag-who').textContent    = charName + "'s behavior. What do you think?";
@@ -551,6 +607,7 @@ function closeApp() {
 
 // ── LAST TOUCH ──
 let ltActiveCard = null;
+
 function renderLTList() {
   syncStore();
   const cards  = store.lastTouch.cards  || [];
@@ -566,7 +623,7 @@ function renderLTList() {
         <span class="lt-item-date">${esc(c.date)}</span>
         <div class="lt-menu-btn" onclick="ltMenuToggle(event,'${c.id}')">⋮
           <div class="lt-dropdown" id="ltdd-${c.id}">
-            <div class="lt-dd-item" onclick="ltTogglePin('${c.id}',event)">${isPinned?'📌 핀 해제':'📌 핀'}</div>
+            <div class="lt-dd-item" onclick="ltTogglePinById('${c.id}',event)">${isPinned?'📌 핀 해제':'📌 핀'}</div>
             <div class="lt-dd-item danger" onclick="ltDelete('${c.id}',event)">🗑 삭제</div>
           </div>
         </div>
@@ -574,6 +631,7 @@ function renderLTList() {
     </div>`;
   }).join('');
 }
+
 function ltMenuToggle(e,id){
   e.stopPropagation();
   document.querySelectorAll('.lt-dropdown').forEach(d=>{ if(d.id!=='ltdd-'+id) d.classList.remove('open'); });
@@ -588,6 +646,8 @@ function ltOpenCard(id) {
   ltActiveCard = card;
   const pinned   = store.lastTouch.pinned || [];
   const isPinned = pinned.includes(id);
+
+  // 바디 렌더
   const body = document.getElementById('tc-body');
   body.innerHTML = `
     <div class="tc-title">${esc(card.title)}</div>
@@ -598,36 +658,52 @@ function ltOpenCard(id) {
     </div>
     <div class="tc-section-label">${esc(charName)}'S REVIEW</div>
     <div class="tc-review">${esc(card.charReview||'-')}</div>
-    ${card.genitalComment?`
+    ${card.genitalCommentEn||card.genitalComment?`
       <div class="tc-genital">
         <div class="tc-gen-header">
           <span class="tc-gen-emoji">🍆</span>
           <span class="tc-condom-badge ${card.condom?'safe':''}">${card.condom?'CONDOM':'NO CONDOM'}</span>
         </div>
-        <div class="tc-gen-text">${esc(card.genitalComment)}</div>
+        <div class="tc-gen-en">${esc(card.genitalCommentEn||card.genitalComment)}</div>
+        ${card.genitalCommentKo?`<div class="tc-gen-divider"></div><div class="tc-gen-ko">${esc(card.genitalCommentKo)}</div>`:''}
       </div>`:''}
   `;
-  const pinBtn = document.getElementById('tc-pin-btn');
-  pinBtn.className = 'tc-pin-btn'+(isPinned?' pinned':'');
+
+  // 핀 버튼 상태
+  const pinBtn     = document.getElementById('tc-pin-btn');
+  const footerPin  = document.getElementById('tc-footer-pin');
+  pinBtn.className    = 'tc-pin-btn'+(isPinned?' pinned':'');
+  footerPin.className = 'tc-footer-pin'+(isPinned?' pinned':'');
+  document.getElementById('tc-footer-date').textContent = card.date||'';
+
   document.getElementById('lt-card-overlay').style.display='flex';
 }
-function ltCloseCardDirect() {
+
+function ltCloseCard() {
   document.getElementById('lt-card-overlay').style.display='none';
   ltActiveCard=null;
 }
-function ltTogglePin(id,e) {
+
+function ltTogglePin() {
+  const targetId = ltActiveCard && ltActiveCard.id;
+  if (!targetId) return;
+  _doPinToggle(targetId);
+  ltOpenCard(targetId);
+}
+function ltTogglePinById(id, e) {
   if(e) e.stopPropagation();
-  const targetId = id||(ltActiveCard&&ltActiveCard.id);
-  if(!targetId) return;
+  _doPinToggle(id);
+  renderLTList();
+}
+function _doPinToggle(id) {
   if(window.parent.__PC_STORE__){
     const pinned=window.parent.__PC_STORE__.lastTouch.pinned;
-    const idx=pinned.indexOf(targetId);
-    if(idx>=0) pinned.splice(idx,1); else pinned.push(targetId);
+    const idx=pinned.indexOf(id);
+    if(idx>=0) pinned.splice(idx,1); else pinned.push(id);
     if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
   }
-  renderLTList();
-  if(ltActiveCard) ltOpenCard(ltActiveCard.id);
 }
+
 function ltDelete(id,e){
   if(e) e.stopPropagation();
   if(window.parent.__PC_STORE__){
@@ -637,44 +713,94 @@ function ltDelete(id,e){
   }
   renderLTList();
 }
+
 async function ltAIFetch(){
-  if(!generate||!getChat){ alert('ST와 연결되지 않았어요.'); return; }
+  if(!generate){ alert('ST와 연결되지 않았어요.'); return; }
   const btn=document.getElementById('lt-ai-btn');
   btn.classList.add('loading');
   btn.innerHTML='<div class="sp"></div> 분석 중...';
   try{
-    const messages=getChat(20);
-    const chatText=messages.map(m=>`[${m.name||m.role}]: ${m.content}`).join('\n');
+    // 범위 입력 읽기
+    const startVal = document.getElementById('lt-range-start').value.trim();
+    const endVal   = document.getElementById('lt-range-end').value.trim();
+
+    let messages;
+    if ((startVal || endVal) && getChatRange) {
+      messages = getChatRange(startVal || null, endVal || null);
+    } else {
+      messages = getChat ? getChat(20) : [];
+    }
+
+    const chatText = messages.map(m=>`[${m.name||m.role}]: ${m.content}`).join('\n');
+
+    // 프로필 데이터 구성
+    const p = store.profile || {};
+    const profileInfo = [
+      p.height ? `유저 신장: ${p.height}cm` : '',
+      p.weight ? `유저 체중: ${p.weight}kg` : '',
+      p.bodyType ? `유저 체형: ${p.bodyType}` : '',
+    ].filter(Boolean).join(', ');
+
     const systemPrompt=`You are an analyst for a sexual roleplay chat logger.
+Character name: ${charName}
+User name: ${userName}
+${charDesc ? `Character description:\n${charDesc}\n` : ''}
+${userPersona ? `User persona:\n${userPersona}\n` : ''}
+${profileInfo ? `User physical info: ${profileInfo}` : ''}
+
 Analyze the provided chat log and extract sexual encounter records.
 Return ONLY a JSON array (no markdown, no explanation).
+
+IMPORTANT — session splitting rules:
+- Do NOT split sessions just because the location changes within a continuous act (e.g. moving from bed to sofa mid-scene = same session).
+- ONLY split into a new session if there is a clear time gap, a scene reset, or an explicit end-and-restart of sexual activity.
+- Maximum 5 sessions total.
+
 Each object must have:
 - id: unique string (timestamp-based)
 - title: short evocative Korean title for the encounter
 - date: today's date as YYYY.MM.DD
 - place: location if mentioned, else null
-- mood: atmosphere/mood in Korean (e.g. "앵그리 섹스")
+- mood: atmosphere/mood — ENGLISH ONLY (e.g. "Angry Sex", "Slow Burn", "Tender")
 - positions: array of up to 3 sex positions — ENGLISH ONLY (e.g. "Doggy", "Missionary", "Cowgirl")
-- charReview: 4-sentence explicit review from ${charName}'s perspective in Korean. Write it as natural in-character speech — vulgar, bold, emotionally expressive, like ${charName} is actually talking. Not a report. e.g. "오늘 너 존나 예뻤어. 그 자세로 하니까 존나 빨리 쌀 뻔했잖아." Positions must always be in English within this text.
-- genitalComment: 1 sentence in Korean spoken AS the genitals themselves — cocky, comic, emotionally on-point for the situation, with emoji. e.g. "젠장! 자위라니, 18살 먹고 자위라니! 니 손 말고 다른 데 들어갈 생각은 없냐?! 🍑"
+- charReview: 4-part Korean review written in ${charName}'s EXACT speech style and personality (analyze their description carefully). Must include ALL 4 parts naturally woven together as one flowing paragraph — no headers, no numbering:
+  1. 전체 만족도: overall heat and satisfaction
+  2. 신체 묘사: physical pressure and friction reflecting the actual size difference between the two characters based on their descriptions (do NOT invent sizes — only use what's in the character/user description or profile info)
+  3. 유저 반응: ${charName}'s dominant feeling seeing ${userName}'s moans/trembling/expression
+  4. 하이라이트: the most intense moment or climax
+  Style: vulgar, bold, emotionally expressive, natural in-character speech. No reports. Positions must be in Korean within this text (e.g. 도기스타일, 정상위, 카우걸).
+  Forbidden words: 암캐, 창녀, 갈보, 화냥년 and any similar female-degrading slurs.
+- genitalCommentEn: 1 sentence in English spoken AS the genitals themselves — cocky, comic, emotionally on-point, with 1-2 emojis from [🍆💦🔥😈💥]. Refers to ${charName} as "Boss" or their name sarcastically.
+- genitalCommentKo: Korean translation of genitalCommentEn — same tone, sassy, refers to ${charName} as "주인놈". Keep emojis.
 - condom: boolean
-If no sexual content found, return [].
-Maximum 5 records. Most recent first.`;
+
+If no sexual content found, return [].`;
+
     const result=await generate(systemPrompt,`Chat log:\n${chatText}`);
     let cards=[];
-    try{ const clean=result.replace(/\`\`\`json|\`\`\`/g,'').trim(); cards=JSON.parse(clean); }catch(e){ console.warn('[PC] parse error',e,result); }
-    if(!Array.isArray(cards)||cards.length===0){ btn.classList.remove('loading'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기'; alert('NSFW 내용을 찾지 못했어요.'); return; }
+    try{ const clean=result.replace(/\`\`\`json|\`\`\`/g,'').trim(); cards=JSON.parse(clean); }
+    catch(e){ console.warn('[PC] parse error',e,result); }
+    if(!Array.isArray(cards)||cards.length===0){
+      btn.classList.remove('loading');
+      btn.innerHTML=ltAIBtnHTML();
+      alert('NSFW 내용을 찾지 못했어요.');
+      return;
+    }
     if(window.parent.__PC_STORE__){
-      const existing=window.parent.__PC_STORE__.lastTouch.cards;
-      const pinnedIds=window.parent.__PC_STORE__.lastTouch.pinned;
-      const pinnedCards=existing.filter(c=>pinnedIds.includes(c.id));
+      const existing  = window.parent.__PC_STORE__.lastTouch.cards;
+      const pinnedIds = window.parent.__PC_STORE__.lastTouch.pinned;
+      const pinnedCards = existing.filter(c=>pinnedIds.includes(c.id));
       window.parent.__PC_STORE__.lastTouch.cards=[...cards,...pinnedCards].slice(0,5);
       if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
     }
     renderLTList();
   }catch(err){ console.error('[PC] ltAIFetch error',err); alert('AI 호출 중 오류가 발생했어요.'); }
   btn.classList.remove('loading');
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+  btn.innerHTML=ltAIBtnHTML();
+}
+
+function ltAIBtnHTML(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
 }
 
 // ── PROFILE ──
@@ -695,15 +821,15 @@ function loadProfile(){
   });
 }
 function saveProfile(){
+  function pv(id){ return document.getElementById(id).value; }
   const profile={
-    height:p('p-height'),weight:p('p-weight'),eyeColor:p('p-eye'),hair:p('p-hair'),
-    peachColor:p('p-peachcolor'),scent:p('p-scent'),
+    height:pv('p-height'),weight:pv('p-weight'),eyeColor:pv('p-eye'),hair:pv('p-hair'),
+    peachColor:pv('p-peachcolor'),scent:pv('p-scent'),
     skinTone:getSelected('bg-skinTone'),bodyType:getSelected('bg-bodyType'),
     chest:getSelected('bg-chest'),butt:getSelected('bg-butt'),
     waistHip:getSelected('bg-waistHip'),skinTexture:getSelected('bg-skinTexture'),
     bodyHair:getSelected('bg-bodyHair'),venusDimples:getSelected('bg-venusDimples'),
   };
-  function p(id){ return document.getElementById(id).value; }
   if(window.parent.__PC_STORE__){ window.parent.__PC_STORE__.profile={...(window.parent.__PC_STORE__.profile||{}),...profile}; if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__(); if(window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__(); }
   showToast('Saved ✓');
 }
@@ -720,12 +846,12 @@ function loadErogenous(){
   });
   const sensWrap=document.getElementById('ez-sensitive-wrap'); const addSensBtn=sensWrap.querySelector('.add-tag');
   sensWrap.querySelectorAll('.kw-tag').forEach(t=>t.remove());
-  (ez.sensitiveZones||[]).forEach(val=>{ sensWrap.insertBefore(makeKwTag(val,'ez-sensitive-wrap'),addSensBtn); });
+  (ez.sensitiveZones||[]).forEach(val=>{ sensWrap.insertBefore(makeKwTag(val),addSensBtn); });
   const sensoryWrap=document.getElementById('ez-sensory-wrap'); const addSensoryBtn=sensoryWrap.querySelector('.add-tag');
   sensoryWrap.querySelectorAll('.kw-tag').forEach(t=>t.remove());
-  (ez.sensoryFeedback||[]).forEach(val=>{ sensoryWrap.insertBefore(makeKwTag(val,'ez-sensory-wrap'),addSensoryBtn); });
+  (ez.sensoryFeedback||[]).forEach(val=>{ sensoryWrap.insertBefore(makeKwTag(val),addSensoryBtn); });
 }
-function makeKwTag(val,wrapId){
+function makeKwTag(val){
   const tag=document.createElement('div'); tag.className='kw-tag';
   tag.innerHTML=`<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
   tag.onclick=()=>tag.remove(); return tag;
@@ -733,7 +859,7 @@ function makeKwTag(val,wrapId){
 function ezAddTag(wrapId){
   const val=prompt('Add:'); if(!val||!val.trim()) return;
   const wrap=document.getElementById(wrapId); const addBtn=wrap.querySelector('.add-tag');
-  wrap.insertBefore(makeKwTag(val.trim(),wrapId),addBtn);
+  wrap.insertBefore(makeKwTag(val.trim()),addBtn);
 }
 function getEzTags(wrapId){
   return Array.from(document.getElementById(wrapId).querySelectorAll('.kw-tag')).map(t=>t.textContent.replace('×','').replace('#','').trim());
@@ -769,10 +895,7 @@ let rfQuestions=rfShuffle(rfPool).slice(0,RF_TOTAL);
 let rfInitialized=false;
 
 function rfInit(){
-  if(!rfInitialized){
-    rfRestart();
-    rfInitialized=true;
-  }
+  if(!rfInitialized){ rfRestart(); rfInitialized=true; }
 }
 function rfBuildProgress(){
   document.getElementById('rf-progress').innerHTML=
@@ -859,12 +982,14 @@ async function rfAIGenerate(){
   btn.innerHTML='<div class="sp"></div> 생성 중...';
   try{
     const systemPrompt=`You are generating Red Flag game cards for a sexual roleplay game featuring the character ${charName}.
+${charDesc?`Character description:\n${charDesc}\n`:''}
 Return ONLY a JSON array of exactly 10 objects (no markdown, no explanation).
 Each object must have:
 - q: a short Korean sentence describing one specific sexual behavior or habit of ${charName} (15 words or less, provocative, bold)
-- red: ${charName}'s shameless rebuttal in Korean when the user says it's a red flag (2-3 sentences, explicit and unapologetic, no misogynistic slurs)
-- good: ${charName}'s excited, explicit Korean response when the user says they love it (2-3 sentences, very explicit, enthusiastic, no misogynistic slurs)
-Make the behaviors varied: possessive, teasing, dominant, voyeuristic, dirty-talking, etc.`;
+- red: ${charName}'s shameless rebuttal in Korean when the user says it's a red flag (2-3 sentences, explicit and unapologetic). Forbidden: 암캐, 창녀, 갈보, 화냥년.
+- good: ${charName}'s excited, explicit Korean response when the user says they love it (2-3 sentences, very explicit, enthusiastic). Forbidden: 암캐, 창녀, 갈보, 화냥년.
+Make the behaviors varied: possessive, teasing, dominant, voyeuristic, dirty-talking, etc.
+Reflect ${charName}'s unique speech style from their description.`;
     const result=await generate(systemPrompt,'새로운 레드플래그 카드 10장 생성해줘.');
     let newCards=[];
     try{ const clean=result.replace(/\`\`\`json|\`\`\`/g,'').trim(); newCards=JSON.parse(clean); }catch(e){ console.warn('[RF] parse error',e); }
