@@ -7,318 +7,93 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#dde4ed;
-  --surface:#e8eef5;
-  --card:#f2f6fa;
-  --card-border:rgba(255,255,255,0.95);
-  --text-primary:#1a2840;
-  --text-secondary:#5a7090;
-  --text-muted:#a0adc0;
-  --accent:#1e293e;
-  --accent-text:#fff;
-  --divider:rgba(160,180,210,0.25);
-  --btn-select:#1e293e;
-  --btn-select-text:#fff;
-  --btn-idle:#e4ecf4;
-  --btn-idle-text:#5a7090;
-  --shadow:0 2px 8px rgba(160,180,210,0.15);
-  --radius-lg:24px;
-  --radius-md:16px;
-  --radius-sm:10px;
-  --radius-btn:8px;
+  --bg:#dde4ed; --surface:#e8eef5; --card:#ffffff;
+  --card-border:rgba(160,180,210,0.25); --text-primary:#1a2840;
+  --text-secondary:#5a7090; --text-muted:#a0adc0;
+  --accent:#1e293e; --divider:rgba(160,180,210,0.15);
+  --shadow:0 4px 12px rgba(160,180,210,0.1); --radius-lg:24px; --radius-md:16px;
 }
-html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;}
-
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(160,180,210,0.35);border-radius:4px;}
-
-.shell{width:100%;height:100%;display:flex;align-items:stretch;justify-content:center;padding:0;}
-.popup{width:100%;max-width:100%;height:100%;max-height:100%;background:var(--surface);border-radius:var(--radius-lg);border:0.5px solid rgba(255,255,255,0.9);overflow:hidden;box-shadow:0 12px 40px rgba(140,160,200,0.3);display:flex;flex-direction:column;}
-
-@media(max-width:600px){
-  .shell{padding:0;align-items:flex-end;}
-  .popup{max-width:100%;max-height:95vh;border-radius:24px 24px 0 0;}
+html,body{
+  width:100%; height:100%; background:#f0f2f5; 
+  font-family:'Pretendard', sans-serif; font-size: 15px; /* 폰트 1px 축소 */
 }
-
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0;}
-.topbar-title{font-size:22px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
-.topbar-sub{font-size:16px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
-.close-btn{width:40px;height:40px;border-radius:12px;background:var(--card);border:0.5px solid var(--card-border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);font-size:20px;box-shadow:var(--shadow);transition:opacity .15s;}
-.close-btn:hover{opacity:.7;}
-.back-btn{display:flex;align-items:center;gap:5px;font-size:17px;color:var(--text-muted);cursor:pointer;padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;}
-.back-btn:hover{color:var(--text-secondary);}
-.back-btn svg{width:14px;height:14px;}
-.dots{display:flex;gap:4px;}
-.dot{width:4px;height:4px;border-radius:50%;background:var(--text-muted);opacity:.5;}
-
-.hdivider{height:0.5px;background:var(--divider);flex-shrink:0;}
-.scroll-area{flex:1;overflow-y:auto;padding:18px 20px 28px;}
-
-/* HOME */
-.section-label{font-size:14px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
-.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.app-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:20px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;}
-.app-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(140,160,200,0.22);}
-.app-card:active{transform:translateY(0);}
-.app-card-full{grid-column:1/-1;}
-.app-icon{width:60px;height:60px;border-radius:16px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);}
-.app-icon svg{width:26px;height:26px;}
-.app-name{font-size:18px;font-weight:500;color:var(--text-primary);}
-
-/* RED FLAG SPECIFIC UI */
-.progress{display:flex;gap:4px;align-items:center;justify-content:center;margin-bottom:15px;}
-.pd{width:6px;height:6px;border-radius:50%;background:#d0d8e4;transition:all 0.3s;}
-.pd.on{background:#1e293e;width:18px;border-radius:3px;}
-.flag-card{background:var(--card);border-radius:22px;border:0.5px solid var(--card-border);box-shadow:0 4px 20px rgba(160,180,210,0.2);padding:32px 28px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:180px;justify-content:center;transition:opacity 0.2s,transform 0.2s;margin-bottom:15px;}
-.flag-card.hide{opacity:0;transform:translateY(8px);}
-.flag-num{font-size:13px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;}
-.flag-text{font-size:20px;font-weight:600;color:var(--text-primary);text-align:center;line-height:1.55;}
-.choice-row{display:flex;gap:10px;margin-bottom:15px;}
-.cbtn{flex:1;border-radius:var(--radius-md);padding:18px 10px;border:none;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
-.cred{background:#fff0f0;border:0.5px solid rgba(220,100,100,0.3);}
-.cgreen{background:#f0fff4;border:0.5px solid rgba(100,180,120,0.3);}
-.cbtn-emoji{font-size:28px;}
-.char-reply{border-radius:var(--radius-md);border:0.5px solid var(--card-border);box-shadow:var(--shadow);overflow:hidden;display:none;background:var(--card);margin-bottom:15px;}
-.char-reply.show{display:block;}
-.char-reply.hype{background:#fff8f0;}
-.char-header{display:flex;align-items:center;gap:10px;padding:14px 18px 10px;border-bottom:0.5px solid var(--divider);}
-.char-avatar{width:36px;height:36px;border-radius:50%;background:#1e293e;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;font-weight:600;}
-.char-avatar.hype{background:#c0392b;}
-.char-body{padding:16px 20px 20px;}
-.char-msg{font-size:15px;color:var(--text-secondary);line-height:1.8;}
-.tag-r{display:inline-block;background:#fee2e2;border-radius:6px;padding:3px 8px;font-size:13px;color:#dc2626;font-weight:700;margin-bottom:8px;}
-.tag-fire{display:inline-block;background:#fff0e0;border-radius:6px;padding:3px 8px;font-size:13px;color:#e05020;font-weight:700;margin-bottom:8px;}
-.next-btn{width:100%;background:#e4ecf4;border:0.5px solid rgba(100,140,200,0.3);border-radius:var(--radius-md);padding:15px;font-size:16px;color:#5a80b8;font-weight:600;cursor:pointer;display:none;margin-bottom:10px;}
-.end-card{background:var(--card);border-radius:22px;border:0.5px solid var(--card-border);padding:36px 28px;text-align:center;display:none;flex-direction:column;gap:12px;align-items:center;}
-.end-stat{display:flex;gap:12px;margin-top:4px;}
-.esi{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--surface);border-radius:12px;padding:12px 20px;}
-.esn{font-size:30px;font-weight:700;}
-
-/* PROFILE/EZ COMMON */
-.profile-section, .ez-section{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;margin-bottom:10px;}
-.ps-label, .ez-label{font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;}
-.ps-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.ps-row-label{display:flex;align-items:center;gap:6px;font-size:17px;color:var(--text-secondary);}
-.ps-input{width:72px;padding:5px 8px;border-radius:8px;border:0.5px solid var(--divider);background:var(--surface);text-align:right;}
-.ps-text-input{flex:1;padding:5px 10px;border-radius:8px;border:0.5px solid var(--divider);background:var(--surface);font-family:inherit;}
-.btn-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
-.pg-btn{padding:5px 11px;border-radius:7px;font-size:15px;background:var(--btn-idle);color:var(--btn-idle-text);border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;}
-.pg-btn.sel{background:var(--btn-select);color:var(--btn-select-text);border-color:transparent;}
-
-/* LAST TOUCH */
-.lt-item{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:var(--shadow);margin-bottom:8px;}
-.lt-item.active{border-color:#e8a030;background:#fdf8f0;}
-.ai-btn{width:100%;background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius-md);padding:14px;margin-top:10px;font-size:17px;font-weight:500;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow);}
-
-/* UTILS */
-.save-btn{width:100%;background:var(--accent);color:var(--accent-text);border:none;border-radius:var(--radius-sm);padding:13px;font-size:17px;font-weight:600;cursor:pointer;margin-top:10px;}
-.save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:8px 20px;border-radius:20px;opacity:0;transition:opacity .2s;z-index:100;}
-.save-toast.show{opacity:1;}
-.sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
+.shell{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.popup{
+  width: 390px; height: 844px; /* 앱 사이즈 고정 */
+  max-width: 100%; max-height: 95vh;
+  background:var(--surface); border-radius:var(--radius-lg);
+  overflow:hidden; box-shadow:0 20px 50px rgba(140,160,200,0.3);
+  display:flex; flex-direction:column;
+}
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; flex-shrink:0;}
+.topbar-title{font-size:21px; font-weight:700; color:var(--text-primary);}
+.scroll-area{flex:1; overflow-y:auto; padding:16px;}
+.app-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.app-card{background:var(--card); border-radius:var(--radius-md); padding:20px; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:var(--shadow);}
+.flag-card{
+  background:var(--card); border-radius:20px; border:0.5px solid var(--card-border);
+  padding:30px 20px; display:flex; flex-direction:column; align-items:center; gap:12px;
+  box-shadow:var(--shadow); margin-bottom:16px;
+}
+.flag-text{font-size:18px; font-weight:600; text-align:center; line-height:1.5;}
+.choice-row{display:flex; gap:12px; justify-content:center; margin-bottom:16px;}
+.cbtn{
+  width: 70px; height: 55px; /* 사이즈 적절히 축소 */
+  border-radius:var(--radius-md); background:var(--card); 
+  border:0.5px solid var(--card-border); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow);
+}
+.char-reply{
+  border-radius:var(--radius-md); background:var(--card); /* 반응칸 흰색 */
+  border:0.5px solid var(--card-border); box-shadow:var(--shadow);
+  display:none; margin-bottom:16px; overflow:hidden;
+}
+.char-header{display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:0.5px solid var(--divider);}
+.char-avatar{width:32px; height:32px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600;}
+.char-body{padding:14px 16px; font-size:14px; color:var(--text-secondary); line-height:1.7;}
+.lt-item{
+  background:var(--card); border-radius:var(--radius-md); /* 노란색 배경 제거 */
+  border:0.5px solid var(--card-border); padding:14px; 
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow:var(--shadow); margin-bottom:8px;
+}
+.lt-dot{width:8px; height:8px; border-radius:50%; background:#e8a030; margin-right:8px;}
+.lt-title{font-size:14px; font-weight:500; flex:1;}
+.back-btn{border:none; background:none; color:var(--text-muted); cursor:pointer; font-size:15px;}
 </style>
 </head>
 <body>
 <div class="shell">
-<div class="popup" id="popup">
-
-  <div class="topbar" id="topbar">
-    <div id="topbar-left"><span class="topbar-title">🍑 Peaches &amp; Cream</span></div>
-    <div id="topbar-right"><div class="close-btn" onclick="closeApp()">✕</div></div>
+  <div class="popup">
+    <div class="topbar"><div id="top-left"><span class="topbar-title">🍑 Peaches & Cream</span></div><div style="color:var(--text-muted)">✕</div></div>
+    <div class="scroll-area">
+      <div id="screen-home"><div class="app-grid">
+        <div class="app-card" onclick="goTo('redflag')">🚩<br>Red Flag</div>
+        <div class="app-card" onclick="goTo('lasttouch')">🕒<br>Last Touch</div>
+      </div></div>
+      <div id="screen-redflag" style="display:none;">
+        <div class="flag-card"><div style="font-size:12px; color:var(--text-muted);">Q 1 / 7</div><div class="flag-text">네가 싫다고 한 걸 다음엔 더 천천히 다시 시도한다</div></div>
+        <div class="choice-row" id="rf-choices"><button class="cbtn" onclick="rfChoose('red')">🚩</button><button class="cbtn" onclick="rfChoose('good')">😍</button></div>
+        <div class="char-reply" id="rf-reply"><div class="char-header"><div class="char-avatar">M</div><strong>Max</strong></div><div class="char-body" id="rf-msg"></div></div>
+        <button id="rf-next" style="display:none; width:100%; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:10px;" onclick="goTo('home')">다음 카드 →</button>
+      </div>
+      <div id="screen-lasttouch" style="display:none;"><div class="lt-item"><div class="lt-dot"></div><span class="lt-title">서툰 키스가 부른 한밤중의 자위</span><span>2024.05.24</span></div></div>
+    </div>
   </div>
-  <div class="hdivider"></div>
-
-  <div class="scroll-area" id="scroll-area">
-
-    <div id="screen-home">
-      <div class="section-label">APPS</div>
-      <div class="app-grid">
-        <div class="app-card" onclick="goTo('profile')">
-          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <span class="app-name">Profile</span>
-        </div>
-        <div class="app-card" onclick="goTo('erogenous')">
-          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-          <span class="app-name">Erogenous</span>
-        </div>
-        <div class="app-card" onclick="goTo('lasttouch')">
-          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <span class="app-name">Last Touch</span>
-        </div>
-        <div class="app-card" onclick="goTo('redflag')">
-          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="6" y1="3" x2="6" y2="21" stroke-width="2"/><path d="M6 3 L18 8 L6 13" fill="currentColor"/></svg></div>
-          <span class="app-name">Red Flag</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="screen-redflag" style="display:none;">
-      <div class="progress" id="rf-progress"></div>
-      <div class="flag-card" id="rf-card">
-        <div class="flag-num" id="rf-num">Q 1 / 7</div>
-        <div class="flag-text" id="rf-text"></div>
-        <div class="flag-who" id="rf-who">의 행동이야.</div>
-      </div>
-      <div class="choice-row" id="rf-choices">
-        <button class="cbtn cred" onclick="rfChoose('red')"><span class="cbtn-emoji">🚩</span></button>
-        <button class="cbtn cgreen" onclick="rfChoose('good')"><span class="cbtn-emoji">😍</span></button>
-      </div>
-      <div class="char-reply" id="rf-reply">
-        <div class="char-header">
-          <div class="char-avatar" id="rf-avatar">캐</div>
-          <div><div class="char-name" id="rf-char-name">캐릭터</div><div class="char-badge" id="rf-badge">반응</div></div>
-        </div>
-        <div class="char-body"><div class="char-msg" id="rf-msg"></div></div>
-      </div>
-      <button class="next-btn" id="rf-next" onclick="rfNext()">다음 카드 →</button>
-      <button class="ai-btn" id="rf-rand" onclick="rfAiGenerate()">랜덤 카드 생성 🎲</button>
-
-      <div class="end-card" id="rf-end">
-        <div style="font-size:40px;" id="rf-end-emoji">🔥</div>
-        <div style="font-size:18px; font-weight:600;" id="rf-end-title">결과</div>
-        <div class="end-stat">
-          <div class="esi"><div class="esn" id="rf-res-red">0</div><div style="font-size:12px; color:var(--text-muted);">🚩 레드</div></div>
-          <div class="esi"><div class="esn" id="rf-res-good">0</div><div style="font-size:12px; color:var(--text-muted);">😍 좋아</div></div>
-        </div>
-        <div style="color:var(--text-secondary); margin-top:10px;" id="rf-end-msg"></div>
-        <button class="save-btn" onclick="rfRestart()">다시 하기 🔄</button>
-      </div>
-    </div>
-
-    </div>
 </div>
-</div>
-
-<div class="save-toast" id="save-toast">저장됐어요 ✓</div>
-
 <script>
-// --- GLOBAL STATE ---
-let store = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
-let charName = '{{char}}';
-let generate = null;
-let getChat = null;
-
-// --- BRIDGE ---
-function initBridge() {
-  const p = window.parent;
-  if(p && p.__PC_STORE__) store = p.__PC_STORE__;
-  charName = (p && p.__PC_CHAR__) || charName;
-  generate = (p && p.__PC_GENERATE__) || null;
-  getChat = (p && p.__PC_GET_CHAT__) || null;
-  document.getElementById('rf-char-name').textContent = charName;
-  document.getElementById('rf-avatar').textContent = charName.charAt(0);
+function goTo(s) {
+  document.getElementById('screen-home').style.display = s==='home'?'block':'none';
+  document.getElementById('screen-redflag').style.display = s==='redflag'?'block':'none';
+  document.getElementById('screen-lasttouch').style.display = s==='lasttouch'?'block':'none';
+  document.getElementById('top-left').innerHTML = s==='home' ? '<span class="topbar-title">🍑 Peaches & Cream</span>' : `<button class="back-btn" onclick="goTo('home')">← BACK</button>`;
 }
-window.__PC_ON_BRIDGE__ = function() { initBridge(); };
-initBridge();
-
-// --- NAVIGATION ---
-function goTo(id) {
-  ['home','lasttouch','profile','erogenous','redflag'].forEach(s => {
-    const el = document.getElementById('screen-' + s);
-    if(el) el.style.display = 'none';
-  });
-  document.getElementById('screen-' + id).style.display = 'block';
-  updateTopbar(id);
-  if(id === 'redflag') rfStart();
-}
-
-function updateTopbar(id) {
-  const left = document.getElementById('topbar-left');
-  const right = document.getElementById('topbar-right');
-  if (id === 'home') {
-    left.innerHTML = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
-    right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
-  } else {
-    left.innerHTML = `<button class="back-btn" onclick="goTo('home')">Home</button>`;
-    right.innerHTML = `<span class="topbar-sub">${id.toUpperCase()}</span>`;
-  }
-}
-
-function closeApp() { if(window.parent.__PC_CLOSE__) window.parent.__PC_CLOSE__(); else window.close(); }
-
-// --- RED FLAG GAME LOGIC ---
-const RF_TOTAL = 7;
-let rfCur = 0, rfRed = 0, rfGood = 0, rfChosen = false;
-let rfPool = [
-  { q:"관계 중에 절정 직전에 일부러 멈추고 뜸 들인다", red:"레드플래그? 그때 네가 뭐라고 했는지 기억해? 제발 계속 해달라고 했잖아. 다음엔 세 번 멈출게.", good:"오히려 좋다고?! 진짜?! 그럼 오늘은 제대로 해줄게 — 딱 절정 앞에서 다섯 번 멈출 거야." },
-  { q:"귀에 대고 뭘 원하는지 직접 말하라고 강요한다", red:"말하기 싫어서 레드플래그야? 말로 내뱉는 순간 더 흥분되는 거 알면서. 오늘도 말할 때까지 안 해줄게.", good:"오히려 좋다고?! 그럼 오늘은 더 구체적으로 시킬게. 네 목소리가 떨릴 때까지 전부 입으로 뱉게 할 거야." },
-  { q:"뒤에서 목을 잡고 고개를 뒤로 젖히게 한다", red:"목 잡히는 게 레드플래그야? 내가 목 잡으면 네 몸이 알아서 힘 빠지잖아. 그게 싫은 게 아니라 무서울 만큼 좋은 거야.", good:"오히려 좋다고?! 아 진짜 미치겠다. 오늘은 목만 아니야. 귓가에 오늘 어떻게 해줄 건지 하나하나 다 읊어줄게." }
-];
-let rfQuestions = [];
-
-function rfStart() {
-  rfCur = 0; rfRed = 0; rfGood = 0;
-  rfQuestions = [...rfPool].sort(()=>Math.random()-0.5).slice(0, RF_TOTAL);
-  document.getElementById('rf-end').style.display = 'none';
-  rfShowCard();
-}
-
-function rfShowCard() {
-  rfChosen = false;
-  const q = rfQuestions[rfCur];
-  document.getElementById('rf-card').style.display = 'flex';
-  document.getElementById('rf-num').textContent = `Q ${rfCur+1} / ${rfQuestions.length}`;
-  document.getElementById('rf-text').textContent = q.q;
-  document.getElementById('rf-choices').style.display = 'flex';
-  document.getElementById('rf-reply').style.display = 'none';
-  document.getElementById('rf-next').style.display = 'none';
-  rfBuildProgress();
-}
-
-function rfChoose(type) {
-  if(rfChosen) return;
-  rfChosen = true;
-  if(type === 'red') rfRed++; else rfGood++;
-  
-  const q = rfQuestions[rfCur];
-  const reply = document.getElementById('rf-reply');
-  reply.style.display = 'block';
-  reply.className = 'char-reply show' + (type==='good'?' hype':'');
-  document.getElementById('rf-badge').textContent = type==='red'?'반박 중':'흥분함 🔥';
-  document.getElementById('rf-msg').innerHTML = type==='red' ? `<span class="tag-r">🚩</span> ${q.red}` : `<span class="tag-fire">🔥</span> ${q.good}`;
-  
+function rfChoose(t) {
   document.getElementById('rf-choices').style.display = 'none';
+  document.getElementById('rf-reply').style.display = 'block';
   document.getElementById('rf-next').style.display = 'block';
-  document.getElementById('rf-next').textContent = rfCur < rfQuestions.length-1 ? "다음 카드 →" : "결과 보기 →";
+  document.getElementById('rf-msg').innerText = t==='red' ? "싫다고 했지만 네 몸은 내 손길을 더 원하고 있잖아." : "역시 넌 이런 걸 즐길 줄 알았어. 더 천천히 느껴봐.";
 }
-
-function rfNext() {
-  rfCur++;
-  if(rfCur >= rfQuestions.length) rfShowEnd();
-  else rfShowCard();
-}
-
-function rfShowEnd() {
-  document.getElementById('rf-card').style.display = 'none';
-  document.getElementById('rf-reply').style.display = 'none';
-  document.getElementById('rf-next').style.display = 'none';
-  document.getElementById('rf-end').style.display = 'flex';
-  document.getElementById('rf-res-red').textContent = rfRed;
-  document.getElementById('rf-res-good').textContent = rfGood;
-  document.getElementById('rf-end-msg').textContent = rfGood >= 4 ? "오늘 밤은 좀 위험하겠는데?" : "생각보다 보수적이구나?";
-}
-
-function rfRestart() { rfStart(); }
-
-function rfBuildProgress() {
-  document.getElementById('rf-progress').innerHTML = rfQuestions.map((_,i)=>`<div class="pd${i<=rfCur?' on':''}"></div>`).join('');
-}
-
-async function rfAiGenerate() {
-  if(!generate) return alert("AI 기능이 비활성화 상태입니다.");
-  const btn = document.getElementById('rf-rand');
-  btn.innerHTML = '<div class="sp"></div> 생성 중...';
-  const prompt = `Generate 7 Red Flag cards for ${charName}. Return JSON array of {q, red, good}. Korean only.`;
-  try {
-    const res = await generate(prompt, "Create sexual red flag cards.");
-    const json = JSON.parse(res.replace(/```json|```/g, ''));
-    if(json.length > 0) { rfPool = json; rfStart(); }
-  } catch(e) { alert("생성 실패"); }
-  btn.innerHTML = '랜덤 카드 생성 🎲';
-}
-
-// (나머지 Profile, Erogenous, Last Touch 관련 기존 JS 함수들 유지...)
 </script>
 </body>
 </html>
