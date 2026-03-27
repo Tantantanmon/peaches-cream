@@ -28,435 +28,315 @@
   --radius-btn:8px;
 }
 html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;}
-
-/* ── 스크롤 ── */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(160,180,210,0.35);border-radius:4px;}
+.shell{width:100%;height:100%;display:flex;align-items:stretch;justify-content:center;padding:0;}
+.popup{width:100%;max-width:100%;height:100%;max-height:100%;background:var(--surface);border-radius:var(--radius-lg);border:0.5px solid rgba(255,255,255,0.9);overflow:hidden;box-shadow:0 12px 40px rgba(140,160,200,0.3);display:flex;flex-direction:column;}
+@media(max-width:600px){.shell{padding:0;align-items:flex-end;}.popup{max-width:100%;max-height:95vh;border-radius:24px 24px 0 0;}}
 
-/* ── 레이아웃 ── */
-.shell{
-  width:100%;height:100%;
-  display:flex;align-items:stretch;justify-content:center;
-  padding:0;
-}
-.popup{
-  width:100%;max-width:100%;
-  height:100%;max-height:100%;
-  background:var(--surface);
-  border-radius:var(--radius-lg);
-  border:0.5px solid rgba(255,255,255,0.9);
-  overflow:hidden;
-  box-shadow:0 12px 40px rgba(140,160,200,0.3);
-  display:flex;flex-direction:column;
-}
-
-/* ── 모바일 ── */
-@media(max-width:600px){
-  .shell{padding:0;align-items:flex-end;}
-  .popup{max-width:100%;max-height:95vh;border-radius:24px 24px 0 0;}
-}
-
-/* ── 탑바 ── */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 24px 16px;flex-shrink:0;
-}
-.topbar-title{font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
-.topbar-sub{font-size:14px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
-.close-btn{
-  width:40px;height:40px;border-radius:12px;
-  background:var(--card);border:0.5px solid var(--card-border);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text-secondary);font-size:18px;
-  box-shadow:var(--shadow);transition:opacity .15s;
-}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0;}
+.topbar-title{font-size:22px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
+.topbar-sub{font-size:16px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+.close-btn{width:40px;height:40px;border-radius:12px;background:var(--card);border:0.5px solid var(--card-border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);font-size:20px;box-shadow:var(--shadow);transition:opacity .15s;}
 .close-btn:hover{opacity:.7;}
-.back-btn{
-  display:flex;align-items:center;gap:5px;
-  font-size:15px;color:var(--text-muted);cursor:pointer;
-  padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;
-}
+.back-btn{display:flex;align-items:center;gap:5px;font-size:17px;color:var(--text-muted);cursor:pointer;padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;}
 .back-btn:hover{color:var(--text-secondary);}
 .back-btn svg{width:14px;height:14px;}
 .dots{display:flex;gap:4px;}
 .dot{width:4px;height:4px;border-radius:50%;background:var(--text-muted);opacity:.5;}
-
 .hdivider{height:0.5px;background:var(--divider);flex-shrink:0;}
-
-/* ── 스크롤 영역 ── */
 .scroll-area{flex:1;overflow-y:auto;padding:18px 20px 28px;}
 
-/* ══════════════════════════════
-   HOME
-══════════════════════════════ */
-.section-label{font-size:12px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
+/* HOME */
+.section-label{font-size:14px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
 .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.app-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:20px 16px 18px;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  cursor:pointer;box-shadow:var(--shadow);
-  transition:transform .15s,box-shadow .15s;
-}
+.app-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:20px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;}
 .app-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(140,160,200,0.22);}
 .app-card:active{transform:translateY(0);}
-.app-icon{
-  width:60px;height:60px;border-radius:16px;
-  background:var(--surface);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-secondary);
-}
+.app-card.full-width{grid-column:1/-1;}
+.app-icon{width:60px;height:60px;border-radius:16px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);}
 .app-icon svg{width:26px;height:26px;}
-.app-name{font-size:16px;font-weight:500;color:var(--text-primary);}
+.app-name{font-size:18px;font-weight:500;color:var(--text-primary);}
 
-/* ══════════════════════════════
-   LAST TOUCH
-══════════════════════════════ */
-.lt-counter{font-size:13px;color:var(--text-muted);}
+/* LAST TOUCH */
+.lt-counter{font-size:15px;color:var(--text-muted);}
 .lt-list{display:flex;flex-direction:column;gap:8px;}
-.lt-item{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:14px 16px;
-  display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s;
-}
+.lt-item{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s;}
 .lt-item.active{border-color:#e8a030;background:#fdf8f0;}
 .lt-item-left{display:flex;align-items:center;gap:10px;}
 .lt-dot{width:8px;height:8px;border-radius:50%;background:var(--divider);flex-shrink:0;}
 .lt-item.active .lt-dot{background:#e8a030;}
-.lt-item-title{font-size:16px;font-weight:500;color:var(--text-primary);}
-.lt-item-date{font-size:13px;color:var(--text-muted);}
+.lt-item-title{font-size:18px;font-weight:500;color:var(--text-primary);}
+.lt-item-date{font-size:15px;color:var(--text-muted);}
 .lt-item-right{display:flex;align-items:center;gap:8px;}
-.lt-menu-btn{
-  width:28px;height:28px;border-radius:8px;
-  background:var(--surface);border:none;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text-muted);font-size:15px;
-  position:relative;
-}
-.lt-dropdown{
-  position:absolute;right:0;top:32px;z-index:10;
-  background:var(--card);border-radius:10px;
-  border:0.5px solid var(--card-border);
-  box-shadow:0 8px 24px rgba(140,160,200,0.25);
-  overflow:hidden;min-width:110px;display:none;
-}
+.lt-menu-btn{width:28px;height:28px;border-radius:8px;background:var(--surface);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);font-size:17px;position:relative;}
+.lt-dropdown{position:absolute;right:0;top:32px;z-index:10;background:var(--card);border-radius:10px;border:0.5px solid var(--card-border);box-shadow:0 8px 24px rgba(140,160,200,0.25);overflow:hidden;min-width:110px;display:none;}
 .lt-dropdown.open{display:block;}
-.lt-dd-item{
-  padding:9px 14px;font-size:14px;color:var(--text-secondary);
-  cursor:pointer;white-space:nowrap;
-}
+.lt-dd-item{padding:9px 14px;font-size:16px;color:var(--text-secondary);cursor:pointer;white-space:nowrap;}
 .lt-dd-item:hover{background:var(--surface);}
 .lt-dd-item.danger{color:#c04030;}
 
-.ai-btn{
-  background:var(--card);border:0.5px solid var(--card-border);
-  border-radius:var(--radius-md);padding:14px;
-  font-size:15px;font-weight:500;color:var(--text-secondary);
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:var(--shadow);transition:opacity .15s;font-family:inherit;flex:1;
-}
+.ai-btn{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius-md);padding:14px;font-size:17px;font-weight:500;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow);transition:opacity .15s;font-family:inherit;flex:1;}
 .ai-btn:hover{opacity:.8;}
 .ai-btn svg{width:15px;height:15px;}
 .ai-btn.loading{opacity:.6;pointer-events:none;}
 #screen-lasttouch .ai-btn{flex:unset;width:100%;margin-top:10px;}
 
-/* ── Last Touch 카드 팝업 ── */
-.card-overlay{
-  position:absolute;inset:0;z-index:20;
-  background:rgba(180,195,215,0.6);
-  backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;
-  padding:16px;
-}
-.touch-card{
-  width:100%;max-width:400px;max-height:80vh;
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  box-shadow:0 12px 36px rgba(130,155,195,0.3);
-  overflow:hidden;display:flex;flex-direction:column;
-  position:relative;
-}
+/* Last Touch 카드 — 전체화면 */
+.card-overlay{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--surface);}
+.touch-card{width:100%;height:100%;background:var(--card);display:flex;flex-direction:column;position:relative;overflow:hidden;}
 .tc-top-bar{height:4px;background:linear-gradient(90deg,#e05040,#e07030);flex-shrink:0;}
+.tc-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0;border-bottom:0.5px solid var(--divider);}
+.tc-back{display:flex;align-items:center;gap:5px;font-size:17px;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:inherit;}
+.tc-back svg{width:14px;height:14px;}
+.tc-topbar-title{font-size:16px;font-weight:500;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;}
+.tc-pin-btn{display:flex;align-items:center;gap:5px;font-size:16px;color:var(--text-muted);cursor:pointer;background:none;border:none;padding:0;transition:color .15s;}
+.tc-pin-btn.pinned{color:#e8a030;}
+.tc-pin-btn svg{width:15px;height:15px;}
 .tc-body{padding:20px 20px 16px;overflow-y:auto;flex:1;}
-.tc-title{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
-.tc-meta{font-size:14px;color:var(--text-muted);margin-bottom:14px;}
+.tc-title{font-size:24px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
+.tc-meta{font-size:16px;color:var(--text-muted);margin-bottom:14px;}
 .tc-tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
-.tc-tag{padding:4px 10px;border-radius:6px;font-size:13px;font-weight:500;}
+.tc-tag{padding:4px 10px;border-radius:6px;font-size:15px;font-weight:500;}
 .tc-tag.mood{background:#f5ead0;color:#8a6020;border:0.5px solid rgba(200,150,40,0.2);}
 .tc-tag.pos{background:var(--surface);color:var(--text-secondary);border:0.5px solid var(--divider);}
-.tc-section-label{font-size:11px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
-.tc-review{
-  background:var(--surface);border-radius:10px;
-  padding:12px 14px;font-size:15px;color:var(--text-secondary);line-height:1.8;
-}
-.tc-genital{
-  background:var(--surface);border-radius:10px;
-  padding:12px 14px;margin-top:8px;
-}
+.tc-section-label{font-size:13px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
+.tc-review{background:var(--surface);border-radius:10px;padding:12px 14px;font-size:17px;color:var(--text-secondary);line-height:1.8;}
+.tc-genital{background:#fff;border-radius:10px;padding:12px 14px;margin-top:8px;border:0.5px solid var(--card-border);}
 .tc-gen-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
 .tc-gen-emoji{font-size:18px;}
-.tc-condom-badge{
-  padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;
-  background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;
-}
+.tc-condom-badge{padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;}
 .tc-condom-badge.safe{background:rgba(50,140,70,0.1);border-color:rgba(50,140,70,0.2);color:#307040;}
-.tc-gen-text{font-size:15px;color:var(--text-secondary);line-height:1.7;}
-.tc-gen-ko{font-size:13px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
-.tc-footer{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 20px 16px;flex-shrink:0;
-  border-top:0.5px solid var(--divider);
-}
-.tc-pin-btn{
-  display:flex;align-items:center;gap:5px;
-  font-size:14px;color:var(--text-muted);cursor:pointer;
-  background:none;border:none;padding:0;transition:color .15s;
-}
-.tc-pin-btn.pinned{color:#e8a030;}
-.tc-pin-btn svg{width:13px;height:13px;}
-.tc-date{font-size:13px;color:var(--text-muted);}
-.tc-close{
-  position:absolute;top:12px;right:12px;
-  width:28px;height:28px;border-radius:8px;
-  background:var(--surface);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-muted);font-size:16px;
-}
+.tc-gen-text{font-size:17px;color:var(--text-secondary);line-height:1.7;}
+.tc-gen-ko{font-size:15px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
 
-/* ══════════════════════════════
-   PROFILE (new)
-══════════════════════════════ */
-.profile-section{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:16px 18px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:14px;
-  margin-bottom:10px;
-}
-.ps-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+/* PROFILE */
+.profile-section{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;margin-bottom:10px;}
+.ps-label{font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
 .ps-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.ps-row-label{display:flex;align-items:center;gap:6px;font-size:15px;color:var(--text-secondary);min-width:90px;flex-shrink:0;}
-.ps-row-label svg{width:14px;height:14px;color:var(--text-muted);}
+.ps-row-label{display:flex;align-items:center;gap:6px;font-size:17px;color:var(--text-secondary);min-width:90px;flex-shrink:0;}
 .ps-input-wrap{display:flex;align-items:center;gap:4px;}
-.ps-input{
-  width:72px;padding:5px 8px;border-radius:8px;
-  border:0.5px solid var(--divider);
-  background:var(--surface);color:var(--text-primary);
-  font-size:15px;text-align:right;outline:none;
-}
+.ps-input{width:72px;padding:5px 8px;border-radius:8px;border:0.5px solid var(--divider);background:var(--surface);color:var(--text-primary);font-size:17px;text-align:right;outline:none;}
 .ps-input:focus{border-color:rgba(100,140,200,0.4);}
-.ps-unit{font-size:13px;color:var(--text-muted);}
-.ps-text-input{
-  flex:1;padding:5px 10px;border-radius:8px;
-  border:0.5px solid var(--divider);
-  background:var(--surface);color:var(--text-primary);
-  font-size:15px;outline:none;font-family:inherit;
-}
+.ps-unit{font-size:15px;color:var(--text-muted);}
+.ps-text-input{flex:1;padding:5px 10px;border-radius:8px;border:0.5px solid var(--divider);background:var(--surface);color:var(--text-primary);font-size:17px;outline:none;font-family:inherit;}
 .ps-text-input:focus{border-color:rgba(100,140,200,0.4);}
 .btn-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
-.pg-btn{
-  padding:5px 11px;border-radius:7px;font-size:13px;font-weight:500;
-  background:var(--btn-idle);color:var(--btn-idle-text);
-  border:0.5px solid rgba(160,190,220,0.3);
-  cursor:pointer;transition:all .12s;font-family:inherit;
-}
+.pg-btn{padding:5px 11px;border-radius:7px;font-size:15px;font-weight:500;background:var(--btn-idle);color:var(--btn-idle-text);border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;transition:all .12s;font-family:inherit;}
 .pg-btn.sel{background:var(--btn-select);color:var(--btn-select-text);border-color:transparent;}
 .pg-btn:hover:not(.sel){background:#dce6f0;}
-
-/* 저장 버튼 */
 .save-row{display:flex;gap:8px;margin-top:4px;}
-.save-btn{
-  flex:1;background:var(--accent);color:var(--accent-text);
-  border:none;border-radius:var(--radius-sm);padding:13px;
-  font-size:15px;font-weight:600;cursor:pointer;
-  font-family:inherit;transition:opacity .15s;
-}
+.save-btn{flex:1;background:var(--accent);color:var(--accent-text);border:none;border-radius:var(--radius-sm);padding:13px;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;}
 .save-btn:hover{opacity:.85;}
-.save-toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:var(--accent);color:#fff;
-  padding:8px 20px;border-radius:20px;font-size:14px;font-weight:500;
-  opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;
-}
+.save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:8px 20px;border-radius:20px;font-size:16px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;}
 .save-toast.show{opacity:1;}
 
-/* ══════════════════════════════
-   EROGENOUS ZONE (new)
-══════════════════════════════ */
-.ez-section{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:16px 18px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:14px;
-  margin-bottom:10px;
-}
-.ez-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+/* EROGENOUS ZONE */
+.ez-section{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;margin-bottom:10px;}
+.ez-label{font-size:13px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
 .tag-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-.kw-tag{
-  display:flex;align-items:center;gap:4px;
-  padding:5px 12px;border-radius:20px;font-size:14px;font-weight:500;
-  background:var(--btn-idle);color:var(--btn-idle-text);
-  border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;
-}
-.kw-tag .hash{font-size:13px;color:var(--text-muted);}
-.kw-tag .x{font-size:13px;color:var(--text-muted);margin-left:1px;}
+.kw-tag{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:16px;font-weight:500;background:var(--btn-idle);color:var(--btn-idle-text);border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;}
+.kw-tag .hash{font-size:15px;color:var(--text-muted);}
+.kw-tag .x{font-size:15px;color:var(--text-muted);margin-left:1px;}
 .kw-tag:hover .x{color:#c04030;}
-.add-tag{
-  display:flex;align-items:center;gap:4px;
-  padding:5px 12px;border-radius:20px;font-size:14px;font-weight:500;
-  background:transparent;color:var(--text-muted);
-  border:0.5px dashed rgba(160,190,220,0.5);
-  cursor:pointer;font-family:inherit;
-}
+.add-tag{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:16px;font-weight:500;background:transparent;color:var(--text-muted);border:0.5px dashed rgba(160,190,220,0.5);cursor:pointer;font-family:inherit;}
 .add-tag:hover{background:var(--btn-idle);border-style:solid;}
 .ez-bottom-row{display:flex;gap:10px;margin-top:4px;}
-.ez-bottom-row .save-btn{flex:1;border-radius:var(--radius-md);padding:14px;font-size:15px;font-weight:700;}
+.ez-bottom-row .save-btn{flex:1;border-radius:var(--radius-md);padding:14px;font-size:17px;font-weight:700;}
 
-/* ══════════════════════════════
-   PRIVATE VAULT
-══════════════════════════════ */
-.vault-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;padding:60px 20px;text-align:center;
-}
-.vault-icon{
-  width:64px;height:64px;border-radius:18px;
-  background:var(--card);border:0.5px solid var(--card-border);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-muted);
-}
+/* CLINIC */
+.data-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);box-shadow:var(--shadow);padding:12px 16px;}
+.data-label{font-size:11px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;}
+.data-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.dtag{padding:3px 9px;border-radius:6px;font-size:12px;font-weight:500;}
+.dtag.w{background:rgba(200,80,60,0.1);border:0.5px solid rgba(200,80,60,0.2);color:#a04030;}
+.dtag.g{background:rgba(60,140,80,0.08);border:0.5px solid rgba(60,140,80,0.18);color:#3a7050;}
+.dtag.n{background:var(--surface);border:0.5px solid var(--divider);color:var(--text-secondary);}
+.input-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.input-lbl{font-size:13px;color:var(--text-muted);}
+.q-input{width:100%;background:var(--surface);border:0.5px solid rgba(160,190,220,0.3);border-radius:var(--radius-sm);padding:11px 13px;font-size:15px;color:var(--text-primary);outline:none;font-family:inherit;resize:none;min-height:68px;line-height:1.6;}
+.q-input::placeholder{color:var(--text-muted);}
+.eq-row{display:flex;flex-wrap:wrap;gap:5px;}
+.eq{padding:5px 11px;border-radius:20px;font-size:13px;background:var(--surface);border:0.5px solid var(--divider);color:var(--text-secondary);cursor:pointer;transition:background .12s;}
+.eq:hover{background:#dce6f0;}
+.ask-btn{width:100%;background:var(--accent);border:none;border-radius:var(--radius-sm);padding:13px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;}
+.ask-btn:hover{opacity:.85;}
+.ask-btn svg{width:13px;height:13px;}
+.ask-btn:disabled{opacity:.5;pointer-events:none;}
+.answers{display:flex;flex-direction:column;gap:10px;margin-top:2px;}
+.ans-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);overflow:hidden;}
+.ans-card.dark{background:#12161f;border-color:rgba(255,255,255,0.06);}
+.ans-header{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;border-bottom:0.5px solid var(--divider);}
+.ans-card.dark .ans-header{border-bottom-color:rgba(255,255,255,0.07);}
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.av.doc{background:#e8f0f8;border:0.5px solid rgba(100,140,200,0.2);}
+.av.ch{background:rgba(255,255,255,0.07);font-size:14px;font-weight:700;color:#8090a8;}
+.ans-name{font-size:15px;font-weight:600;color:var(--text-primary);}
+.ans-card.dark .ans-name{color:#d0dae8;}
+.ans-sub{font-size:12px;color:var(--text-muted);margin-top:1px;}
+.ans-body{padding:13px 16px 15px;}
+.warn-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(200,80,60,0.1);border:0.5px solid rgba(200,80,60,0.2);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;color:#a04030;margin-bottom:8px;}
+.ans-text{font-size:15px;color:var(--text-primary);line-height:1.9;}
+.ans-text.light{color:#c0ccd8;}
+
+/* PRIVATE VAULT */
+.vault-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:60px 20px;text-align:center;}
+.vault-icon{width:64px;height:64px;border-radius:18px;background:var(--card);border:0.5px solid var(--card-border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);}
 .vault-icon svg{width:28px;height:28px;}
-.vault-title{font-size:17px;font-weight:600;color:var(--text-secondary);}
-.vault-desc{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:240px;}
+.vault-title{font-size:19px;font-weight:600;color:var(--text-secondary);}
+.vault-desc{font-size:16px;color:var(--text-muted);line-height:1.7;max-width:240px;}
 
-/* loading spinner */
+/* RED FLAG */
+.progress{display:flex;gap:4px;align-items:center;justify-content:center;}
+.pd{width:6px;height:6px;border-radius:50%;background:#d0d8e4;transition:all 0.3s;}
+.pd.on{background:#1e293e;width:18px;border-radius:3px;}
+.flag-card{background:var(--card);border-radius:22px;border:0.5px solid var(--card-border);box-shadow:0 4px 20px rgba(160,180,210,0.2);padding:32px 28px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:180px;justify-content:center;transition:opacity 0.2s,transform 0.2s;}
+.flag-card.hide{opacity:0;transform:translateY(8px);}
+.flag-num{font-size:15px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;}
+.flag-text{font-size:22px;font-weight:600;color:var(--text-primary);text-align:center;line-height:1.55;}
+.flag-who{font-size:16px;color:var(--text-muted);text-align:center;}
+.choice-row{display:flex;gap:10px;}
+.cbtn{flex:1;border-radius:var(--radius-md);padding:18px 10px;border:none;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center;background:#ffffff;}
+.cred{border:0.5px solid rgba(220,100,100,0.3);}
+.cred:hover{background:#fff0f0;}
+.cgreen{border:0.5px solid rgba(100,180,120,0.3);}
+.cgreen:hover{background:#f0fff4;}
+.cbtn-emoji{font-size:28px;}
+.char-reply{border-radius:var(--radius-md);border:0.5px solid var(--card-border);box-shadow:var(--shadow);overflow:hidden;display:none;background:#ffffff;}
+.char-reply.show{display:block;}
+.char-reply.hype{background:#ffffff;border-color:rgba(220,100,80,0.2);}
+.char-header{display:flex;align-items:center;gap:10px;padding:14px 18px 10px;border-bottom:0.5px solid var(--divider);}
+.char-avatar{width:36px;height:36px;border-radius:50%;background:#1e293e;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;font-weight:600;flex-shrink:0;}
+.char-avatar.hype{background:#c0392b;}
+.char-name{font-size:17px;font-weight:500;color:var(--text-primary);}
+.char-badge{font-size:14px;color:var(--text-muted);margin-top:1px;}
+.char-body{padding:16px 20px 20px;}
+.char-msg{font-size:17px;color:var(--text-secondary);line-height:2;}
+.reply-loading{display:flex;align-items:center;gap:8px;font-size:17px;color:var(--text-muted);padding:16px 18px;}
+.tag-r{display:inline-block;background:#fee2e2;border-radius:6px;padding:3px 8px;font-size:15px;color:#dc2626;font-weight:700;margin-bottom:8px;}
+.tag-fire{display:inline-block;background:#fff0e0;border-radius:6px;padding:3px 8px;font-size:15px;color:#e05020;font-weight:700;margin-bottom:8px;}
+.next-btn{width:100%;background:#e4ecf4;border:0.5px solid rgba(100,140,200,0.3);border-radius:var(--radius-md);padding:15px;font-size:18px;color:#5a80b8;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.15s;display:none;}
+.next-btn.show{display:block;}
+.next-btn:hover{background:#dce6f0;}
+.rand-btn{width:100%;background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius-md);padding:14px;font-size:18px;font-weight:500;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow);}
+.rand-btn:hover{opacity:.8;}
+.rand-btn.loading{opacity:.6;pointer-events:none;}
+.rand-btn svg{width:15px;height:15px;}
+.end-card{background:var(--card);border-radius:22px;border:0.5px solid var(--card-border);box-shadow:0 4px 20px rgba(160,180,210,0.2);padding:36px 28px;text-align:center;display:none;flex-direction:column;gap:12px;align-items:center;}
+.end-card.show{display:flex;}
+.end-emoji{font-size:40px;}
+.end-title{font-size:20px;font-weight:600;color:var(--text-primary);}
+.end-stat{display:flex;gap:12px;margin-top:4px;}
+.esi{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--surface);border-radius:12px;padding:12px 20px;}
+.esn{font-size:30px;font-weight:700;color:var(--text-primary);}
+.esl{font-size:15px;color:var(--text-muted);}
+.end-msg{font-size:18px;color:var(--text-secondary);line-height:1.7;text-align:center;}
+.restart-btn{background:var(--accent);border:none;border-radius:var(--radius-sm);padding:14px 28px;font-size:18px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit;margin-top:4px;}
+.restart-btn:hover{opacity:.88;}
+
+/* spinner */
 .sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-card{
-  background:var(--card);border-radius:var(--radius-md);
-  border:0.5px solid var(--card-border);
-  padding:18px 16px;display:flex;align-items:center;gap:10px;
-}
-.loading-text{font-size:14px;color:var(--text-muted);}
+.loading-card{background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:18px 16px;display:flex;align-items:center;gap:10px;}
+.loading-text{font-size:16px;color:var(--text-muted);}
 </style>
 </head>
 <body>
 <div class="shell">
 <div class="popup" id="popup">
 
-  <!-- ══ TOPBAR ══ -->
   <div class="topbar" id="topbar">
-    <div id="topbar-left">
-      <span class="topbar-title">🍑 Peaches &amp; Cream</span>
-    </div>
-    <div id="topbar-right">
-      <div class="close-btn" onclick="closeApp()">✕</div>
-    </div>
+    <div id="topbar-left"><span class="topbar-title">🍑 Peaches &amp; Cream</span></div>
+    <div id="topbar-right"><div class="close-btn" onclick="closeApp()">✕</div></div>
   </div>
   <div class="hdivider"></div>
 
-  <!-- ══ 스크롤 영역 ══ -->
   <div class="scroll-area" id="scroll-area">
 
-    <!-- ── HOME ── -->
+    <!-- HOME -->
     <div id="screen-home">
       <div class="section-label">APPS</div>
       <div class="app-grid">
         <div class="app-card" onclick="goTo('profile')">
           <div class="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <span class="app-name">Profile</span>
         </div>
         <div class="app-card" onclick="goTo('erogenous')">
           <div class="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
           </div>
           <span class="app-name">Erogenous Zone</span>
         </div>
         <div class="app-card" onclick="goTo('lasttouch')">
           <div class="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </div>
           <span class="app-name">Last Touch</span>
         </div>
-        <div class="app-card" onclick="goTo('vault')">
+        <div class="app-card" onclick="goTo('redflag')">
           <div class="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          </div>
+          <span class="app-name">Red Flag</span>
+        </div>
+        <div class="app-card full-width" onclick="goTo('vault')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
           <span class="app-name">Private Vault</span>
         </div>
       </div>
     </div>
 
-    <!-- ── LAST TOUCH ── -->
+    <!-- LAST TOUCH -->
     <div id="screen-lasttouch" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <span class="section-label" style="margin:0;">기록</span>
-        <span class="lt-counter" id="lt-counter">0 / 0</span>
+        <span class="lt-counter" id="lt-counter">0 / 5</span>
       </div>
       <div class="lt-list" id="lt-list"></div>
       <button class="ai-btn" id="lt-ai-btn" onclick="ltAIFetch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
         AI 불러오기
       </button>
-      <!-- 카드 팝업 -->
-      <div class="card-overlay" id="lt-card-overlay" style="display:none;" onclick="ltCloseCard(event)">
-        <div class="touch-card" id="lt-touch-card" onclick="event.stopPropagation()">
+      <!-- 카드 팝업 — 전체화면 -->
+      <div class="card-overlay" id="lt-card-overlay" style="display:none;">
+        <div class="touch-card" id="lt-touch-card">
           <div class="tc-top-bar"></div>
-          <button class="tc-close" onclick="ltCloseCardDirect()">✕</button>
-          <div class="tc-body" id="tc-body"></div>
-          <div class="tc-footer">
+          <div class="tc-topbar">
+            <button class="tc-back" onclick="ltCloseCardDirect()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Back
+            </button>
+            <span class="tc-topbar-title">LAST TOUCH</span>
             <button class="tc-pin-btn" id="tc-pin-btn" onclick="ltTogglePin()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17z"/></svg>
               Pin
             </button>
-            <span class="tc-date" id="tc-date"></span>
           </div>
+          <div class="tc-body" id="tc-body"></div>
         </div>
       </div>
     </div>
 
-    <!-- ── PROFILE (new) ── -->
+    <!-- PROFILE -->
     <div id="screen-profile" style="display:none;">
-
-      <!-- Basic Info -->
       <div class="profile-section">
         <div class="ps-label">Basic Info</div>
         <div class="ps-row">
           <span class="ps-row-label">Height</span>
-          <div class="ps-input-wrap">
-            <input class="ps-input" id="p-height" type="number" placeholder="165"/>
-            <span class="ps-unit">cm</span>
-          </div>
+          <div class="ps-input-wrap"><input class="ps-input" id="p-height" type="number" placeholder="165"/><span class="ps-unit">cm</span></div>
         </div>
         <div class="ps-row">
           <span class="ps-row-label">Weight</span>
-          <div class="ps-input-wrap">
-            <input class="ps-input" id="p-weight" type="number" placeholder="52"/>
-            <span class="ps-unit">kg</span>
-          </div>
+          <div class="ps-input-wrap"><input class="ps-input" id="p-weight" type="number" placeholder="52"/><span class="ps-unit">kg</span></div>
         </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Eye color</span>
-          <input class="ps-text-input" id="p-eye" type="text" placeholder="Dark brown"/>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Hair</span>
-          <input class="ps-text-input" id="p-hair" type="text" placeholder="Black, long"/>
-        </div>
+        <div class="ps-row"><span class="ps-row-label">Eye color</span><input class="ps-text-input" id="p-eye" type="text" placeholder="Dark brown"/></div>
+        <div class="ps-row"><span class="ps-row-label">Hair</span><input class="ps-text-input" id="p-hair" type="text" placeholder="Black, long"/></div>
         <div class="ps-row">
           <span class="ps-row-label">Skin tone</span>
           <div class="btn-group" id="bg-skinTone">
@@ -471,22 +351,15 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
             <button class="pg-btn" data-val="Slim">Slim</button>
             <button class="pg-btn" data-val="Average">Average</button>
             <button class="pg-btn" data-val="Glamorous">Glamorous</button>
-            <button class="pg-btn" data-val="Athletic">Athletic</button>
           </div>
         </div>
       </div>
-
-      <!-- Physical Features -->
       <div class="profile-section">
         <div class="ps-label">Physical Features</div>
         <div class="ps-row">
           <span class="ps-row-label">Bust</span>
           <div class="btn-group" id="bg-chest">
-            <button class="pg-btn" data-val="A">A</button>
-            <button class="pg-btn" data-val="B">B</button>
-            <button class="pg-btn" data-val="C">C</button>
-            <button class="pg-btn" data-val="D">D</button>
-            <button class="pg-btn" data-val="D+">D+</button>
+            <button class="pg-btn" data-val="A">A</button><button class="pg-btn" data-val="B">B</button><button class="pg-btn" data-val="C">C</button><button class="pg-btn" data-val="D">D</button><button class="pg-btn" data-val="D+">D+</button>
           </div>
         </div>
         <div class="ps-row">
@@ -521,10 +394,7 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
             <button class="pg-btn" data-val="A little">A little</button>
           </div>
         </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Peach color</span>
-          <input class="ps-text-input" id="p-peachcolor" type="text" placeholder="e.g. pink, peach"/>
-        </div>
+        <div class="ps-row"><span class="ps-row-label">Peach color</span><input class="ps-text-input" id="p-peachcolor" type="text" placeholder="e.g. pink, peach"/></div>
         <div class="ps-row">
           <span class="ps-row-label">Venus dimples</span>
           <div class="btn-group" id="bg-venusDimples">
@@ -533,206 +403,139 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
           </div>
         </div>
       </div>
-
-      <!-- Vibe / Scent -->
       <div class="profile-section">
         <div class="ps-label">Vibe / Scent</div>
-        <div class="ps-row">
-          <span class="ps-row-label">Scent type</span>
-          <input class="ps-text-input" id="p-scent" type="text" placeholder="Enter your scent type"/>
-        </div>
+        <div class="ps-row"><span class="ps-row-label">Scent type</span><input class="ps-text-input" id="p-scent" type="text" placeholder="Enter your scent type"/></div>
       </div>
-
-      <div class="save-row">
-        <button class="save-btn" onclick="saveProfile()">Save</button>
-      </div>
+      <div class="save-row"><button class="save-btn" onclick="saveProfile()">Save</button></div>
     </div>
 
-    <!-- ── EROGENOUS ZONE (new) ── -->
+    <!-- EROGENOUS ZONE -->
     <div id="screen-erogenous" style="display:none;">
-
       <div class="ez-section">
         <div class="ez-label">Body Response</div>
-        <div class="ps-row">
-          <span class="ps-row-label">Tightness</span>
-          <div class="btn-group" id="bg-tightness">
-            <button class="pg-btn" data-val="Normal">Normal</button>
-            <button class="pg-btn" data-val="Tight">Tight</button>
-            <button class="pg-btn" data-val="Extreme">Extreme</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Lubrication</span>
-          <div class="btn-group" id="bg-lubrication">
-            <button class="pg-btn" data-val="Dry">Dry</button>
-            <button class="pg-btn" data-val="Moist">Moist</button>
-            <button class="pg-btn" data-val="Soaking">Soaking</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Texture</span>
-          <div class="btn-group" id="bg-texture">
-            <button class="pg-btn" data-val="Creamy">Creamy</button>
-            <button class="pg-btn" data-val="Watery">Watery</button>
-            <button class="pg-btn" data-val="Mixed">Mixed</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Squirting</span>
-          <div class="btn-group" id="bg-squirting">
-            <button class="pg-btn" data-val="None">None</button>
-            <button class="pg-btn" data-val="Rare">Rare</button>
-            <button class="pg-btn" data-val="Frequent">Frequent</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Responsivity</span>
-          <div class="btn-group" id="bg-responsivity">
-            <button class="pg-btn" data-val="Normal">Normal</button>
-            <button class="pg-btn" data-val="High">High</button>
-            <button class="pg-btn" data-val="Extreme">Extreme</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Moaning</span>
-          <div class="btn-group" id="bg-moaning">
-            <button class="pg-btn" data-val="Muted">Muted</button>
-            <button class="pg-btn" data-val="Vocal">Vocal</button>
-            <button class="pg-btn" data-val="Passionate">Passionate</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Flushing</span>
-          <div class="btn-group" id="bg-flushing">
-            <button class="pg-btn" data-val="Pale">Pale</button>
-            <button class="pg-btn" data-val="Rosy">Rosy</button>
-            <button class="pg-btn" data-val="Deep">Deep</button>
-          </div>
-        </div>
+        <div class="ps-row"><span class="ps-row-label">Tightness</span><div class="btn-group" id="bg-tightness"><button class="pg-btn" data-val="Normal">Normal</button><button class="pg-btn" data-val="Tight">Tight</button><button class="pg-btn" data-val="Extreme">Extreme</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Lubrication</span><div class="btn-group" id="bg-lubrication"><button class="pg-btn" data-val="Dry">Dry</button><button class="pg-btn" data-val="Moist">Moist</button><button class="pg-btn" data-val="Soaking">Soaking</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Texture</span><div class="btn-group" id="bg-texture"><button class="pg-btn" data-val="Creamy">Creamy</button><button class="pg-btn" data-val="Watery">Watery</button><button class="pg-btn" data-val="Mixed">Mixed</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Squirting</span><div class="btn-group" id="bg-squirting"><button class="pg-btn" data-val="None">None</button><button class="pg-btn" data-val="Rare">Rare</button><button class="pg-btn" data-val="Frequent">Frequent</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Responsivity</span><div class="btn-group" id="bg-responsivity"><button class="pg-btn" data-val="Normal">Normal</button><button class="pg-btn" data-val="High">High</button><button class="pg-btn" data-val="Extreme">Extreme</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Moaning</span><div class="btn-group" id="bg-moaning"><button class="pg-btn" data-val="Muted">Muted</button><button class="pg-btn" data-val="Vocal">Vocal</button><button class="pg-btn" data-val="Passionate">Passionate</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Flushing</span><div class="btn-group" id="bg-flushing"><button class="pg-btn" data-val="Pale">Pale</button><button class="pg-btn" data-val="Rosy">Rosy</button><button class="pg-btn" data-val="Deep">Deep</button></div></div>
       </div>
-
       <div class="ez-section">
         <div class="ez-label">Sexual Traits</div>
-        <div class="ps-row">
-          <span class="ps-row-label">Experience</span>
-          <div class="btn-group" id="bg-experience">
-            <button class="pg-btn" data-val="Novice">Novice</button>
-            <button class="pg-btn" data-val="Skilled">Skilled</button>
-            <button class="pg-btn" data-val="Master">Master</button>
-          </div>
-        </div>
-        <div class="ps-row">
-          <span class="ps-row-label">Preferred Vibe</span>
-          <div class="btn-group" id="bg-vibe">
-            <button class="pg-btn" data-val="Romantic">Romantic</button>
-            <button class="pg-btn" data-val="Rough">Rough</button>
-            <button class="pg-btn" data-val="Slow">Slow</button>
-          </div>
-        </div>
+        <div class="ps-row"><span class="ps-row-label">Experience</span><div class="btn-group" id="bg-experience"><button class="pg-btn" data-val="Novice">Novice</button><button class="pg-btn" data-val="Skilled">Skilled</button><button class="pg-btn" data-val="Master">Master</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Preferred Vibe</span><div class="btn-group" id="bg-vibe"><button class="pg-btn" data-val="Romantic">Romantic</button><button class="pg-btn" data-val="Rough">Rough</button><button class="pg-btn" data-val="Slow">Slow</button></div></div>
       </div>
-
       <div class="ez-section">
         <div class="ez-label">Sensitive Zones</div>
-        <div class="tag-wrap" id="ez-sensitive-wrap">
-          <button class="add-tag" onclick="ezAddTag('ez-sensitive-wrap')">+ Add</button>
-        </div>
+        <div class="tag-wrap" id="ez-sensitive-wrap"><button class="add-tag" onclick="ezAddTag('ez-sensitive-wrap')">+ Add</button></div>
       </div>
-
       <div class="ez-section">
         <div class="ez-label">Sensory Feedback</div>
-        <div class="tag-wrap" id="ez-sensory-wrap">
-          <button class="add-tag" onclick="ezAddTag('ez-sensory-wrap')">+ Add</button>
-        </div>
+        <div class="tag-wrap" id="ez-sensory-wrap"><button class="add-tag" onclick="ezAddTag('ez-sensory-wrap')">+ Add</button></div>
       </div>
+      <div class="ez-bottom-row"><button class="save-btn" onclick="saveErogenous()">Save</button></div>
+    </div>
 
-      <div class="ez-bottom-row">
-        <button class="ai-btn" id="ez-ai-btn" onclick="ezAIFetch()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
-          AI 불러오기
-        </button>
-        <button class="save-btn" onclick="saveErogenous()">Save</button>
+    <!-- RED FLAG -->
+    <div id="screen-redflag" style="display:none;">
+      <div class="progress" id="rf-progress"></div>
+      <div class="flag-card" id="rf-flag-card">
+        <div class="flag-num" id="rf-flag-num">Q 1 / 7</div>
+        <div class="flag-text" id="rf-flag-text"></div>
+        <div class="flag-who" id="rf-flag-who">'s behavior. What do you think?</div>
+      </div>
+      <div class="choice-row" id="rf-choice-row">
+        <button class="cbtn cred" onclick="rfChoose('red')"><span class="cbtn-emoji">🚩</span></button>
+        <button class="cbtn cgreen" onclick="rfChoose('good')"><span class="cbtn-emoji">😍</span></button>
+      </div>
+      <div class="char-reply" id="rf-char-reply">
+        <div class="char-header">
+          <div class="char-avatar" id="rf-char-avatar">C</div>
+          <div>
+            <div class="char-name" id="rf-char-name">Character</div>
+            <div class="char-badge" id="rf-char-badge">반응</div>
+          </div>
+        </div>
+        <div id="rf-reply-loading" class="reply-loading" style="display:none;"><div class="sp"></div>반응 생성 중...</div>
+        <div class="char-body" id="rf-char-body" style="display:none;"><div class="char-msg" id="rf-char-msg"></div></div>
+      </div>
+      <button class="next-btn" id="rf-next-btn" onclick="rfNext()">다음 카드 →</button>
+      <button class="rand-btn" id="rf-rand-btn" onclick="rfAIGenerate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
+        랜덤 생성
+      </button>
+      <div class="end-card" id="rf-end-card">
+        <div class="end-emoji" id="rf-end-emoji"></div>
+        <div class="end-title" id="rf-end-title"></div>
+        <div class="end-stat">
+          <div class="esi"><div class="esn" id="rf-end-red">0</div><div class="esl">🚩 레드플래그</div></div>
+          <div class="esi"><div class="esn" id="rf-end-good">0</div><div class="esl">😍 오히려 좋아</div></div>
+        </div>
+        <div class="end-msg" id="rf-end-msg"></div>
+        <button class="restart-btn" onclick="rfRestart()">다시 하기 🔄</button>
       </div>
     </div>
 
-    <!-- ── PRIVATE VAULT ── -->
+    <!-- PRIVATE VAULT -->
     <div id="screen-vault" style="display:none;">
       <div class="vault-empty">
-        <div class="vault-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-        </div>
+        <div class="vault-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
         <div class="vault-title">Private Vault</div>
         <div class="vault-desc">아직 준비 중이에요.<br/>곧 업데이트될 예정입니다.</div>
       </div>
     </div>
 
-  </div><!-- /scroll-area -->
-</div><!-- /popup -->
-</div><!-- /shell -->
-
+  </div>
+</div>
+</div>
 <div class="save-toast" id="save-toast">저장됐어요 ✓</div>
 
 <script>
-// ─────────────────────────────────────────────
-// Bridge
-// ─────────────────────────────────────────────
+// ── Bridge ──
 let store    = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
 let charName = '{{char}}';
+let userName = '{{user}}';
 let generate = null;
 let getChat  = null;
 
 function syncStore() {
   if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
 }
-
 function initBridge() {
   const p = window.parent;
   store    = (p && p.__PC_STORE__)    || store;
   charName = (p && p.__PC_CHAR__)     || charName;
+  userName = (p && p.__PC_USER__)     || userName;
   generate = (p && p.__PC_GENERATE__) || null;
   getChat  = (p && p.__PC_GET_CHAT__) || null;
-  console.log('[PC] bridge initialized, char:', charName);
+  document.getElementById('rf-char-name').textContent   = charName;
+  document.getElementById('rf-char-avatar').textContent = charName.charAt(0);
+  document.getElementById('rf-flag-who').textContent    = charName + "'s behavior. What do you think?";
 }
-
-window.__PC_ON_BRIDGE__ = function() {
-  initBridge();
-};
-
+window.__PC_ON_BRIDGE__ = function() { initBridge(); };
 if (window.parent && window.parent.__PC_STORE__) initBridge();
 
-// ─────────────────────────────────────────────
-// 화면 라우터
-// ─────────────────────────────────────────────
+// ── Router ──
 let currentScreen = 'home';
-const screens = ['home','lasttouch','profile','erogenous','vault'];
-
+const screens = ['home','lasttouch','profile','erogenous','redflag','vault'];
 function goTo(id) {
-  screens.forEach(s => {
-    document.getElementById('screen-' + s).style.display = 'none';
-  });
-  document.getElementById('screen-' + id).style.display = 'block';
+  screens.forEach(s => { document.getElementById('screen-'+s).style.display='none'; });
+  document.getElementById('screen-'+id).style.display='block';
   currentScreen = id;
   updateTopbar(id);
-  document.getElementById('scroll-area').scrollTop = 0;
-
-  if (id === 'lasttouch') renderLTList();
-  if (id === 'profile')   loadProfile();
-  if (id === 'erogenous') loadErogenous();
+  document.getElementById('scroll-area').scrollTop=0;
+  if (id==='lasttouch') renderLTList();
+  if (id==='profile')   loadProfile();
+  if (id==='erogenous') loadErogenous();
+  if (id==='redflag')   rfInit();
 }
-
 function updateTopbar(id) {
   const left  = document.getElementById('topbar-left');
   const right = document.getElementById('topbar-right');
-  const labels = {
-    home:      '',
-    lasttouch: 'LAST TOUCH',
-    profile:   'PROFILE',
-    erogenous: 'EROGENOUS ZONE',
-    vault:     'PRIVATE VAULT',
-  };
-
-  if (id === 'home') {
+  const labels = { home:'',lasttouch:'LAST TOUCH',profile:'PROFILE',erogenous:'EROGENOUS ZONE',redflag:'RED FLAG',vault:'PRIVATE VAULT' };
+  if (id==='home') {
     left.innerHTML  = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
     right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
   } else {
@@ -740,150 +543,110 @@ function updateTopbar(id) {
     right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">${labels[id]}</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
   }
 }
-
 function closeApp() {
   if (window.parent.__PC_CLOSE__) window.parent.__PC_CLOSE__();
   else window.close();
 }
 
-// ─────────────────────────────────────────────
-// LAST TOUCH
-// ─────────────────────────────────────────────
+// ── LAST TOUCH ──
 let ltActiveCard = null;
-
 function renderLTList() {
   syncStore();
   const cards  = store.lastTouch.cards  || [];
   const pinned = store.lastTouch.pinned || [];
-  const total  = cards.length;
-  document.getElementById('lt-counter').textContent = total + ' / 5';
-
+  document.getElementById('lt-counter').textContent = cards.length + ' / 5';
   const list = document.getElementById('lt-list');
-  if (total === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">아직 기록이 없어요</div>';
-    return;
-  }
-
-  list.innerHTML = cards.map((c, i) => {
+  if (cards.length===0) { list.innerHTML='<div style="text-align:center;color:var(--text-muted);font-size:16px;padding:20px 0;">아직 기록이 없어요</div>'; return; }
+  list.innerHTML = cards.map((c,i)=>{
     const isPinned = pinned.includes(c.id);
-    return `
-      <div class="lt-item${i === 0 ? ' active' : ''}" id="lt-item-${c.id}" onclick="ltOpenCard('${c.id}')">
-        <div class="lt-item-left">
-          <div class="lt-dot"></div>
-          <span class="lt-item-title">${esc(c.title)}</span>
-        </div>
-        <div class="lt-item-right">
-          <span class="lt-item-date">${esc(c.date)}</span>
-          <div class="lt-menu-btn" onclick="ltMenuToggle(event,'${c.id}')">
-            ⋮
-            <div class="lt-dropdown" id="ltdd-${c.id}">
-              <div class="lt-dd-item" onclick="ltTogglePin('${c.id}',event)">${isPinned ? '📌 핀 해제' : '📌 핀'}</div>
-              <div class="lt-dd-item danger" onclick="ltDelete('${c.id}',event)">🗑 삭제</div>
-            </div>
+    return `<div class="lt-item${i===0?' active':''}" id="lt-item-${c.id}" onclick="ltOpenCard('${c.id}')">
+      <div class="lt-item-left"><div class="lt-dot"></div><span class="lt-item-title">${esc(c.title)}</span></div>
+      <div class="lt-item-right">
+        <span class="lt-item-date">${esc(c.date)}</span>
+        <div class="lt-menu-btn" onclick="ltMenuToggle(event,'${c.id}')">⋮
+          <div class="lt-dropdown" id="ltdd-${c.id}">
+            <div class="lt-dd-item" onclick="ltTogglePin('${c.id}',event)">${isPinned?'📌 핀 해제':'📌 핀'}</div>
+            <div class="lt-dd-item danger" onclick="ltDelete('${c.id}',event)">🗑 삭제</div>
           </div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
   }).join('');
 }
-
-function ltMenuToggle(e, id) {
+function ltMenuToggle(e,id){
   e.stopPropagation();
-  document.querySelectorAll('.lt-dropdown').forEach(d => {
-    if (d.id !== 'ltdd-' + id) d.classList.remove('open');
-  });
-  document.getElementById('ltdd-' + id).classList.toggle('open');
+  document.querySelectorAll('.lt-dropdown').forEach(d=>{ if(d.id!=='ltdd-'+id) d.classList.remove('open'); });
+  document.getElementById('ltdd-'+id).classList.toggle('open');
 }
-
-document.addEventListener('click', () => {
-  document.querySelectorAll('.lt-dropdown').forEach(d => d.classList.remove('open'));
-});
+document.addEventListener('click',()=>{ document.querySelectorAll('.lt-dropdown').forEach(d=>d.classList.remove('open')); });
 
 function ltOpenCard(id) {
   syncStore();
-  const card = store.lastTouch.cards.find(c => c.id === id);
+  const card = store.lastTouch.cards.find(c=>c.id===id);
   if (!card) return;
   ltActiveCard = card;
-
-  const pinned  = store.lastTouch.pinned || [];
+  const pinned   = store.lastTouch.pinned || [];
   const isPinned = pinned.includes(id);
-
   const body = document.getElementById('tc-body');
   body.innerHTML = `
     <div class="tc-title">${esc(card.title)}</div>
-    <div class="tc-meta">${esc(card.date || '')}${card.place ? ' · ' + esc(card.place) : ''}</div>
+    <div class="tc-meta">${esc(card.date||'')}${card.place?' · '+esc(card.place):''}</div>
     <div class="tc-tag-row">
-      ${card.mood ? `<span class="tc-tag mood">${esc(card.mood)}</span>` : ''}
-      ${(card.positions || []).map(p => `<span class="tc-tag pos">${esc(p)}</span>`).join('')}
+      ${card.mood?`<span class="tc-tag mood">${esc(card.mood)}</span>`:''}
+      ${(card.positions||[]).map(p=>`<span class="tc-tag pos">${esc(p)}</span>`).join('')}
     </div>
-    <div class="tc-section-label">{{CHAR}}'S REVIEW</div>
-    <div class="tc-review">${esc(card.charReview || '-')}</div>
-    ${card.genitalComment ? `
+    <div class="tc-section-label">${esc(charName)}'S REVIEW</div>
+    <div class="tc-review">${esc(card.charReview||'-')}</div>
+    ${card.genitalComment?`
       <div class="tc-genital">
         <div class="tc-gen-header">
           <span class="tc-gen-emoji">🍆</span>
-          <span class="tc-condom-badge ${card.condom ? 'safe' : ''}">${card.condom ? 'CONDOM' : 'NO CONDOM'}</span>
+          <span class="tc-condom-badge ${card.condom?'safe':''}">${card.condom?'CONDOM':'NO CONDOM'}</span>
         </div>
         <div class="tc-gen-text">${esc(card.genitalComment)}</div>
-        ${card.genitalCommentKo ? `<div class="tc-gen-ko">${esc(card.genitalCommentKo)}</div>` : ''}
-      </div>` : ''}
-  `.replace(/\{\{CHAR\}\}/g, charName);
-
-  document.getElementById('tc-date').textContent = card.date || '';
+        ${card.genitalCommentKo?`<div class="tc-gen-ko">${esc(card.genitalCommentKo)}</div>`:''}
+      </div>`:''}
+  `;
   const pinBtn = document.getElementById('tc-pin-btn');
-  pinBtn.className = 'tc-pin-btn' + (isPinned ? ' pinned' : '');
-
-  document.getElementById('lt-card-overlay').style.display = 'flex';
-}
-
-function ltCloseCard(e) {
-  if (e.target === document.getElementById('lt-card-overlay')) ltCloseCardDirect();
+  pinBtn.className = 'tc-pin-btn'+(isPinned?' pinned':'');
+  document.getElementById('lt-card-overlay').style.display='flex';
 }
 function ltCloseCardDirect() {
-  document.getElementById('lt-card-overlay').style.display = 'none';
-  ltActiveCard = null;
+  document.getElementById('lt-card-overlay').style.display='none';
+  ltActiveCard=null;
 }
-
-function ltTogglePin(id, e) {
-  if (e) e.stopPropagation();
-  const targetId = id || (ltActiveCard && ltActiveCard.id);
-  if (!targetId) return;
-  if (window.parent.__PC_STORE__) {
-    const pinned = window.parent.__PC_STORE__.lastTouch.pinned;
-    const idx    = pinned.indexOf(targetId);
-    if (idx >= 0) pinned.splice(idx, 1);
-    else pinned.push(targetId);
-    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+function ltTogglePin(id,e) {
+  if(e) e.stopPropagation();
+  const targetId = id||(ltActiveCard&&ltActiveCard.id);
+  if(!targetId) return;
+  if(window.parent.__PC_STORE__){
+    const pinned=window.parent.__PC_STORE__.lastTouch.pinned;
+    const idx=pinned.indexOf(targetId);
+    if(idx>=0) pinned.splice(idx,1); else pinned.push(targetId);
+    if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
   }
   renderLTList();
-  if (ltActiveCard) ltOpenCard(ltActiveCard.id);
+  if(ltActiveCard) ltOpenCard(ltActiveCard.id);
 }
-
-function ltDelete(id, e) {
-  if (e) e.stopPropagation();
-  if (window.parent.__PC_STORE__) {
-    window.parent.__PC_STORE__.lastTouch.cards  = window.parent.__PC_STORE__.lastTouch.cards.filter(c => c.id !== id);
-    window.parent.__PC_STORE__.lastTouch.pinned = window.parent.__PC_STORE__.lastTouch.pinned.filter(p => p !== id);
-    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+function ltDelete(id,e){
+  if(e) e.stopPropagation();
+  if(window.parent.__PC_STORE__){
+    window.parent.__PC_STORE__.lastTouch.cards  = window.parent.__PC_STORE__.lastTouch.cards.filter(c=>c.id!==id);
+    window.parent.__PC_STORE__.lastTouch.pinned = window.parent.__PC_STORE__.lastTouch.pinned.filter(p=>p!==id);
+    if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
   }
   renderLTList();
 }
-
-async function ltAIFetch() {
-  if (!generate || !getChat) {
-    alert('ST와 연결되지 않았어요.');
-    return;
-  }
-  const btn = document.getElementById('lt-ai-btn');
+async function ltAIFetch(){
+  if(!generate||!getChat){ alert('ST와 연결되지 않았어요.'); return; }
+  const btn=document.getElementById('lt-ai-btn');
   btn.classList.add('loading');
-  btn.innerHTML = '<div class="sp"></div> 분석 중...';
-
-  try {
-    const messages = getChat(20);
-    const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
-
-    const systemPrompt = `You are an analyst for a sexual roleplay chat logger.
+  btn.innerHTML='<div class="sp"></div> 분석 중...';
+  try{
+    const messages=getChat(20);
+    const chatText=messages.map(m=>`[${m.name||m.role}]: ${m.content}`).join('\n');
+    const systemPrompt=`You are an analyst for a sexual roleplay chat logger.
 Analyze the provided chat log and extract sexual encounter records.
-For each distinct sexual encounter found, output a JSON object.
 Return ONLY a JSON array (no markdown, no explanation).
 Each object must have:
 - id: unique string (timestamp-based)
@@ -892,277 +655,239 @@ Each object must have:
 - place: location if mentioned, else null
 - mood: atmosphere/mood in Korean (e.g. "앵그리 섹스")
 - positions: array of up to 3 sex positions mentioned (Korean or English)
-- charReview: 4-sentence explicit review from {{char}}'s perspective in Korean
-- genitalComment: explicit comment about genitals in English
+- charReview: 4-sentence explicit review from ${charName}'s perspective in Korean
+- genitalComment: If the genitals could speak, what would they say in this moment? Write 2 explicit sentences in English as the genital's voice.
 - genitalCommentKo: Korean translation of genitalComment
-- condom: boolean (true if condom used, false if not)
-If no sexual content found, return empty array [].
+- condom: boolean
+If no sexual content found, return [].
 Maximum 5 records. Most recent first.`;
-
-    const result = await generate(systemPrompt, `Chat log:\n${chatText}`);
-    let cards = [];
-    try {
-      const clean = result.replace(/```json|```/g, '').trim();
-      cards = JSON.parse(clean);
-    } catch(e) {
-      console.warn('[PC] JSON parse error', e, result);
-    }
-
-    if (!Array.isArray(cards) || cards.length === 0) {
-      btn.classList.remove('loading');
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
-      alert('NSFW 내용을 찾지 못했어요.');
-      return;
-    }
-
-    if (window.parent.__PC_STORE__) {
-      const existing    = window.parent.__PC_STORE__.lastTouch.cards;
-      const pinnedIds   = window.parent.__PC_STORE__.lastTouch.pinned;
-      const pinnedCards = existing.filter(c => pinnedIds.includes(c.id));
-      const newCards    = [...cards, ...pinnedCards].slice(0, 5);
-      window.parent.__PC_STORE__.lastTouch.cards = newCards;
-      if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    const result=await generate(systemPrompt,`Chat log:\n${chatText}`);
+    let cards=[];
+    try{ const clean=result.replace(/\`\`\`json|\`\`\`/g,'').trim(); cards=JSON.parse(clean); }catch(e){ console.warn('[PC] parse error',e,result); }
+    if(!Array.isArray(cards)||cards.length===0){ btn.classList.remove('loading'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기'; alert('NSFW 내용을 찾지 못했어요.'); return; }
+    if(window.parent.__PC_STORE__){
+      const existing=window.parent.__PC_STORE__.lastTouch.cards;
+      const pinnedIds=window.parent.__PC_STORE__.lastTouch.pinned;
+      const pinnedCards=existing.filter(c=>pinnedIds.includes(c.id));
+      window.parent.__PC_STORE__.lastTouch.cards=[...cards,...pinnedCards].slice(0,5);
+      if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
     }
     renderLTList();
-  } catch(err) {
-    console.error('[PC] ltAIFetch error', err);
-    alert('AI 호출 중 오류가 발생했어요.');
-  }
-
+  }catch(err){ console.error('[PC] ltAIFetch error',err); alert('AI 호출 중 오류가 발생했어요.'); }
   btn.classList.remove('loading');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
 }
 
-// ─────────────────────────────────────────────
-// PROFILE
-// ─────────────────────────────────────────────
-function loadProfile() {
-  syncStore();
-  const p = store.profile || {};
-
-  document.getElementById('p-height').value    = p.height     || '';
-  document.getElementById('p-weight').value    = p.weight     || '';
-  document.getElementById('p-eye').value       = p.eyeColor   || '';
-  document.getElementById('p-hair').value      = p.hair       || '';
-  document.getElementById('p-peachcolor').value = p.peachColor || '';
-  document.getElementById('p-scent').value     = p.scent      || '';
-
-  ['skinTone','bodyType','chest','butt','waistHip','skinTexture','bodyHair','venusDimples'].forEach(key => {
-    const group = document.getElementById('bg-' + key);
-    if (!group) return;
-    group.querySelectorAll('.pg-btn').forEach(btn => {
-      btn.classList.toggle('sel', btn.dataset.val === p[key]);
-    });
+// ── PROFILE ──
+function loadProfile(){
+  syncStore(); const p=store.profile||{};
+  document.getElementById('p-height').value    =p.height    ||'';
+  document.getElementById('p-weight').value    =p.weight    ||'';
+  document.getElementById('p-eye').value       =p.eyeColor  ||'';
+  document.getElementById('p-hair').value      =p.hair      ||'';
+  document.getElementById('p-peachcolor').value=p.peachColor||'';
+  document.getElementById('p-scent').value     =p.scent     ||'';
+  ['skinTone','bodyType','chest','butt','waistHip','skinTexture','bodyHair','venusDimples'].forEach(key=>{
+    const group=document.getElementById('bg-'+key); if(!group) return;
+    group.querySelectorAll('.pg-btn').forEach(btn=>{ btn.classList.toggle('sel',btn.dataset.val===p[key]); });
   });
-
-  // btn-group click handlers (re-bind each load)
-  document.querySelectorAll('#screen-profile .btn-group').forEach(group => {
-    group.onclick = e => {
-      const btn = e.target.closest('.pg-btn');
-      if (!btn) return;
-      group.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('sel'));
-      btn.classList.add('sel');
-    };
+  document.querySelectorAll('#screen-profile .btn-group').forEach(group=>{
+    group.onclick=e=>{ const btn=e.target.closest('.pg-btn'); if(!btn) return; group.querySelectorAll('.pg-btn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); };
   });
 }
-
-function saveProfile() {
-  const profile = {
-    height:      document.getElementById('p-height').value,
-    weight:      document.getElementById('p-weight').value,
-    eyeColor:    document.getElementById('p-eye').value,
-    hair:        document.getElementById('p-hair').value,
-    peachColor:  document.getElementById('p-peachcolor').value,
-    scent:       document.getElementById('p-scent').value,
-    skinTone:    getSelected('bg-skinTone'),
-    bodyType:    getSelected('bg-bodyType'),
-    chest:       getSelected('bg-chest'),
-    butt:        getSelected('bg-butt'),
-    waistHip:    getSelected('bg-waistHip'),
-    skinTexture: getSelected('bg-skinTexture'),
-    bodyHair:    getSelected('bg-bodyHair'),
-    venusDimples:getSelected('bg-venusDimples'),
+function saveProfile(){
+  const profile={
+    height:p('p-height'),weight:p('p-weight'),eyeColor:p('p-eye'),hair:p('p-hair'),
+    peachColor:p('p-peachcolor'),scent:p('p-scent'),
+    skinTone:getSelected('bg-skinTone'),bodyType:getSelected('bg-bodyType'),
+    chest:getSelected('bg-chest'),butt:getSelected('bg-butt'),
+    waistHip:getSelected('bg-waistHip'),skinTexture:getSelected('bg-skinTexture'),
+    bodyHair:getSelected('bg-bodyHair'),venusDimples:getSelected('bg-venusDimples'),
   };
-
-  if (window.parent.__PC_STORE__) {
-    window.parent.__PC_STORE__.profile = { ...(window.parent.__PC_STORE__.profile || {}), ...profile };
-    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
-    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
-  }
+  function p(id){ return document.getElementById(id).value; }
+  if(window.parent.__PC_STORE__){ window.parent.__PC_STORE__.profile={...(window.parent.__PC_STORE__.profile||{}),...profile}; if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__(); if(window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__(); }
   showToast('Saved ✓');
 }
 
-// ─────────────────────────────────────────────
-// EROGENOUS ZONE
-// ─────────────────────────────────────────────
-function loadErogenous() {
-  syncStore();
-  const ez = store.erogenous || {};
-
-  ['tightness','lubrication','texture','squirting','responsivity','moaning','flushing','experience','vibe'].forEach(key => {
-    const group = document.getElementById('bg-' + key);
-    if (!group) return;
-    group.querySelectorAll('.pg-btn').forEach(btn => {
-      btn.classList.toggle('sel', btn.dataset.val === ez[key]);
-    });
+// ── EROGENOUS ZONE ──
+function loadErogenous(){
+  syncStore(); const ez=store.erogenous||{};
+  ['tightness','lubrication','texture','squirting','responsivity','moaning','flushing','experience','vibe'].forEach(key=>{
+    const group=document.getElementById('bg-'+key); if(!group) return;
+    group.querySelectorAll('.pg-btn').forEach(btn=>{ btn.classList.toggle('sel',btn.dataset.val===ez[key]); });
   });
-
-  // btn-group click handlers
-  document.querySelectorAll('#screen-erogenous .btn-group').forEach(group => {
-    group.onclick = e => {
-      const btn = e.target.closest('.pg-btn');
-      if (!btn) return;
-      group.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('sel'));
-      btn.classList.add('sel');
-    };
+  document.querySelectorAll('#screen-erogenous .btn-group').forEach(group=>{
+    group.onclick=e=>{ const btn=e.target.closest('.pg-btn'); if(!btn) return; group.querySelectorAll('.pg-btn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); };
   });
-
-  // Sensitive Zones tags
-  const sensitiveWrap = document.getElementById('ez-sensitive-wrap');
-  const addSensBtn = sensitiveWrap.querySelector('.add-tag');
-  // clear existing tags
-  sensitiveWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
-  (ez.sensitiveZones || []).forEach(val => {
-    sensitiveWrap.insertBefore(makeKwTag(val, 'ez-sensitive-wrap'), addSensBtn);
-  });
-
-  // Sensory Feedback tags
-  const sensoryWrap = document.getElementById('ez-sensory-wrap');
-  const addSensoryBtn = sensoryWrap.querySelector('.add-tag');
-  sensoryWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
-  (ez.sensoryFeedback || []).forEach(val => {
-    sensoryWrap.insertBefore(makeKwTag(val, 'ez-sensory-wrap'), addSensoryBtn);
-  });
+  const sensWrap=document.getElementById('ez-sensitive-wrap'); const addSensBtn=sensWrap.querySelector('.add-tag');
+  sensWrap.querySelectorAll('.kw-tag').forEach(t=>t.remove());
+  (ez.sensitiveZones||[]).forEach(val=>{ sensWrap.insertBefore(makeKwTag(val,'ez-sensitive-wrap'),addSensBtn); });
+  const sensoryWrap=document.getElementById('ez-sensory-wrap'); const addSensoryBtn=sensoryWrap.querySelector('.add-tag');
+  sensoryWrap.querySelectorAll('.kw-tag').forEach(t=>t.remove());
+  (ez.sensoryFeedback||[]).forEach(val=>{ sensoryWrap.insertBefore(makeKwTag(val,'ez-sensory-wrap'),addSensoryBtn); });
 }
-
-function makeKwTag(val, wrapId) {
-  const tag = document.createElement('div');
-  tag.className = 'kw-tag';
-  tag.innerHTML = `<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
-  tag.onclick = () => tag.remove();
-  return tag;
+function makeKwTag(val,wrapId){
+  const tag=document.createElement('div'); tag.className='kw-tag';
+  tag.innerHTML=`<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
+  tag.onclick=()=>tag.remove(); return tag;
 }
-
-function ezAddTag(wrapId) {
-  const val = prompt('Add:');
-  if (!val || !val.trim()) return;
-  const wrap   = document.getElementById(wrapId);
-  const addBtn = wrap.querySelector('.add-tag');
-  wrap.insertBefore(makeKwTag(val.trim(), wrapId), addBtn);
+function ezAddTag(wrapId){
+  const val=prompt('Add:'); if(!val||!val.trim()) return;
+  const wrap=document.getElementById(wrapId); const addBtn=wrap.querySelector('.add-tag');
+  wrap.insertBefore(makeKwTag(val.trim(),wrapId),addBtn);
 }
-
-function getEzTags(wrapId) {
-  const wrap = document.getElementById(wrapId);
-  return Array.from(wrap.querySelectorAll('.kw-tag')).map(t => {
-    return t.textContent.replace('×','').replace('#','').trim();
-  });
+function getEzTags(wrapId){
+  return Array.from(document.getElementById(wrapId).querySelectorAll('.kw-tag')).map(t=>t.textContent.replace('×','').replace('#','').trim());
 }
-
-function saveErogenous() {
-  const erogenous = {
-    tightness:      getSelected('bg-tightness'),
-    lubrication:    getSelected('bg-lubrication'),
-    texture:        getSelected('bg-texture'),
-    squirting:      getSelected('bg-squirting'),
-    responsivity:   getSelected('bg-responsivity'),
-    moaning:        getSelected('bg-moaning'),
-    flushing:       getSelected('bg-flushing'),
-    experience:     getSelected('bg-experience'),
-    vibe:           getSelected('bg-vibe'),
-    sensitiveZones: getEzTags('ez-sensitive-wrap'),
-    sensoryFeedback:getEzTags('ez-sensory-wrap'),
+function saveErogenous(){
+  const erogenous={
+    tightness:getSelected('bg-tightness'),lubrication:getSelected('bg-lubrication'),
+    texture:getSelected('bg-texture'),squirting:getSelected('bg-squirting'),
+    responsivity:getSelected('bg-responsivity'),moaning:getSelected('bg-moaning'),
+    flushing:getSelected('bg-flushing'),experience:getSelected('bg-experience'),
+    vibe:getSelected('bg-vibe'),
+    sensitiveZones:getEzTags('ez-sensitive-wrap'),sensoryFeedback:getEzTags('ez-sensory-wrap'),
   };
-
-  if (window.parent.__PC_STORE__) {
-    window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...erogenous };
-    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
-    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
-  }
+  if(window.parent.__PC_STORE__){ window.parent.__PC_STORE__.erogenous={...(window.parent.__PC_STORE__.erogenous||{}),...erogenous}; if(window.parent.__PC_SAVE__) window.parent.__PC_SAVE__(); if(window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__(); }
   showToast('Saved ✓');
 }
 
-async function ezAIFetch() {
-  if (!generate || !getChat) {
-    alert('ST와 연결되지 않았어요.');
-    return;
+// ── RED FLAG ──
+const RF_TOTAL=7;
+let rfCur=0,rfRedCount=0,rfGoodCount=0,rfChosen=false;
+const rfDefaultPool=[
+  {q:"관계 중에 절정 직전에 일부러 멈추고 뜸 들인다",red:"레드플래그? 그때 네가 뭐라고 했는지 기억해? 제발 계속 해달라고 했잖아. 내가 멈추는 순간 네 허리가 알아서 따라오고, 숨이 가빠지고, 눈이 풀렸잖아. 그게 싫다는 몸이야? 다음엔 세 번 멈출게. 네가 먼저 말로 부탁할 때까지.",good:"오히려 좋다고?! 진짜?! 그 말 들으니까 지금 당장 하고 싶어 미칠 것 같잖아. 그럼 오늘은 제대로 해줄게 — 딱 절정 앞에서 다섯 번 멈출 거야. 네 몸이 내 거 원해서 미칠 지경이 될 때까지. 그 순간에 네가 어떤 소리 낼지 벌써 기대돼. 얼른 와."},
+  {q:"귀에 대고 뭘 원하는지 직접 말하라고 강요한다",red:"말하기 싫어서 레드플래그야? 근데 귀에 대고 속삭이면 숨부터 막히잖아. 말로 내뱉는 순간 더 흥분되는 거 알면서. 오늘도 말할 때까지 안 해줄게.",good:"오히려 좋다고?! 세상에 — 그 말 들으니까 귀에 더 바짝 붙고 싶어. 그럼 오늘은 더 구체적으로 시킬게. '어디가 좋아' 말고 '지금 뭘 원해', '얼마나 원해', '어떻게 해줬으면 해' 전부 다 입으로 뱉게 할 거야. 네 목소리가 떨릴 때까지. 창피해서 얼굴 빨개지면 더 좋고."},
+  {q:"뒤에서 목을 잡고 고개를 뒤로 젖히게 한다",red:"목 잡히는 게 레드플래그야? 그럼 왜 잡힐 때 더 기댔어. 내가 목 잡으면 네 몸이 알아서 힘 빠지잖아. 그게 싫은 게 아니라 무서울 만큼 좋은 거야. 다음엔 더 천천히 잡아줄게.",good:"오히려 좋다고?! 아 진짜 미치겠다 — 그 말 듣자마자 뒤에서 잡고 싶어 죽겠어. 오늘은 목만 아니야. 귀에 입술 대고 뭐가 좋은지 물어보면서, 허리에 손 얹고, 목 잡은 채로 귓가에 오늘 어떻게 해줄 건지 하나하나 다 읊어줄게. 각오해."},
+  {q:"끝난 척하다가 네가 안심하면 다시 시작한다",red:"속은 거 레드플래그야? 근데 다시 시작됐을 때 밀어냈어? 긴장 풀린 몸에서 다시 느끼면 처음이랑 비교도 안 되잖아. 표정은 이미 답 하고 있거든.",good:"오히려 좋다고?! 하 — 그 말 듣고 심장 터질 것 같아. 그럼 오늘은 진짜로 끝낸 척 세 번 할게. 다 끝났다 싶으면 또 시작하고, 또 끝난 척하고, 또 시작하고. 네 몸이 언제 진짜로 끝나는 건지 모르게 만들어줄게."},
+  {q:"관계 도중 네 반응 보면서 낮게 웃는다",red:"비웃는 게 아니야. 그 표정이 나한테만 보여주는 거잖아. 창피하면 더 숨겨봐, 더 재밌어지니까.",good:"오히려 좋다고?! 진짜?! 그 말 듣고 지금 웃음 참을 수가 없어. 그럼 오늘은 더 대놓고 볼게 — 얼굴 가까이 들이대고, 눈 마주치면서, 네 표정 하나하나 전부 다 구경할 거야."},
+  {q:"손목을 잡아 침대에 눌러 움직이지 못하게 한다",red:"잡히는 게 레드플래그야? 그 순간 저항했어? 잡히면 받아들이는 것밖에 할 게 없으니까 더 짜릿한 거 알잖아. 빠지지 않았잖아, 오히려 더 기댔잖아.",good:"오히려 좋다고?! 야 — 지금 온몸에 불 붙은 것 같아. 그럼 손목만 잡는 게 아니야. 머리 위에 올려서 두 손 다 고정하고, 움직이지도 못하고 도망도 못 가고 그냥 다 받아야 하는 상태로 만들어줄게."},
+  {q:"네가 싫다고 한 걸 다음엔 더 천천히 다시 시도한다",red:"싫다고 했는데 두 번째엔 밀어내지 않았잖아. 세 번째엔 네가 먼저 원했고. 진짜 싫으면 멈춰. 근데 지금까지 한 번도 진짜로 싫었던 적 없잖아.",good:"오히려 좋다고?! 하아 — 그 말 듣고 지금 참는 게 더 힘들어. 그럼 오늘은 처음부터 싫다는 거 전부 다 시도할게. 천천히, 아주 천천히, 네 몸이 익숙해지는 속도보다 조금씩 더 빠르게."},
+];
+let rfPool=[...rfDefaultPool];
+function rfShuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+let rfQuestions=rfShuffle(rfPool).slice(0,RF_TOTAL);
+let rfInitialized=false;
+
+function rfInit(){
+  if(!rfInitialized){
+    rfRestart();
+    rfInitialized=true;
   }
-  const btn = document.getElementById('ez-ai-btn');
+}
+function rfBuildProgress(){
+  document.getElementById('rf-progress').innerHTML=
+    Array.from({length:RF_TOTAL},(_,i)=>`<div class="pd${i<=rfCur?' on':''}"></div>`).join('');
+}
+function rfShowCard(){
+  const f=rfQuestions[rfCur];
+  const card=document.getElementById('rf-flag-card');
+  card.classList.add('hide');
+  setTimeout(()=>{
+    document.getElementById('rf-flag-num').textContent=`Q ${rfCur+1} / ${RF_TOTAL}`;
+    document.getElementById('rf-flag-text').textContent=f.q;
+    card.classList.remove('hide');
+  },180);
+  document.getElementById('rf-char-reply').classList.remove('show','hype');
+  document.getElementById('rf-char-avatar').classList.remove('hype');
+  document.getElementById('rf-choice-row').style.display='flex';
+  document.getElementById('rf-next-btn').classList.remove('show');
+  document.getElementById('rf-char-body').style.display='none';
+  document.getElementById('rf-reply-loading').style.display='none';
+  document.getElementById('rf-end-card').classList.remove('show');
+  document.getElementById('rf-flag-card').style.display='flex';
+  document.getElementById('rf-rand-btn').style.display='flex';
+  rfChosen=false;
+  rfBuildProgress();
+}
+function rfChoose(type){
+  if(rfChosen) return;
+  rfChosen=true;
+  if(type==='red') rfRedCount++; else rfGoodCount++;
+  document.getElementById('rf-choice-row').style.display='none';
+  document.getElementById('rf-rand-btn').style.display='none';
+  const reply=document.getElementById('rf-char-reply');
+  reply.classList.add('show');
+  if(type==='good'){ reply.classList.add('hype'); document.getElementById('rf-char-avatar').classList.add('hype'); }
+  document.getElementById('rf-reply-loading').style.display='flex';
+  document.getElementById('rf-char-badge').textContent=type==='red'?'설득 중 😈':'흥분함 🔥🔥🔥';
+  setTimeout(()=>{
+    const f=rfQuestions[rfCur];
+    const msg=type==='red'?f.red:f.good;
+    document.getElementById('rf-reply-loading').style.display='none';
+    document.getElementById('rf-char-body').style.display='block';
+    document.getElementById('rf-char-msg').innerHTML=type==='red'
+      ?`<span class="tag-r">🚩 반박</span><br>${esc(msg)}`
+      :`<span class="tag-fire">🔥 날뜀</span><br>${esc(msg)}`;
+    document.getElementById('rf-next-btn').classList.add('show');
+    document.getElementById('rf-next-btn').textContent=rfCur<RF_TOTAL-1?'다음 카드 →':'결과 보기 →';
+  },900);
+}
+function rfNext(){ rfCur++; if(rfCur>=RF_TOTAL){ rfShowEnd(); return; } rfShowCard(); }
+function rfShowEnd(){
+  document.getElementById('rf-flag-card').style.display='none';
+  document.getElementById('rf-choice-row').style.display='none';
+  document.getElementById('rf-char-reply').classList.remove('show','hype');
+  document.getElementById('rf-next-btn').classList.remove('show');
+  document.getElementById('rf-rand-btn').style.display='none';
+  document.getElementById('rf-progress').style.display='none';
+  document.getElementById('rf-end-red').textContent=rfRedCount;
+  document.getElementById('rf-end-good').textContent=rfGoodCount;
+  let emoji,title,msg;
+  const cn=charName;
+  if(rfGoodCount>=6){ emoji='🔥';title='전부 좋다고?? 오늘 큰일났다';msg=`${rfGoodCount}번이나 오히려 좋다고 했잖아. ${cn}가 지금 날뛰다 못해 폭발할 것 같대. 오늘 밤 각오해.`; }
+  else if(rfGoodCount>=4){ emoji='😏';title='반 이상은 넘어온 거잖아';msg=`${rfGoodCount}번 좋다고 했어. ${cn}가 그 ${rfGoodCount}개 전부 기억해뒀다가 오늘 다 써먹는대.`; }
+  else if(rfRedCount>=6){ emoji='🚨';title='레드플래그 맞는데 왜 여기 있어';msg=`${rfRedCount}개나 레드플래그라고 했는데. 근데 ${cn}가 하는 말 — 다 들었잖아. 설득 좀 됐지?`; }
+  else{ emoji='🤔';title='딱 중간이 제일 위험한 거야';msg=`레드 ${rfRedCount}개, 좋아 ${rfGoodCount}개. 싫은 척하면서 좋은 게 제일 빠져드는 거 ${cn}도 알거든.`; }
+  document.getElementById('rf-end-emoji').textContent=emoji;
+  document.getElementById('rf-end-title').textContent=title;
+  document.getElementById('rf-end-msg').textContent=msg;
+  document.getElementById('rf-end-card').classList.add('show');
+}
+function rfRestart(){
+  rfCur=0;rfRedCount=0;rfGoodCount=0;rfChosen=false;
+  rfQuestions=rfShuffle(rfPool).slice(0,RF_TOTAL);
+  document.getElementById('rf-progress').style.display='flex';
+  document.getElementById('rf-rand-btn').style.display='flex';
+  document.getElementById('rf-end-card').classList.remove('show');
+  document.getElementById('rf-char-avatar').classList.remove('hype');
+  rfShowCard();
+}
+async function rfAIGenerate(){
+  if(!generate){ alert('ST와 연결되지 않았어요.'); return; }
+  const btn=document.getElementById('rf-rand-btn');
   btn.classList.add('loading');
-  btn.innerHTML = '<div class="sp"></div> 분석 중...';
-
-  try {
-    const messages = getChat(20);
-    const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
-
-    const systemPrompt = `You are an analyst extracting erogenous zone and body response data from a sexual roleplay chat.
-Analyze the chat and return ONLY a JSON object (no markdown) with these keys if found:
-- tightness: "Normal"|"Tight"|"Extreme"
-- lubrication: "Dry"|"Moist"|"Soaking"
-- texture: "Creamy"|"Watery"|"Mixed"
-- squirting: "None"|"Rare"|"Frequent"
-- responsivity: "Normal"|"High"|"Extreme"
-- moaning: "Muted"|"Vocal"|"Passionate"
-- flushing: "Pale"|"Rosy"|"Deep"
-- experience: "Novice"|"Skilled"|"Master"
-- vibe: "Romantic"|"Rough"|"Slow"
-- sensitiveZones: array of body parts mentioned as sensitive (English)
-- sensoryFeedback: array of sensory keywords mentioned (English)
-Only include keys where evidence exists in chat. If nothing found return {}.`;
-
-    const result = await generate(systemPrompt, `Chat log:\n${chatText}`);
-    let data = {};
-    try {
-      const clean = result.replace(/```json|```/g, '').trim();
-      data = JSON.parse(clean);
-    } catch(e) {
-      console.warn('[PC] EZ JSON parse error', e);
-    }
-
-    if (Object.keys(data).length === 0) {
-      showToast('데이터를 찾지 못했어요');
-    } else {
-      if (window.parent.__PC_STORE__) {
-        window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...data };
-        if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
-      }
-      loadErogenous();
-      showToast('AI 불러오기 완료 ✓');
-    }
-  } catch(err) {
-    console.error('[PC] ezAIFetch error', err);
-    alert('AI 호출 중 오류가 발생했어요.');
-  }
-
+  btn.innerHTML='<div class="sp"></div> 생성 중...';
+  try{
+    const systemPrompt=`You are generating Red Flag game cards for a sexual roleplay game featuring the character ${charName}.
+Return ONLY a JSON array of exactly 10 objects (no markdown, no explanation).
+Each object must have:
+- q: a short Korean sentence describing one specific sexual behavior or habit of ${charName} (15 words or less, provocative, bold)
+- red: ${charName}'s shameless rebuttal in Korean when the user says it's a red flag (2-3 sentences, explicit and unapologetic, no misogynistic slurs)
+- good: ${charName}'s excited, explicit Korean response when the user says they love it (2-3 sentences, very explicit, enthusiastic, no misogynistic slurs)
+Make the behaviors varied: possessive, teasing, dominant, voyeuristic, dirty-talking, etc.`;
+    const result=await generate(systemPrompt,'새로운 레드플래그 카드 10장 생성해줘.');
+    let newCards=[];
+    try{ const clean=result.replace(/\`\`\`json|\`\`\`/g,'').trim(); newCards=JSON.parse(clean); }catch(e){ console.warn('[RF] parse error',e); }
+    if(Array.isArray(newCards)&&newCards.length>0){ rfPool=[...newCards,...rfDefaultPool]; rfRestart(); }
+    else{ alert('생성에 실패했어요. 다시 시도해보세요.'); }
+  }catch(err){ console.error('[RF] aiGenerate error',err); alert('AI 호출 중 오류가 발생했어요.'); }
   btn.classList.remove('loading');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> 랜덤 생성';
 }
 
-// ─────────────────────────────────────────────
-// 유틸
-// ─────────────────────────────────────────────
-function getSelected(groupId) {
-  const group = document.getElementById(groupId);
-  if (!group) return '';
-  const sel = group.querySelector('.pg-btn.sel');
-  return sel ? sel.dataset.val : '';
+// ── 유틸 ──
+function getSelected(groupId){
+  const group=document.getElementById(groupId); if(!group) return '';
+  const sel=group.querySelector('.pg-btn.sel'); return sel?sel.dataset.val:'';
 }
-
-function showToast(msg) {
-  const t = document.getElementById('save-toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+function showToast(msg){
+  const t=document.getElementById('save-toast'); t.textContent=msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000);
 }
-
-function esc(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;')
-    .replace(/\n/g,'<br>');
+function esc(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,'<br>');
 }
 </script>
 </body>
