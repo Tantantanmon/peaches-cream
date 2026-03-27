@@ -232,9 +232,10 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 .esi{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--surface);border-radius:12px;padding:12px 20px;}
 .esn{font-size:30px;font-weight:700;color:var(--text-primary);}
 .esl{font-size:15px;color:var(--text-muted);}
-.end-msg{font-size:18px;color:var(--text-secondary);line-height:1.7;text-align:center;}
+.end-msg{font-size:17px;color:var(--text-secondary);line-height:1.7;text-align:center;}
 .restart-btn{background:var(--accent);border:none;border-radius:var(--radius-sm);padding:14px 28px;font-size:18px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit;margin-top:4px;}
 .restart-btn:hover{opacity:.88;}
+#screen-redflag{display:flex;flex-direction:column;gap:16px;}
 
 /* spinner */
 .sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
@@ -522,7 +523,7 @@ let currentScreen = 'home';
 const screens = ['home','lasttouch','profile','erogenous','redflag','vault'];
 function goTo(id) {
   screens.forEach(s => { document.getElementById('screen-'+s).style.display='none'; });
-  document.getElementById('screen-'+id).style.display='block';
+  document.getElementById('screen-'+id).style.display = (id==='redflag') ? 'flex' : 'block';
   currentScreen = id;
   updateTopbar(id);
   document.getElementById('scroll-area').scrollTop=0;
@@ -604,7 +605,6 @@ function ltOpenCard(id) {
           <span class="tc-condom-badge ${card.condom?'safe':''}">${card.condom?'CONDOM':'NO CONDOM'}</span>
         </div>
         <div class="tc-gen-text">${esc(card.genitalComment)}</div>
-        ${card.genitalCommentKo?`<div class="tc-gen-ko">${esc(card.genitalCommentKo)}</div>`:''}
       </div>`:''}
   `;
   const pinBtn = document.getElementById('tc-pin-btn');
@@ -654,10 +654,9 @@ Each object must have:
 - date: today's date as YYYY.MM.DD
 - place: location if mentioned, else null
 - mood: atmosphere/mood in Korean (e.g. "앵그리 섹스")
-- positions: array of up to 3 sex positions mentioned (Korean or English)
-- charReview: 4-sentence explicit review from ${charName}'s perspective in Korean
-- genitalComment: If the genitals could speak, what would they say in this moment? Write 2 explicit sentences in English as the genital's voice.
-- genitalCommentKo: Korean translation of genitalComment
+- positions: array of up to 3 sex positions — ENGLISH ONLY (e.g. "Doggy", "Missionary", "Cowgirl")
+- charReview: 4-sentence explicit review from ${charName}'s perspective in Korean. Write it as natural in-character speech — vulgar, bold, emotionally expressive, like ${charName} is actually talking. Not a report. e.g. "오늘 너 존나 예뻤어. 그 자세로 하니까 존나 빨리 쌀 뻔했잖아." Positions must always be in English within this text.
+- genitalComment: 1 sentence in Korean spoken AS the genitals themselves — cocky, comic, emotionally on-point for the situation, with emoji. e.g. "젠장! 자위라니, 18살 먹고 자위라니! 니 손 말고 다른 데 들어갈 생각은 없냐?! 🍑"
 - condom: boolean
 If no sexual content found, return [].
 Maximum 5 records. Most recent first.`;
