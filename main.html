@@ -7,92 +7,1162 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#dde4ed; --surface:#e8eef5; --card:#ffffff;
-  --card-border:rgba(160,180,210,0.25); --text-primary:#1a2840;
-  --text-secondary:#5a7090; --text-muted:#a0adc0;
-  --accent:#1e293e; --divider:rgba(160,180,210,0.15);
-  --shadow:0 4px 12px rgba(160,180,210,0.1); --radius-lg:24px; --radius-md:16px;
+  --bg:#dde4ed;
+  --surface:#e8eef5;
+  --card:#f2f6fa;
+  --card-border:rgba(255,255,255,0.95);
+  --text-primary:#1a2840;
+  --text-secondary:#5a7090;
+  --text-muted:#a0adc0;
+  --accent:#1e293e;
+  --accent-text:#fff;
+  --divider:rgba(160,180,210,0.25);
+  --btn-select:#1e293e;
+  --btn-select-text:#fff;
+  --btn-idle:#e4ecf4;
+  --btn-idle-text:#5a7090;
+  --shadow:0 2px 8px rgba(160,180,210,0.15);
+  --radius-lg:24px;
+  --radius-md:16px;
+  --radius-sm:10px;
+  --radius-btn:8px;
 }
-html,body{
-  width:100%; height:100%; background:#f0f2f5; 
-  font-family:'Pretendard', sans-serif; font-size: 15px; /* 폰트 1px 축소 */
+html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;}
+
+/* ── 스크롤 ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(160,180,210,0.35);border-radius:4px;}
+
+/* ── 레이아웃 ── */
+.shell{
+  width:100%;height:100%;
+  display:flex;align-items:stretch;justify-content:center;
+  padding:0;
 }
-.shell{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 .popup{
-  width: 390px; height: 844px; /* 앱 사이즈 고정 */
-  max-width: 100%; max-height: 95vh;
-  background:var(--surface); border-radius:var(--radius-lg);
-  overflow:hidden; box-shadow:0 20px 50px rgba(140,160,200,0.3);
-  display:flex; flex-direction:column;
+  width:100%;max-width:100%;
+  height:100%;max-height:100%;
+  background:var(--surface);
+  border-radius:var(--radius-lg);
+  border:0.5px solid rgba(255,255,255,0.9);
+  overflow:hidden;
+  box-shadow:0 12px 40px rgba(140,160,200,0.3);
+  display:flex;flex-direction:column;
 }
-.topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; flex-shrink:0;}
-.topbar-title{font-size:21px; font-weight:700; color:var(--text-primary);}
-.scroll-area{flex:1; overflow-y:auto; padding:16px;}
-.app-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-.app-card{background:var(--card); border-radius:var(--radius-md); padding:20px; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:var(--shadow);}
-.flag-card{
-  background:var(--card); border-radius:20px; border:0.5px solid var(--card-border);
-  padding:30px 20px; display:flex; flex-direction:column; align-items:center; gap:12px;
-  box-shadow:var(--shadow); margin-bottom:16px;
+
+/* ── 모바일 ── */
+@media(max-width:600px){
+  .shell{padding:0;align-items:flex-end;}
+  .popup{max-width:100%;max-height:95vh;border-radius:24px 24px 0 0;}
 }
-.flag-text{font-size:18px; font-weight:600; text-align:center; line-height:1.5;}
-.choice-row{display:flex; gap:12px; justify-content:center; margin-bottom:16px;}
-.cbtn{
-  width: 70px; height: 55px; /* 사이즈 적절히 축소 */
-  border-radius:var(--radius-md); background:var(--card); 
-  border:0.5px solid var(--card-border); cursor:pointer;
-  display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow);
+
+/* ── 탑바 ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 16px;flex-shrink:0;
 }
-.char-reply{
-  border-radius:var(--radius-md); background:var(--card); /* 반응칸 흰색 */
-  border:0.5px solid var(--card-border); box-shadow:var(--shadow);
-  display:none; margin-bottom:16px; overflow:hidden;
+.topbar-title{font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
+.topbar-sub{font-size:14px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+.close-btn{
+  width:40px;height:40px;border-radius:12px;
+  background:var(--card);border:0.5px solid var(--card-border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-secondary);font-size:18px;
+  box-shadow:var(--shadow);transition:opacity .15s;
 }
-.char-header{display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:0.5px solid var(--divider);}
-.char-avatar{width:32px; height:32px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600;}
-.char-body{padding:14px 16px; font-size:14px; color:var(--text-secondary); line-height:1.7;}
+.close-btn:hover{opacity:.7;}
+.back-btn{
+  display:flex;align-items:center;gap:5px;
+  font-size:15px;color:var(--text-muted);cursor:pointer;
+  padding:4px 0;transition:color .15s;border:none;background:none;font-family:inherit;
+}
+.back-btn:hover{color:var(--text-secondary);}
+.back-btn svg{width:14px;height:14px;}
+.dots{display:flex;gap:4px;}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--text-muted);opacity:.5;}
+
+.hdivider{height:0.5px;background:var(--divider);flex-shrink:0;}
+
+/* ── 스크롤 영역 ── */
+.scroll-area{flex:1;overflow-y:auto;padding:18px 20px 28px;}
+
+/* ══════════════════════════════
+   HOME
+══════════════════════════════ */
+.section-label{font-size:12px;font-weight:600;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
+.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.app-card{
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  padding:20px 16px 18px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  cursor:pointer;box-shadow:var(--shadow);
+  transition:transform .15s,box-shadow .15s;
+}
+.app-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(140,160,200,0.22);}
+.app-card:active{transform:translateY(0);}
+.app-icon{
+  width:60px;height:60px;border-radius:16px;
+  background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-secondary);
+}
+.app-icon svg{width:26px;height:26px;}
+.app-name{font-size:16px;font-weight:500;color:var(--text-primary);}
+
+/* ══════════════════════════════
+   LAST TOUCH
+══════════════════════════════ */
+.lt-counter{font-size:13px;color:var(--text-muted);}
+.lt-list{display:flex;flex-direction:column;gap:8px;}
 .lt-item{
-  background:var(--card); border-radius:var(--radius-md); /* 노란색 배경 제거 */
-  border:0.5px solid var(--card-border); padding:14px; 
-  display:flex; align-items:center; justify-content:space-between;
-  box-shadow:var(--shadow); margin-bottom:8px;
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  padding:14px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s;
 }
-.lt-dot{width:8px; height:8px; border-radius:50%; background:#e8a030; margin-right:8px;}
-.lt-title{font-size:14px; font-weight:500; flex:1;}
-.back-btn{border:none; background:none; color:var(--text-muted); cursor:pointer; font-size:15px;}
+.lt-item.active{border-color:#e8a030;background:#fdf8f0;}
+.lt-item-left{display:flex;align-items:center;gap:10px;}
+.lt-dot{width:8px;height:8px;border-radius:50%;background:var(--divider);flex-shrink:0;}
+.lt-item.active .lt-dot{background:#e8a030;}
+.lt-item-title{font-size:16px;font-weight:500;color:var(--text-primary);}
+.lt-item-date{font-size:13px;color:var(--text-muted);}
+.lt-item-right{display:flex;align-items:center;gap:8px;}
+.lt-menu-btn{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--surface);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-muted);font-size:15px;
+  position:relative;
+}
+.lt-dropdown{
+  position:absolute;right:0;top:32px;z-index:10;
+  background:var(--card);border-radius:10px;
+  border:0.5px solid var(--card-border);
+  box-shadow:0 8px 24px rgba(140,160,200,0.25);
+  overflow:hidden;min-width:110px;display:none;
+}
+.lt-dropdown.open{display:block;}
+.lt-dd-item{
+  padding:9px 14px;font-size:14px;color:var(--text-secondary);
+  cursor:pointer;white-space:nowrap;
+}
+.lt-dd-item:hover{background:var(--surface);}
+.lt-dd-item.danger{color:#c04030;}
+
+.ai-btn{
+  background:var(--card);border:0.5px solid var(--card-border);
+  border-radius:var(--radius-md);padding:14px;
+  font-size:15px;font-weight:500;color:var(--text-secondary);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:var(--shadow);transition:opacity .15s;font-family:inherit;flex:1;
+}
+.ai-btn:hover{opacity:.8;}
+.ai-btn svg{width:15px;height:15px;}
+.ai-btn.loading{opacity:.6;pointer-events:none;}
+#screen-lasttouch .ai-btn{flex:unset;width:100%;margin-top:10px;}
+
+/* ── Last Touch 카드 팝업 ── */
+.card-overlay{
+  position:absolute;inset:0;z-index:20;
+  background:rgba(180,195,215,0.6);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+}
+.touch-card{
+  width:100%;max-width:400px;max-height:80vh;
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  box-shadow:0 12px 36px rgba(130,155,195,0.3);
+  overflow:hidden;display:flex;flex-direction:column;
+  position:relative;
+}
+.tc-top-bar{height:4px;background:linear-gradient(90deg,#e05040,#e07030);flex-shrink:0;}
+.tc-body{padding:20px 20px 16px;overflow-y:auto;flex:1;}
+.tc-title{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
+.tc-meta{font-size:14px;color:var(--text-muted);margin-bottom:14px;}
+.tc-tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.tc-tag{padding:4px 10px;border-radius:6px;font-size:13px;font-weight:500;}
+.tc-tag.mood{background:#f5ead0;color:#8a6020;border:0.5px solid rgba(200,150,40,0.2);}
+.tc-tag.pos{background:var(--surface);color:var(--text-secondary);border:0.5px solid var(--divider);}
+.tc-section-label{font-size:11px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
+.tc-review{
+  background:var(--surface);border-radius:10px;
+  padding:12px 14px;font-size:15px;color:var(--text-secondary);line-height:1.8;
+}
+.tc-genital{
+  background:var(--surface);border-radius:10px;
+  padding:12px 14px;margin-top:8px;
+}
+.tc-gen-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.tc-gen-emoji{font-size:18px;}
+.tc-condom-badge{
+  padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;
+  background:rgba(200,60,40,0.1);border:0.5px solid rgba(200,60,40,0.2);color:#a03020;
+}
+.tc-condom-badge.safe{background:rgba(50,140,70,0.1);border-color:rgba(50,140,70,0.2);color:#307040;}
+.tc-gen-text{font-size:15px;color:var(--text-secondary);line-height:1.7;}
+.tc-gen-ko{font-size:13px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
+.tc-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px 16px;flex-shrink:0;
+  border-top:0.5px solid var(--divider);
+}
+.tc-pin-btn{
+  display:flex;align-items:center;gap:5px;
+  font-size:14px;color:var(--text-muted);cursor:pointer;
+  background:none;border:none;padding:0;transition:color .15s;
+}
+.tc-pin-btn.pinned{color:#e8a030;}
+.tc-pin-btn svg{width:13px;height:13px;}
+.tc-date{font-size:13px;color:var(--text-muted);}
+.tc-close{
+  position:absolute;top:12px;right:12px;
+  width:28px;height:28px;border-radius:8px;
+  background:var(--surface);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);font-size:16px;
+}
+
+/* ══════════════════════════════
+   PROFILE (new)
+══════════════════════════════ */
+.profile-section{
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  padding:16px 18px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:14px;
+  margin-bottom:10px;
+}
+.ps-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+.ps-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.ps-row-label{display:flex;align-items:center;gap:6px;font-size:15px;color:var(--text-secondary);min-width:90px;flex-shrink:0;}
+.ps-row-label svg{width:14px;height:14px;color:var(--text-muted);}
+.ps-input-wrap{display:flex;align-items:center;gap:4px;}
+.ps-input{
+  width:72px;padding:5px 8px;border-radius:8px;
+  border:0.5px solid var(--divider);
+  background:var(--surface);color:var(--text-primary);
+  font-size:15px;text-align:right;outline:none;
+}
+.ps-input:focus{border-color:rgba(100,140,200,0.4);}
+.ps-unit{font-size:13px;color:var(--text-muted);}
+.ps-text-input{
+  flex:1;padding:5px 10px;border-radius:8px;
+  border:0.5px solid var(--divider);
+  background:var(--surface);color:var(--text-primary);
+  font-size:15px;outline:none;font-family:inherit;
+}
+.ps-text-input:focus{border-color:rgba(100,140,200,0.4);}
+.btn-group{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.pg-btn{
+  padding:5px 11px;border-radius:7px;font-size:13px;font-weight:500;
+  background:var(--btn-idle);color:var(--btn-idle-text);
+  border:0.5px solid rgba(160,190,220,0.3);
+  cursor:pointer;transition:all .12s;font-family:inherit;
+}
+.pg-btn.sel{background:var(--btn-select);color:var(--btn-select-text);border-color:transparent;}
+.pg-btn:hover:not(.sel){background:#dce6f0;}
+
+/* 저장 버튼 */
+.save-row{display:flex;gap:8px;margin-top:4px;}
+.save-btn{
+  flex:1;background:var(--accent);color:var(--accent-text);
+  border:none;border-radius:var(--radius-sm);padding:13px;
+  font-size:15px;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:opacity .15s;
+}
+.save-btn:hover{opacity:.85;}
+.save-toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--accent);color:#fff;
+  padding:8px 20px;border-radius:20px;font-size:14px;font-weight:500;
+  opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;
+}
+.save-toast.show{opacity:1;}
+
+/* ══════════════════════════════
+   EROGENOUS ZONE (new)
+══════════════════════════════ */
+.ez-section{
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  padding:16px 18px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:14px;
+  margin-bottom:10px;
+}
+.ez-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.kw-tag{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 12px;border-radius:20px;font-size:14px;font-weight:500;
+  background:var(--btn-idle);color:var(--btn-idle-text);
+  border:0.5px solid rgba(160,190,220,0.3);cursor:pointer;
+}
+.kw-tag .hash{font-size:13px;color:var(--text-muted);}
+.kw-tag .x{font-size:13px;color:var(--text-muted);margin-left:1px;}
+.kw-tag:hover .x{color:#c04030;}
+.add-tag{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 12px;border-radius:20px;font-size:14px;font-weight:500;
+  background:transparent;color:var(--text-muted);
+  border:0.5px dashed rgba(160,190,220,0.5);
+  cursor:pointer;font-family:inherit;
+}
+.add-tag:hover{background:var(--btn-idle);border-style:solid;}
+.ez-bottom-row{display:flex;gap:10px;margin-top:4px;}
+.ez-bottom-row .save-btn{flex:1;border-radius:var(--radius-md);padding:14px;font-size:15px;font-weight:700;}
+
+/* ══════════════════════════════
+   PRIVATE VAULT
+══════════════════════════════ */
+.vault-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:60px 20px;text-align:center;
+}
+.vault-icon{
+  width:64px;height:64px;border-radius:18px;
+  background:var(--card);border:0.5px solid var(--card-border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);
+}
+.vault-icon svg{width:28px;height:28px;}
+.vault-title{font-size:17px;font-weight:600;color:var(--text-secondary);}
+.vault-desc{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:240px;}
+
+/* loading spinner */
+.sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-card{
+  background:var(--card);border-radius:var(--radius-md);
+  border:0.5px solid var(--card-border);
+  padding:18px 16px;display:flex;align-items:center;gap:10px;
+}
+.loading-text{font-size:14px;color:var(--text-muted);}
 </style>
 </head>
 <body>
 <div class="shell">
-  <div class="popup">
-    <div class="topbar"><div id="top-left"><span class="topbar-title">🍑 Peaches & Cream</span></div><div style="color:var(--text-muted)">✕</div></div>
-    <div class="scroll-area">
-      <div id="screen-home"><div class="app-grid">
-        <div class="app-card" onclick="goTo('redflag')">🚩<br>Red Flag</div>
-        <div class="app-card" onclick="goTo('lasttouch')">🕒<br>Last Touch</div>
-      </div></div>
-      <div id="screen-redflag" style="display:none;">
-        <div class="flag-card"><div style="font-size:12px; color:var(--text-muted);">Q 1 / 7</div><div class="flag-text">네가 싫다고 한 걸 다음엔 더 천천히 다시 시도한다</div></div>
-        <div class="choice-row" id="rf-choices"><button class="cbtn" onclick="rfChoose('red')">🚩</button><button class="cbtn" onclick="rfChoose('good')">😍</button></div>
-        <div class="char-reply" id="rf-reply"><div class="char-header"><div class="char-avatar">M</div><strong>Max</strong></div><div class="char-body" id="rf-msg"></div></div>
-        <button id="rf-next" style="display:none; width:100%; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:10px;" onclick="goTo('home')">다음 카드 →</button>
-      </div>
-      <div id="screen-lasttouch" style="display:none;"><div class="lt-item"><div class="lt-dot"></div><span class="lt-title">서툰 키스가 부른 한밤중의 자위</span><span>2024.05.24</span></div></div>
+<div class="popup" id="popup">
+
+  <!-- ══ TOPBAR ══ -->
+  <div class="topbar" id="topbar">
+    <div id="topbar-left">
+      <span class="topbar-title">🍑 Peaches &amp; Cream</span>
+    </div>
+    <div id="topbar-right">
+      <div class="close-btn" onclick="closeApp()">✕</div>
     </div>
   </div>
-</div>
+  <div class="hdivider"></div>
+
+  <!-- ══ 스크롤 영역 ══ -->
+  <div class="scroll-area" id="scroll-area">
+
+    <!-- ── HOME ── -->
+    <div id="screen-home">
+      <div class="section-label">APPS</div>
+      <div class="app-grid">
+        <div class="app-card" onclick="goTo('profile')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <span class="app-name">Profile</span>
+        </div>
+        <div class="app-card" onclick="goTo('erogenous')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <span class="app-name">Erogenous Zone</span>
+        </div>
+        <div class="app-card" onclick="goTo('lasttouch')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <span class="app-name">Last Touch</span>
+        </div>
+        <div class="app-card" onclick="goTo('vault')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <span class="app-name">Private Vault</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LAST TOUCH ── -->
+    <div id="screen-lasttouch" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <span class="section-label" style="margin:0;">기록</span>
+        <span class="lt-counter" id="lt-counter">0 / 0</span>
+      </div>
+      <div class="lt-list" id="lt-list"></div>
+      <button class="ai-btn" id="lt-ai-btn" onclick="ltAIFetch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
+        AI 불러오기
+      </button>
+      <!-- 카드 팝업 -->
+      <div class="card-overlay" id="lt-card-overlay" style="display:none;" onclick="ltCloseCard(event)">
+        <div class="touch-card" id="lt-touch-card" onclick="event.stopPropagation()">
+          <div class="tc-top-bar"></div>
+          <button class="tc-close" onclick="ltCloseCardDirect()">✕</button>
+          <div class="tc-body" id="tc-body"></div>
+          <div class="tc-footer">
+            <button class="tc-pin-btn" id="tc-pin-btn" onclick="ltTogglePin()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17z"/></svg>
+              Pin
+            </button>
+            <span class="tc-date" id="tc-date"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE (new) ── -->
+    <div id="screen-profile" style="display:none;">
+
+      <!-- Basic Info -->
+      <div class="profile-section">
+        <div class="ps-label">Basic Info</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Height</span>
+          <div class="ps-input-wrap">
+            <input class="ps-input" id="p-height" type="number" placeholder="165"/>
+            <span class="ps-unit">cm</span>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Weight</span>
+          <div class="ps-input-wrap">
+            <input class="ps-input" id="p-weight" type="number" placeholder="52"/>
+            <span class="ps-unit">kg</span>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Eye color</span>
+          <input class="ps-text-input" id="p-eye" type="text" placeholder="Dark brown"/>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Hair</span>
+          <input class="ps-text-input" id="p-hair" type="text" placeholder="Black, long"/>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Skin tone</span>
+          <div class="btn-group" id="bg-skinTone">
+            <button class="pg-btn" data-val="Light">Light</button>
+            <button class="pg-btn" data-val="Medium">Medium</button>
+            <button class="pg-btn" data-val="Dark">Dark</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Body type</span>
+          <div class="btn-group" id="bg-bodyType">
+            <button class="pg-btn" data-val="Slim">Slim</button>
+            <button class="pg-btn" data-val="Average">Average</button>
+            <button class="pg-btn" data-val="Glamorous">Glamorous</button>
+            <button class="pg-btn" data-val="Athletic">Athletic</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Physical Features -->
+      <div class="profile-section">
+        <div class="ps-label">Physical Features</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Bust</span>
+          <div class="btn-group" id="bg-chest">
+            <button class="pg-btn" data-val="A">A</button>
+            <button class="pg-btn" data-val="B">B</button>
+            <button class="pg-btn" data-val="C">C</button>
+            <button class="pg-btn" data-val="D">D</button>
+            <button class="pg-btn" data-val="D+">D+</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Butt</span>
+          <div class="btn-group" id="bg-butt">
+            <button class="pg-btn" data-val="Small &amp; firm">Small &amp; firm</button>
+            <button class="pg-btn" data-val="Large &amp; full">Large &amp; full</button>
+            <button class="pg-btn" data-val="Average">Average</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Waist-hip</span>
+          <div class="btn-group" id="bg-waistHip">
+            <button class="pg-btn" data-val="Slim">Slim</button>
+            <button class="pg-btn" data-val="Hourglass">Hourglass</button>
+            <button class="pg-btn" data-val="Full">Full</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Skin texture</span>
+          <div class="btn-group" id="bg-skinTexture">
+            <button class="pg-btn" data-val="Soft">Soft</button>
+            <button class="pg-btn" data-val="Firm">Firm</button>
+            <button class="pg-btn" data-val="Average">Average</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Body hair</span>
+          <div class="btn-group" id="bg-bodyHair">
+            <button class="pg-btn" data-val="Yes">Yes</button>
+            <button class="pg-btn" data-val="None">None</button>
+            <button class="pg-btn" data-val="A little">A little</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Peach color</span>
+          <input class="ps-text-input" id="p-peachcolor" type="text" placeholder="e.g. pink, peach"/>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Venus dimples</span>
+          <div class="btn-group" id="bg-venusDimples">
+            <button class="pg-btn" data-val="Yes">Yes</button>
+            <button class="pg-btn" data-val="No">No</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vibe / Scent -->
+      <div class="profile-section">
+        <div class="ps-label">Vibe / Scent</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Scent type</span>
+          <input class="ps-text-input" id="p-scent" type="text" placeholder="Enter your scent type"/>
+        </div>
+      </div>
+
+      <div class="save-row">
+        <button class="save-btn" onclick="saveProfile()">Save</button>
+      </div>
+    </div>
+
+    <!-- ── EROGENOUS ZONE (new) ── -->
+    <div id="screen-erogenous" style="display:none;">
+
+      <div class="ez-section">
+        <div class="ez-label">Body Response</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Tightness</span>
+          <div class="btn-group" id="bg-tightness">
+            <button class="pg-btn" data-val="Normal">Normal</button>
+            <button class="pg-btn" data-val="Tight">Tight</button>
+            <button class="pg-btn" data-val="Extreme">Extreme</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Lubrication</span>
+          <div class="btn-group" id="bg-lubrication">
+            <button class="pg-btn" data-val="Dry">Dry</button>
+            <button class="pg-btn" data-val="Moist">Moist</button>
+            <button class="pg-btn" data-val="Soaking">Soaking</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Texture</span>
+          <div class="btn-group" id="bg-texture">
+            <button class="pg-btn" data-val="Creamy">Creamy</button>
+            <button class="pg-btn" data-val="Watery">Watery</button>
+            <button class="pg-btn" data-val="Mixed">Mixed</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Squirting</span>
+          <div class="btn-group" id="bg-squirting">
+            <button class="pg-btn" data-val="None">None</button>
+            <button class="pg-btn" data-val="Rare">Rare</button>
+            <button class="pg-btn" data-val="Frequent">Frequent</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Responsivity</span>
+          <div class="btn-group" id="bg-responsivity">
+            <button class="pg-btn" data-val="Normal">Normal</button>
+            <button class="pg-btn" data-val="High">High</button>
+            <button class="pg-btn" data-val="Extreme">Extreme</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Moaning</span>
+          <div class="btn-group" id="bg-moaning">
+            <button class="pg-btn" data-val="Muted">Muted</button>
+            <button class="pg-btn" data-val="Vocal">Vocal</button>
+            <button class="pg-btn" data-val="Passionate">Passionate</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Flushing</span>
+          <div class="btn-group" id="bg-flushing">
+            <button class="pg-btn" data-val="Pale">Pale</button>
+            <button class="pg-btn" data-val="Rosy">Rosy</button>
+            <button class="pg-btn" data-val="Deep">Deep</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ez-section">
+        <div class="ez-label">Sexual Traits</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Experience</span>
+          <div class="btn-group" id="bg-experience">
+            <button class="pg-btn" data-val="Novice">Novice</button>
+            <button class="pg-btn" data-val="Skilled">Skilled</button>
+            <button class="pg-btn" data-val="Master">Master</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Preferred Vibe</span>
+          <div class="btn-group" id="bg-vibe">
+            <button class="pg-btn" data-val="Romantic">Romantic</button>
+            <button class="pg-btn" data-val="Rough">Rough</button>
+            <button class="pg-btn" data-val="Slow">Slow</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ez-section">
+        <div class="ez-label">Sensitive Zones</div>
+        <div class="tag-wrap" id="ez-sensitive-wrap">
+          <button class="add-tag" onclick="ezAddTag('ez-sensitive-wrap')">+ Add</button>
+        </div>
+      </div>
+
+      <div class="ez-section">
+        <div class="ez-label">Sensory Feedback</div>
+        <div class="tag-wrap" id="ez-sensory-wrap">
+          <button class="add-tag" onclick="ezAddTag('ez-sensory-wrap')">+ Add</button>
+        </div>
+      </div>
+
+      <div class="ez-bottom-row">
+        <button class="ai-btn" id="ez-ai-btn" onclick="ezAIFetch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
+          AI 불러오기
+        </button>
+        <button class="save-btn" onclick="saveErogenous()">Save</button>
+      </div>
+    </div>
+
+    <!-- ── PRIVATE VAULT ── -->
+    <div id="screen-vault" style="display:none;">
+      <div class="vault-empty">
+        <div class="vault-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <div class="vault-title">Private Vault</div>
+        <div class="vault-desc">아직 준비 중이에요.<br/>곧 업데이트될 예정입니다.</div>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+</div><!-- /popup -->
+</div><!-- /shell -->
+
+<div class="save-toast" id="save-toast">저장됐어요 ✓</div>
+
 <script>
-function goTo(s) {
-  document.getElementById('screen-home').style.display = s==='home'?'block':'none';
-  document.getElementById('screen-redflag').style.display = s==='redflag'?'block':'none';
-  document.getElementById('screen-lasttouch').style.display = s==='lasttouch'?'block':'none';
-  document.getElementById('top-left').innerHTML = s==='home' ? '<span class="topbar-title">🍑 Peaches & Cream</span>' : `<button class="back-btn" onclick="goTo('home')">← BACK</button>`;
+// ─────────────────────────────────────────────
+// Bridge
+// ─────────────────────────────────────────────
+let store    = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
+let charName = '{{char}}';
+let generate = null;
+let getChat  = null;
+
+function syncStore() {
+  if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
 }
-function rfChoose(t) {
-  document.getElementById('rf-choices').style.display = 'none';
-  document.getElementById('rf-reply').style.display = 'block';
-  document.getElementById('rf-next').style.display = 'block';
-  document.getElementById('rf-msg').innerText = t==='red' ? "싫다고 했지만 네 몸은 내 손길을 더 원하고 있잖아." : "역시 넌 이런 걸 즐길 줄 알았어. 더 천천히 느껴봐.";
+
+function initBridge() {
+  const p = window.parent;
+  store    = (p && p.__PC_STORE__)    || store;
+  charName = (p && p.__PC_CHAR__)     || charName;
+  generate = (p && p.__PC_GENERATE__) || null;
+  getChat  = (p && p.__PC_GET_CHAT__) || null;
+  console.log('[PC] bridge initialized, char:', charName);
+}
+
+window.__PC_ON_BRIDGE__ = function() {
+  initBridge();
+};
+
+if (window.parent && window.parent.__PC_STORE__) initBridge();
+
+// ─────────────────────────────────────────────
+// 화면 라우터
+// ─────────────────────────────────────────────
+let currentScreen = 'home';
+const screens = ['home','lasttouch','profile','erogenous','vault'];
+
+function goTo(id) {
+  screens.forEach(s => {
+    document.getElementById('screen-' + s).style.display = 'none';
+  });
+  document.getElementById('screen-' + id).style.display = 'block';
+  currentScreen = id;
+  updateTopbar(id);
+  document.getElementById('scroll-area').scrollTop = 0;
+
+  if (id === 'lasttouch') renderLTList();
+  if (id === 'profile')   loadProfile();
+  if (id === 'erogenous') loadErogenous();
+}
+
+function updateTopbar(id) {
+  const left  = document.getElementById('topbar-left');
+  const right = document.getElementById('topbar-right');
+  const labels = {
+    home:      '',
+    lasttouch: 'LAST TOUCH',
+    profile:   'PROFILE',
+    erogenous: 'EROGENOUS ZONE',
+    vault:     'PRIVATE VAULT',
+  };
+
+  if (id === 'home') {
+    left.innerHTML  = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
+    right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
+  } else {
+    left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
+    right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">${labels[id]}</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  }
+}
+
+function closeApp() {
+  if (window.parent.__PC_CLOSE__) window.parent.__PC_CLOSE__();
+  else window.close();
+}
+
+// ─────────────────────────────────────────────
+// LAST TOUCH
+// ─────────────────────────────────────────────
+let ltActiveCard = null;
+
+function renderLTList() {
+  syncStore();
+  const cards  = store.lastTouch.cards  || [];
+  const pinned = store.lastTouch.pinned || [];
+  const total  = cards.length;
+  document.getElementById('lt-counter').textContent = total + ' / 5';
+
+  const list = document.getElementById('lt-list');
+  if (total === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">아직 기록이 없어요</div>';
+    return;
+  }
+
+  list.innerHTML = cards.map((c, i) => {
+    const isPinned = pinned.includes(c.id);
+    return `
+      <div class="lt-item${i === 0 ? ' active' : ''}" id="lt-item-${c.id}" onclick="ltOpenCard('${c.id}')">
+        <div class="lt-item-left">
+          <div class="lt-dot"></div>
+          <span class="lt-item-title">${esc(c.title)}</span>
+        </div>
+        <div class="lt-item-right">
+          <span class="lt-item-date">${esc(c.date)}</span>
+          <div class="lt-menu-btn" onclick="ltMenuToggle(event,'${c.id}')">
+            ⋮
+            <div class="lt-dropdown" id="ltdd-${c.id}">
+              <div class="lt-dd-item" onclick="ltTogglePin('${c.id}',event)">${isPinned ? '📌 핀 해제' : '📌 핀'}</div>
+              <div class="lt-dd-item danger" onclick="ltDelete('${c.id}',event)">🗑 삭제</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function ltMenuToggle(e, id) {
+  e.stopPropagation();
+  document.querySelectorAll('.lt-dropdown').forEach(d => {
+    if (d.id !== 'ltdd-' + id) d.classList.remove('open');
+  });
+  document.getElementById('ltdd-' + id).classList.toggle('open');
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.lt-dropdown').forEach(d => d.classList.remove('open'));
+});
+
+function ltOpenCard(id) {
+  syncStore();
+  const card = store.lastTouch.cards.find(c => c.id === id);
+  if (!card) return;
+  ltActiveCard = card;
+
+  const pinned  = store.lastTouch.pinned || [];
+  const isPinned = pinned.includes(id);
+
+  const body = document.getElementById('tc-body');
+  body.innerHTML = `
+    <div class="tc-title">${esc(card.title)}</div>
+    <div class="tc-meta">${esc(card.date || '')}${card.place ? ' · ' + esc(card.place) : ''}</div>
+    <div class="tc-tag-row">
+      ${card.mood ? `<span class="tc-tag mood">${esc(card.mood)}</span>` : ''}
+      ${(card.positions || []).map(p => `<span class="tc-tag pos">${esc(p)}</span>`).join('')}
+    </div>
+    <div class="tc-section-label">{{CHAR}}'S REVIEW</div>
+    <div class="tc-review">${esc(card.charReview || '-')}</div>
+    ${card.genitalComment ? `
+      <div class="tc-genital">
+        <div class="tc-gen-header">
+          <span class="tc-gen-emoji">🍆</span>
+          <span class="tc-condom-badge ${card.condom ? 'safe' : ''}">${card.condom ? 'CONDOM' : 'NO CONDOM'}</span>
+        </div>
+        <div class="tc-gen-text">${esc(card.genitalComment)}</div>
+        ${card.genitalCommentKo ? `<div class="tc-gen-ko">${esc(card.genitalCommentKo)}</div>` : ''}
+      </div>` : ''}
+  `.replace(/\{\{CHAR\}\}/g, charName);
+
+  document.getElementById('tc-date').textContent = card.date || '';
+  const pinBtn = document.getElementById('tc-pin-btn');
+  pinBtn.className = 'tc-pin-btn' + (isPinned ? ' pinned' : '');
+
+  document.getElementById('lt-card-overlay').style.display = 'flex';
+}
+
+function ltCloseCard(e) {
+  if (e.target === document.getElementById('lt-card-overlay')) ltCloseCardDirect();
+}
+function ltCloseCardDirect() {
+  document.getElementById('lt-card-overlay').style.display = 'none';
+  ltActiveCard = null;
+}
+
+function ltTogglePin(id, e) {
+  if (e) e.stopPropagation();
+  const targetId = id || (ltActiveCard && ltActiveCard.id);
+  if (!targetId) return;
+  if (window.parent.__PC_STORE__) {
+    const pinned = window.parent.__PC_STORE__.lastTouch.pinned;
+    const idx    = pinned.indexOf(targetId);
+    if (idx >= 0) pinned.splice(idx, 1);
+    else pinned.push(targetId);
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+  }
+  renderLTList();
+  if (ltActiveCard) ltOpenCard(ltActiveCard.id);
+}
+
+function ltDelete(id, e) {
+  if (e) e.stopPropagation();
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.lastTouch.cards  = window.parent.__PC_STORE__.lastTouch.cards.filter(c => c.id !== id);
+    window.parent.__PC_STORE__.lastTouch.pinned = window.parent.__PC_STORE__.lastTouch.pinned.filter(p => p !== id);
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+  }
+  renderLTList();
+}
+
+async function ltAIFetch() {
+  if (!generate || !getChat) {
+    alert('ST와 연결되지 않았어요.');
+    return;
+  }
+  const btn = document.getElementById('lt-ai-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="sp"></div> 분석 중...';
+
+  try {
+    const messages = getChat(20);
+    const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
+
+    const systemPrompt = `You are an analyst for a sexual roleplay chat logger.
+Analyze the provided chat log and extract sexual encounter records.
+For each distinct sexual encounter found, output a JSON object.
+Return ONLY a JSON array (no markdown, no explanation).
+Each object must have:
+- id: unique string (timestamp-based)
+- title: short evocative Korean title for the encounter
+- date: today's date as YYYY.MM.DD
+- place: location if mentioned, else null
+- mood: atmosphere/mood in Korean (e.g. "앵그리 섹스")
+- positions: array of up to 3 sex positions mentioned (Korean or English)
+- charReview: 4-sentence explicit review from {{char}}'s perspective in Korean
+- genitalComment: explicit comment about genitals in English
+- genitalCommentKo: Korean translation of genitalComment
+- condom: boolean (true if condom used, false if not)
+If no sexual content found, return empty array [].
+Maximum 5 records. Most recent first.`;
+
+    const result = await generate(systemPrompt, `Chat log:\n${chatText}`);
+    let cards = [];
+    try {
+      const clean = result.replace(/```json|```/g, '').trim();
+      cards = JSON.parse(clean);
+    } catch(e) {
+      console.warn('[PC] JSON parse error', e, result);
+    }
+
+    if (!Array.isArray(cards) || cards.length === 0) {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+      alert('NSFW 내용을 찾지 못했어요.');
+      return;
+    }
+
+    if (window.parent.__PC_STORE__) {
+      const existing    = window.parent.__PC_STORE__.lastTouch.cards;
+      const pinnedIds   = window.parent.__PC_STORE__.lastTouch.pinned;
+      const pinnedCards = existing.filter(c => pinnedIds.includes(c.id));
+      const newCards    = [...cards, ...pinnedCards].slice(0, 5);
+      window.parent.__PC_STORE__.lastTouch.cards = newCards;
+      if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    }
+    renderLTList();
+  } catch(err) {
+    console.error('[PC] ltAIFetch error', err);
+    alert('AI 호출 중 오류가 발생했어요.');
+  }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+}
+
+// ─────────────────────────────────────────────
+// PROFILE
+// ─────────────────────────────────────────────
+function loadProfile() {
+  syncStore();
+  const p = store.profile || {};
+
+  document.getElementById('p-height').value    = p.height     || '';
+  document.getElementById('p-weight').value    = p.weight     || '';
+  document.getElementById('p-eye').value       = p.eyeColor   || '';
+  document.getElementById('p-hair').value      = p.hair       || '';
+  document.getElementById('p-peachcolor').value = p.peachColor || '';
+  document.getElementById('p-scent').value     = p.scent      || '';
+
+  ['skinTone','bodyType','chest','butt','waistHip','skinTexture','bodyHair','venusDimples'].forEach(key => {
+    const group = document.getElementById('bg-' + key);
+    if (!group) return;
+    group.querySelectorAll('.pg-btn').forEach(btn => {
+      btn.classList.toggle('sel', btn.dataset.val === p[key]);
+    });
+  });
+
+  // btn-group click handlers (re-bind each load)
+  document.querySelectorAll('#screen-profile .btn-group').forEach(group => {
+    group.onclick = e => {
+      const btn = e.target.closest('.pg-btn');
+      if (!btn) return;
+      group.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    };
+  });
+}
+
+function saveProfile() {
+  const profile = {
+    height:      document.getElementById('p-height').value,
+    weight:      document.getElementById('p-weight').value,
+    eyeColor:    document.getElementById('p-eye').value,
+    hair:        document.getElementById('p-hair').value,
+    peachColor:  document.getElementById('p-peachcolor').value,
+    scent:       document.getElementById('p-scent').value,
+    skinTone:    getSelected('bg-skinTone'),
+    bodyType:    getSelected('bg-bodyType'),
+    chest:       getSelected('bg-chest'),
+    butt:        getSelected('bg-butt'),
+    waistHip:    getSelected('bg-waistHip'),
+    skinTexture: getSelected('bg-skinTexture'),
+    bodyHair:    getSelected('bg-bodyHair'),
+    venusDimples:getSelected('bg-venusDimples'),
+  };
+
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.profile = { ...(window.parent.__PC_STORE__.profile || {}), ...profile };
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  }
+  showToast('Saved ✓');
+}
+
+// ─────────────────────────────────────────────
+// EROGENOUS ZONE
+// ─────────────────────────────────────────────
+function loadErogenous() {
+  syncStore();
+  const ez = store.erogenous || {};
+
+  ['tightness','lubrication','texture','squirting','responsivity','moaning','flushing','experience','vibe'].forEach(key => {
+    const group = document.getElementById('bg-' + key);
+    if (!group) return;
+    group.querySelectorAll('.pg-btn').forEach(btn => {
+      btn.classList.toggle('sel', btn.dataset.val === ez[key]);
+    });
+  });
+
+  // btn-group click handlers
+  document.querySelectorAll('#screen-erogenous .btn-group').forEach(group => {
+    group.onclick = e => {
+      const btn = e.target.closest('.pg-btn');
+      if (!btn) return;
+      group.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    };
+  });
+
+  // Sensitive Zones tags
+  const sensitiveWrap = document.getElementById('ez-sensitive-wrap');
+  const addSensBtn = sensitiveWrap.querySelector('.add-tag');
+  // clear existing tags
+  sensitiveWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
+  (ez.sensitiveZones || []).forEach(val => {
+    sensitiveWrap.insertBefore(makeKwTag(val, 'ez-sensitive-wrap'), addSensBtn);
+  });
+
+  // Sensory Feedback tags
+  const sensoryWrap = document.getElementById('ez-sensory-wrap');
+  const addSensoryBtn = sensoryWrap.querySelector('.add-tag');
+  sensoryWrap.querySelectorAll('.kw-tag').forEach(t => t.remove());
+  (ez.sensoryFeedback || []).forEach(val => {
+    sensoryWrap.insertBefore(makeKwTag(val, 'ez-sensory-wrap'), addSensoryBtn);
+  });
+}
+
+function makeKwTag(val, wrapId) {
+  const tag = document.createElement('div');
+  tag.className = 'kw-tag';
+  tag.innerHTML = `<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
+  tag.onclick = () => tag.remove();
+  return tag;
+}
+
+function ezAddTag(wrapId) {
+  const val = prompt('Add:');
+  if (!val || !val.trim()) return;
+  const wrap   = document.getElementById(wrapId);
+  const addBtn = wrap.querySelector('.add-tag');
+  wrap.insertBefore(makeKwTag(val.trim(), wrapId), addBtn);
+}
+
+function getEzTags(wrapId) {
+  const wrap = document.getElementById(wrapId);
+  return Array.from(wrap.querySelectorAll('.kw-tag')).map(t => {
+    return t.textContent.replace('×','').replace('#','').trim();
+  });
+}
+
+function saveErogenous() {
+  const erogenous = {
+    tightness:      getSelected('bg-tightness'),
+    lubrication:    getSelected('bg-lubrication'),
+    texture:        getSelected('bg-texture'),
+    squirting:      getSelected('bg-squirting'),
+    responsivity:   getSelected('bg-responsivity'),
+    moaning:        getSelected('bg-moaning'),
+    flushing:       getSelected('bg-flushing'),
+    experience:     getSelected('bg-experience'),
+    vibe:           getSelected('bg-vibe'),
+    sensitiveZones: getEzTags('ez-sensitive-wrap'),
+    sensoryFeedback:getEzTags('ez-sensory-wrap'),
+  };
+
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...erogenous };
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  }
+  showToast('Saved ✓');
+}
+
+async function ezAIFetch() {
+  if (!generate || !getChat) {
+    alert('ST와 연결되지 않았어요.');
+    return;
+  }
+  const btn = document.getElementById('ez-ai-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="sp"></div> 분석 중...';
+
+  try {
+    const messages = getChat(20);
+    const chatText = messages.map(m => `[${m.name || m.role}]: ${m.content}`).join('\n');
+
+    const systemPrompt = `You are an analyst extracting erogenous zone and body response data from a sexual roleplay chat.
+Analyze the chat and return ONLY a JSON object (no markdown) with these keys if found:
+- tightness: "Normal"|"Tight"|"Extreme"
+- lubrication: "Dry"|"Moist"|"Soaking"
+- texture: "Creamy"|"Watery"|"Mixed"
+- squirting: "None"|"Rare"|"Frequent"
+- responsivity: "Normal"|"High"|"Extreme"
+- moaning: "Muted"|"Vocal"|"Passionate"
+- flushing: "Pale"|"Rosy"|"Deep"
+- experience: "Novice"|"Skilled"|"Master"
+- vibe: "Romantic"|"Rough"|"Slow"
+- sensitiveZones: array of body parts mentioned as sensitive (English)
+- sensoryFeedback: array of sensory keywords mentioned (English)
+Only include keys where evidence exists in chat. If nothing found return {}.`;
+
+    const result = await generate(systemPrompt, `Chat log:\n${chatText}`);
+    let data = {};
+    try {
+      const clean = result.replace(/```json|```/g, '').trim();
+      data = JSON.parse(clean);
+    } catch(e) {
+      console.warn('[PC] EZ JSON parse error', e);
+    }
+
+    if (Object.keys(data).length === 0) {
+      showToast('데이터를 찾지 못했어요');
+    } else {
+      if (window.parent.__PC_STORE__) {
+        window.parent.__PC_STORE__.erogenous = { ...(window.parent.__PC_STORE__.erogenous || {}), ...data };
+        if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+      }
+      loadErogenous();
+      showToast('AI 불러오기 완료 ✓');
+    }
+  } catch(err) {
+    console.error('[PC] ezAIFetch error', err);
+    alert('AI 호출 중 오류가 발생했어요.');
+  }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 불러오기';
+}
+
+// ─────────────────────────────────────────────
+// 유틸
+// ─────────────────────────────────────────────
+function getSelected(groupId) {
+  const group = document.getElementById(groupId);
+  if (!group) return '';
+  const sel = group.querySelector('.pg-btn.sel');
+  return sel ? sel.dataset.val : '';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('save-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;')
+    .replace(/\n/g,'<br>');
 }
 </script>
 </body>
