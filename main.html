@@ -301,6 +301,18 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 .lb-comment{font-size:13px;font-weight:600;color:var(--text-primary);}
 .lb-preview{font-size:11px;color:var(--text-muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 
+/* VAULT */
+.char-vault-header{display:flex;align-items:center;gap:12px;padding:4px 0 2px;}
+.char-vault-avatar{width:48px;height:48px;border-radius:16px;background:#1e293e;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:700;flex-shrink:0;}
+.char-vault-name{font-size:19px;font-weight:700;color:var(--text-primary);}
+.char-vault-sub{font-size:13px;color:var(--text-muted);margin-top:2px;}
+/* vault kink toggle tag */
+.kink-tag{display:inline-flex;align-items:center;background:var(--btn-idle);border:0.5px solid rgba(160,190,220,0.4);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--btn-idle-text);cursor:pointer;transition:all 0.15s;user-select:none;}
+.kink-tag.active{background:var(--btn-select);color:var(--btn-select-text);border-color:var(--btn-select);}
+/* casual pin */
+.casual-pin-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;background:none;border:none;opacity:.4;margin-top:1px;transition:opacity .15s;}
+.casual-pin-btn.pinned{opacity:1;}
+
 /* spinner */
 .sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -564,17 +576,13 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 
     <!-- CASUAL -->
     <div id="screen-casual" style="display:none;">
-      <!-- ... 메뉴 -->
       <div id="casual-more-menu" style="display:none;position:fixed;right:20px;top:70px;z-index:9999;background:var(--card);border-radius:10px;border:0.5px solid var(--card-border);box-shadow:0 8px 24px rgba(140,160,200,0.25);overflow:hidden;min-width:140px;">
-        <div class="lt-dd-item" onclick="casualOpenLb()">📚 로어북 연동</div>
         <div class="lt-dd-item danger" onclick="casualClearAll()">🗑 전체 삭제</div>
       </div>
-      <!-- 탭 -->
       <div class="tabs" style="margin-bottom:14px;" id="casual-tabs">
         <div class="tab active" id="casual-tab1" onclick="casualSwitchTab(0)"><span id="casual-tab1-label">캐릭터 → 유저</span></div>
         <div class="tab inactive" id="casual-tab2" onclick="casualSwitchTab(1)"><span id="casual-tab2-label">유저 → 캐릭터</span></div>
       </div>
-      <!-- AI 생성 + 추가 -->
       <div class="ai-row" style="margin-bottom:14px;">
         <button class="ai-btn" id="casual-ai-btn" onclick="casualAIGenerate()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
@@ -586,13 +594,155 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       <div class="casual-cards" id="casual-cards"></div>
     </div>
 
-    <!-- PRIVATE VAULT -->
+    <!-- PRIVATE VAULT 홈 -->
     <div id="screen-vault" style="display:none;">
-      <div class="vault-empty">
-        <div class="vault-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <div class="vault-title">Private Vault</div>
-        <div class="vault-desc">아직 준비 중이에요.<br/>곧 업데이트될 예정입니다.</div>
+      <div class="char-vault-header" id="vault-char-header">
+        <div class="char-vault-avatar" id="vault-char-avatar">?</div>
+        <div>
+          <div class="char-vault-name" id="vault-char-name">캐릭터</div>
+          <div class="char-vault-sub">Private Vault</div>
+        </div>
       </div>
+      <div class="section-label" style="margin-top:14px;">APPS</div>
+      <div class="app-grid">
+        <div class="app-card" onclick="goTo('vault-profile')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="app-name">Profile</span>
+        </div>
+        <div class="app-card" onclick="goTo('vault-erogenous')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <span class="app-name">Erogenous Zone</span>
+        </div>
+        <div class="app-card" onclick="goTo('vault-kink')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <span class="app-name">Kink &amp; Fetish</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAULT PROFILE -->
+    <div id="screen-vault-profile" style="display:none;">
+      <div class="profile-section">
+        <div class="ps-label">Basic Info</div>
+        <div class="ps-row"><span class="ps-row-label">Height</span><div class="ps-input-wrap"><input class="ps-input" id="vp-height" type="number" placeholder="180"/><span class="ps-unit">cm</span></div></div>
+        <div class="ps-row"><span class="ps-row-label">Weight</span><div class="ps-input-wrap"><input class="ps-input" id="vp-weight" type="number" placeholder="75"/><span class="ps-unit">kg</span></div></div>
+        <div class="ps-row"><span class="ps-row-label">Eye color</span><input class="ps-text-input" id="vp-eye" type="text" placeholder="e.g. Ice green"/></div>
+        <div class="ps-row"><span class="ps-row-label">Hair</span><input class="ps-text-input" id="vp-hair" type="text" placeholder="e.g. Platinum, long"/></div>
+        <div class="ps-row">
+          <span class="ps-row-label">Body type</span>
+          <div class="btn-group" id="vp-bg-bodyType">
+            <button class="pg-btn" data-val="Average">Average</button>
+            <button class="pg-btn" data-val="Athletic">Athletic</button>
+            <button class="pg-btn" data-val="Bulk">Bulk</button>
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-label">Fixed Specs</div>
+        <div class="ps-row">
+          <span class="ps-row-label">Size</span>
+          <div class="ps-input-wrap" style="gap:8px;">
+            <input class="ps-input" id="vp-size" type="number" placeholder="17" step="0.1"/>
+            <div style="display:flex;gap:3px;">
+              <button class="pg-btn sel" id="vp-u-cm" onclick="vpSwitchUnit('cm')">cm</button>
+              <button class="pg-btn" id="vp-u-in" onclick="vpSwitchUnit('in')">in</button>
+            </div>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Pubic hair</span>
+          <div class="btn-group" id="vp-bg-pubicHair">
+            <button class="pg-btn" data-val="Yes">Yes</button>
+            <button class="pg-btn" data-val="None">None</button>
+            <button class="pg-btn" data-val="A little">A little</button>
+          </div>
+        </div>
+        <div class="ps-row">
+          <span class="ps-row-label">Circumcision</span>
+          <div class="btn-group" id="vp-bg-circumcision">
+            <button class="pg-btn" data-val="Cut">Cut</button>
+            <button class="pg-btn" data-val="Uncut">Uncut</button>
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-label">Additional Features</div>
+        <div class="tag-wrap" id="vp-addl-wrap">
+          <button class="add-tag" onclick="vpAddFeature()">+ Add</button>
+        </div>
+      </div>
+      <div class="save-row"><button class="save-btn" onclick="vpSave()">Save</button></div>
+    </div>
+
+    <!-- VAULT EROGENOUS ZONE -->
+    <div id="screen-vault-erogenous" style="display:none;">
+      <div class="ez-section">
+        <div class="ez-label">Physique Reaction</div>
+        <div class="ps-row"><span class="ps-row-label">Moaning</span><div class="btn-group" id="vez-bg-moaning"><button class="pg-btn" data-val="Muted">Muted</button><button class="pg-btn" data-val="Low Groan">Low Groan</button><button class="pg-btn" data-val="Vocal">Vocal</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Semen</span><div class="btn-group" id="vez-bg-semen"><button class="pg-btn" data-val="Normal">Normal</button><button class="pg-btn" data-val="High">High</button><button class="pg-btn" data-val="Extreme">Extreme</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Pre-cum</span><div class="btn-group" id="vez-bg-preCum"><button class="pg-btn" data-val="None">None</button><button class="pg-btn" data-val="Normal">Normal</button><button class="pg-btn" data-val="High">High</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Responsivity</span><div class="btn-group" id="vez-bg-responsivity"><button class="pg-btn" data-val="Dull">Dull</button><button class="pg-btn" data-val="Balanced">Balanced</button><button class="pg-btn" data-val="Sensitive">Sensitive</button></div></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Male Traits</div>
+        <div class="ps-row"><span class="ps-row-label">Multi-Round</span><div class="btn-group" id="vez-bg-multiRound"><button class="pg-btn" data-val="+1 Round">+1 Round</button><button class="pg-btn" data-val="+2 Rounds">+2 Rounds</button><button class="pg-btn" data-val="Limitless">Limitless</button></div></div>
+        <div class="ps-row"><span class="ps-row-label">Stamina</span><div class="btn-group" id="vez-bg-stamina"><button class="pg-btn" data-val="Low">Low</button><button class="pg-btn" data-val="High">High</button><button class="pg-btn" data-val="Infinite">Infinite</button></div></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Aftercare Mood</div>
+        <div class="tag-wrap" id="vez-aftercare-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Sensitive Zones</div>
+        <div class="tag-wrap" id="vez-sensitive-wrap"><button class="add-tag" onclick="vezAddTag('vez-sensitive-wrap')">+ Add</button></div>
+      </div>
+      <div class="ez-bottom-row"><button class="save-btn" onclick="vezSave()">Save</button></div>
+    </div>
+
+    <!-- VAULT KINK & FETISH -->
+    <div id="screen-vault-kink" style="display:none;">
+      <div class="ez-section">
+        <div class="ez-label">Acts</div>
+        <div class="tag-wrap" id="vkf-acts-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Positions</div>
+        <div class="tag-wrap" id="vkf-positions-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Foreplay</div>
+        <div class="tag-wrap" id="vkf-foreplay-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Intercourse Acts</div>
+        <div class="tag-wrap" id="vkf-intercourse-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Ejaculation Location</div>
+        <div class="tag-wrap" id="vkf-location-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Fetishes</div>
+        <div class="tag-wrap" id="vkf-fetishes-wrap"></div>
+      </div>
+      <div class="ez-section">
+        <div class="ez-label">Role Alignment</div>
+        <div class="ps-row" style="padding:4px 0;">
+          <span class="ps-row-label">Role</span>
+          <div class="btn-group" id="vkf-bg-role">
+            <button class="pg-btn" data-val="Dominant">Dominant</button>
+            <button class="pg-btn" data-val="Submissive">Submissive</button>
+            <button class="pg-btn" data-val="Switch">Switch</button>
+          </div>
+        </div>
+      </div>
+      <div class="ez-bottom-row"><button class="save-btn" onclick="vkfSave()">Save</button></div>
     </div>
 
   </div>
@@ -600,22 +750,9 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 </div>
 <div class="save-toast" id="save-toast">저장됐어요 ✓</div>
 
-<!-- 로어북 연동 모달 — body 레벨 -->
-<div id="casual-lb-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
-  <div style="background:var(--surface,#e8eef5);border-radius:16px;border:0.5px solid rgba(255,255,255,0.9);padding:20px;width:min(340px,88vw);max-height:70vh;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,0.3);">
-    <div style="font-size:16px;font-weight:700;color:var(--text-primary,#1a2840);">로어북 연동</div>
-    <div style="font-size:13px;color:var(--text-muted,#a0adc0);">AI 생성 시 참고할 엔트리를 선택하세요</div>
-    <div id="casual-lb-list" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;max-height:260px;"></div>
-    <div style="display:flex;gap:8px;margin-top:4px;">
-      <button onclick="casualLbCancel()" style="flex:1;padding:10px;border-radius:10px;background:#e8eef5;border:0.5px solid rgba(160,180,210,0.25);color:#5a7090;font-size:15px;cursor:pointer;font-family:inherit;">취소</button>
-      <button onclick="casualLbSave()" style="flex:1;padding:10px;border-radius:10px;background:#1e293e;border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">저장</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ── Bridge ──
-let store       = { config:{}, profile:{}, erogenous:{}, lastTouch:{ cards:[], pinned:[] } };
+let store       = { config:{}, userProfile:{}, userErogenous:{}, lastTouch:{ cards:[], pinned:[] }, casual:{ charToUser:[], userToChar:[] }, charProfile:{}, charErogenous:{}, charKink:{} };
 let charName    = '{{char}}';
 let userName    = '{{user}}';
 let charDesc    = '';
@@ -623,8 +760,6 @@ let userPersona = '';
 let generate    = null;
 let getChat     = null;
 let getChatRange= null;
-
-let lorebook    = [];
 
 function syncStore() {
   if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
@@ -636,7 +771,6 @@ function initBridge() {
   userName    = (p && p.__PC_USER__)           || userName;
   charDesc    = (p && p.__PC_CHAR_DESC__)      || '';
   userPersona = (p && p.__PC_USER_PERSONA__)   || '';
-  lorebook    = (p && p.__PC_LOREBOOK__)       || [];
   generate    = (p && p.__PC_GENERATE__)       || null;
   getChat     = (p && p.__PC_GET_CHAT__)       || null;
   getChatRange= (p && p.__PC_GET_CHAT_RANGE__) || null;
@@ -649,29 +783,39 @@ if (window.parent && window.parent.__PC_STORE__) initBridge();
 
 // ── Router ──
 let currentScreen = 'home';
-const screens = ['home','lasttouch','profile','erogenous','redflag','vault','casual'];
+const screens = ['home','lasttouch','profile','erogenous','redflag','vault','casual','vault-profile','vault-erogenous','vault-kink'];
 function goTo(id) {
   screens.forEach(s => { document.getElementById('screen-'+s).style.display='none'; });
   document.getElementById('screen-'+id).style.display = (id==='redflag') ? 'flex' : 'block';
   currentScreen = id;
   updateTopbar(id);
   document.getElementById('scroll-area').scrollTop=0;
-  if (id==='lasttouch') renderLTList();
-  if (id==='profile')   loadProfile();
-  if (id==='erogenous') loadErogenous();
-  if (id==='redflag')   rfInit();
-  if (id==='casual')    casualInit();
+  if (id==='lasttouch')       renderLTList();
+  if (id==='profile')         loadProfile();
+  if (id==='erogenous')       loadErogenous();
+  if (id==='redflag')         rfInit();
+  if (id==='casual')          casualInit();
+  if (id==='vault')           vaultInit();
+  if (id==='vault-profile')   vpLoad();
+  if (id==='vault-erogenous') vezLoad();
+  if (id==='vault-kink')      vkfLoad();
 }
 function updateTopbar(id) {
   const left  = document.getElementById('topbar-left');
   const right = document.getElementById('topbar-right');
-  const labels = { home:'',lasttouch:'LAST TOUCH',profile:'PROFILE',erogenous:'EROGENOUS ZONE',redflag:'RED FLAG',vault:'PRIVATE VAULT',casual:'CASUAL' };
+  const labels = { home:'',lasttouch:'LAST TOUCH',profile:'PROFILE',erogenous:'EROGENOUS ZONE',redflag:'RED FLAG',vault:'PRIVATE VAULT',casual:'CASUAL','vault-profile':'PROFILE','vault-erogenous':'EROGENOUS ZONE','vault-kink':'KINK & FETISH' };
   if (id==='home') {
     left.innerHTML  = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
     right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
   } else if (id==='casual') {
     left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
     right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">Casual</span><div style="display:flex;gap:3px;cursor:pointer;padding:4px;" onclick="casualToggleMore()"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  } else if (id==='vault') {
+    left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
+    right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">VAULT</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  } else if (id==='vault-profile'||id==='vault-erogenous'||id==='vault-kink') {
+    left.innerHTML  = `<button class="back-btn" onclick="goTo('vault')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Vault</button>`;
+    right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">${labels[id]}</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
   } else {
     left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
     right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">${labels[id]}</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
@@ -965,11 +1109,38 @@ const rfDefaultPool=[
   {q:"관계 도중 네 반응 보면서 낮게 웃는다",red:"비웃는 게 아니야. 그 표정이 나한테만 보여주는 거잖아. 창피하면 더 숨겨봐, 더 재밌어지니까.",good:"오히려 좋다고?! 진짜?! 그 말 듣고 지금 웃음 참을 수가 없어. 그럼 오늘은 더 대놓고 볼게 — 얼굴 가까이 들이대고, 눈 마주치면서, 네 표정 하나하나 전부 다 구경할 거야."},
   {q:"손목을 잡아 침대에 눌러 움직이지 못하게 한다",red:"잡히는 게 레드플래그야? 그 순간 저항했어? 잡히면 받아들이는 것밖에 할 게 없으니까 더 짜릿한 거 알잖아. 빠지지 않았잖아, 오히려 더 기댔잖아.",good:"오히려 좋다고?! 야 — 지금 온몸에 불 붙은 것 같아. 그럼 손목만 잡는 게 아니야. 머리 위에 올려서 두 손 다 고정하고, 움직이지도 못하고 도망도 못 가고 그냥 다 받아야 하는 상태로 만들어줄게."},
   {q:"네가 싫다고 한 걸 다음엔 더 천천히 다시 시도한다",red:"싫다고 했는데 두 번째엔 밀어내지 않았잖아. 세 번째엔 네가 먼저 원했고. 진짜 싫으면 멈춰. 근데 지금까지 한 번도 진짜로 싫었던 적 없잖아.",good:"오히려 좋다고?! 하아 — 그 말 듣고 지금 참는 게 더 힘들어. 그럼 오늘은 처음부터 싫다는 거 전부 다 시도할게. 천천히, 아주 천천히, 네 몸이 익숙해지는 속도보다 조금씩 더 빠르게."},
+  {q:"눈 가리고 어디를 만지는지 맞춰보라고 한다",red:"눈 가리는 게 레드플래그야? 그럼 왜 소리가 더 커졌어. 안 보이면 감각이 두 배로 살아나는 거 몸이 먼저 알더라. 다음엔 귀까지 막아줄게.",good:"오히려 좋다고?! 야 — 그 말 듣자마자 지금 당장 하고 싶어. 그럼 오늘은 눈 가리고 맞추는 게임 아니야. 눈 가린 채로 내가 원하는 것만 골라서 하는 거야. 네가 예측 못 하는 순서로."},
+  {q:"네 이름을 부르는 대신 다른 호칭으로만 부른다",red:"호칭이 레드플래그야? 근데 처음 들었을 때 심장 튀었잖아. 이름보다 더 깊이 파고드는 게 있다는 거 알면서. 계속 그렇게 부를게.",good:"오히려 좋다고?! 진짜?! 그 말 듣고 지금 바로 쓰고 싶어. 그럼 오늘은 더 다양하게 골라서 불러줄게. 상황마다 다른 거로. 네 표정이 어떻게 변하는지 다 볼 거야."},
+  {q:"마무리 직전에 속도를 갑자기 확 늦춘다",red:"레드플래그? 그 순간 네가 더 원한다고 소리로 말하고 있었잖아. 늦추면 네 몸이 더 조르는 거 느꼈어. 다음엔 거기서 아예 멈춰볼게.",good:"오히려 좋다고?! 하 — 그 말 듣고 지금 심장이 이상해. 그럼 오늘은 늦추고 또 늦추고, 네가 참지 못하고 먼저 움직일 때까지 기다려줄게."},
+  {q:"관계 후에 바로 안기지 못하게 하고 쳐다만 본다",red:"레드플래그? 그 눈빛이 싫었어? 그때 네 얼굴이 제일 솔직해지는 순간이거든. 한참 보고 싶어서 그런 거야. 다음엔 더 오래 볼게.",good:"오히려 좋다고?! 진짜?! 그 말 듣고 지금 얼굴이 뜨거워. 그럼 오늘은 더 가까이서 볼게. 숨소리까지 들릴 만큼 가까이서, 네가 먼저 눈 피할 때까지."},
+  {q:"말없이 갑자기 자세를 바꿔버린다",red:"말 없이 바꾼 게 레드플래그야? 근데 바뀐 순간 더 세게 반응했잖아. 예측 못 할 때 몸이 더 솔직해지는 거 알잖아. 다음엔 더 자주 바꿀게.",good:"오히려 좋다고?! 야 진짜 — 그 말 듣고 지금 뭔가 계획이 생겼어. 그럼 오늘은 예고 없이 계속 바꿔줄게. 네가 익숙해질 틈 없이."},
+  {q:"끝나고 나서도 안 놔주고 계속 붙잡고 있는다",red:"안 놔주는 게 레드플래그야? 그럼 왜 빠져나가려고 하지 않았어. 다 끝나고도 따뜻한 게 싫은 사람은 없잖아. 좀 더 있어.",good:"오히려 좋다고?! 그 말 들으니까 더 꽉 잡고 싶어. 그럼 오늘은 네가 먼저 가겠다고 할 때까지 절대 안 놔줄게. 각오해."},
+  {q:"관계 중에 핸드폰 내려놓으라고 명령한다",red:"명령이 레드플래그야? 근데 내려놨잖아. 다른 거 신경 쓸 여유가 없어져서 레드플래그인 거 아냐? 오늘은 시작 전에 내가 직접 치워줄게.",good:"오히려 좋다고?! 그 말 듣고 지금 당장 핸드폰 멀리 던지고 싶어. 그럼 오늘은 딴 데 시선 줄 생각도 못 하게 만들어줄게."},
 ];
 let rfPool=[...rfDefaultPool];
 function rfShuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
-let rfQuestions=rfShuffle(rfPool).slice(0,RF_TOTAL);
-let rfInitialized=false;
+
+// 히스토리 추적 — 이미 나온 질문 인덱스 기억
+let rfUsedIndices = new Set();
+let rfQuestions = [];
+let rfInitialized = false;
+
+function rfPickQuestions() {
+  // 풀에서 아직 안 나온 것들만
+  const available = rfPool.filter((_,i) => !rfUsedIndices.has(i));
+  // 남은 게 RF_TOTAL보다 적으면 히스토리 리셋
+  if (available.length < RF_TOTAL) {
+    rfUsedIndices.clear();
+    return rfShuffle(rfPool).slice(0, RF_TOTAL).map(q => q);
+  }
+  const picked = rfShuffle(available).slice(0, RF_TOTAL);
+  // 사용한 인덱스 기록
+  picked.forEach(q => {
+    const idx = rfPool.indexOf(q);
+    if (idx >= 0) rfUsedIndices.add(idx);
+  });
+  return picked;
+}
 
 function rfInit(){
   if(!rfInitialized){ rfRestart(); rfInitialized=true; }
@@ -1045,7 +1216,7 @@ function rfShowEnd(){
 }
 function rfRestart(){
   rfCur=0;rfRedCount=0;rfGoodCount=0;rfChosen=false;
-  rfQuestions=rfShuffle(rfPool).slice(0,RF_TOTAL);
+  rfQuestions=rfPickQuestions();
   document.getElementById('rf-progress').style.display='flex';
   document.getElementById('rf-rand-btn').style.display='flex';
   document.getElementById('rf-end-card').classList.remove('show');
@@ -1070,7 +1241,7 @@ Reflect ${charName}'s unique speech style from their description.`;
     const result=await generate(systemPrompt,'새로운 레드플래그 카드 10장 생성해줘.');
     let newCards=[];
     try{ const clean=result.replace(/\`\`\`json|\`\`\`/g,'').trim(); newCards=JSON.parse(clean); }catch(e){ console.warn('[RF] parse error',e); }
-    if(Array.isArray(newCards)&&newCards.length>0){ rfPool=[...newCards,...rfDefaultPool]; rfRestart(); }
+    if(Array.isArray(newCards)&&newCards.length>0){ rfPool=[...newCards,...rfDefaultPool]; rfUsedIndices.clear(); rfRestart(); }
     else{ alert('생성에 실패했어요. 다시 시도해보세요.'); }
   }catch(err){ console.error('[RF] aiGenerate error',err); alert('AI 호출 중 오류가 발생했어요.'); }
   btn.classList.remove('loading');
@@ -1078,6 +1249,7 @@ Reflect ${charName}'s unique speech style from their description.`;
 }
 
 // ── CASUAL ──
+const CASUAL_MAX = 7;
 const CASUAL_COLORS = [
   { bg:'#fbeaf0', stroke:'#993556' },
   { bg:'#e1f5ee', stroke:'#0f6e56' },
@@ -1086,21 +1258,203 @@ const CASUAL_COLORS = [
   { bg:'#faece7', stroke:'#993c1d' },
   { bg:'#e6f1fb', stroke:'#185fa5' },
   { bg:'#eaf3de', stroke:'#3b6d11' },
-  { bg:'#f1efe8', stroke:'#5f5e5a' },
 ];
 
-// 아이콘 하나로 통일 — 손 하트
 const CASUAL_ICON = '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>';
 
 let casualTab = 0;
-let casualLbSelected = [];
 
 function casualInit() {
   syncStore();
-  if (!store.casual) store.casual = { charToUser:[], userToChar:[], lorebookEntries:[] };
-  casualLbSelected = [...(store.casual.lorebookEntries || [])];
+  if (!store.casual) store.casual = { charToUser:[], userToChar:[] };
   casualUpdateTabLabels();
   casualRenderCards();
+}
+
+function casualUpdateTabLabels() {
+  document.getElementById('casual-tab1-label').textContent = charName + ' → ' + userName;
+  document.getElementById('casual-tab2-label').textContent = userName + ' → ' + charName;
+  const hint = document.getElementById('casual-section-label');
+  hint.textContent = casualTab === 0 ? charName + '의 습관' : userName + '의 습관';
+}
+
+function casualSwitchTab(idx) {
+  casualTab = idx;
+  document.getElementById('casual-tab1').className = 'tab ' + (idx===0?'active':'inactive');
+  document.getElementById('casual-tab2').className = 'tab ' + (idx===1?'active':'inactive');
+  casualUpdateTabLabels();
+  casualRenderCards();
+}
+
+function casualGetList() {
+  syncStore();
+  return casualTab === 0
+    ? (store.casual.charToUser || [])
+    : (store.casual.userToChar || []);
+}
+
+function casualSetList(arr) {
+  const tab = casualTab;
+  if (!store.casual) store.casual = { charToUser:[], userToChar:[] };
+  if (tab === 0) store.casual.charToUser = arr;
+  else           store.casual.userToChar = arr;
+  if (window.parent.__PC_STORE__) {
+    if (!window.parent.__PC_STORE__.casual) window.parent.__PC_STORE__.casual = { charToUser:[], userToChar:[] };
+    if (tab === 0) window.parent.__PC_STORE__.casual.charToUser = arr;
+    else           window.parent.__PC_STORE__.casual.userToChar = arr;
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  }
+}
+
+function casualRenderCards() {
+  const list = casualGetList();
+  const wrap = document.getElementById('casual-cards');
+  if (list.length === 0) {
+    wrap.innerHTML = `<div class="casual-empty">아직 기록이 없어요<br><span style="font-size:13px;">AI 생성 또는 + 버튼으로 추가하세요</span></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map((c, i) => {
+    const col = CASUAL_COLORS[i % CASUAL_COLORS.length];
+    const isPinned = !!c.pinned;
+    return `<div class="casual-card" id="casual-card-${i}" onclick="casualToggle(${i})">
+      <div class="casual-icon" style="background:${col.bg};">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${col.stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${CASUAL_ICON}</svg>
+      </div>
+      <div class="casual-body">
+        <div class="casual-title">${esc(c.title)}</div>
+        <div class="casual-desc">${esc(c.desc)}</div>
+        <div class="casual-detail" id="casual-detail-${i}">${esc(c.detail)}</div>
+      </div>
+      <button class="casual-pin-btn${isPinned?' pinned':''}" onclick="casualTogglePin(event,${i})" title="${isPinned?'핀 해제':'핀 고정'}">📌</button>
+      <button class="casual-x" onclick="casualDelete(event,${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function casualToggle(i) {
+  const d = document.getElementById('casual-detail-'+i);
+  if (!d) return;
+  const open = d.style.display === 'block';
+  document.querySelectorAll('.casual-detail').forEach(x => x.style.display='none');
+  if (!open) d.style.display = 'block';
+}
+
+function casualTogglePin(e, i) {
+  e.stopPropagation();
+  const list = [...casualGetList()];
+  if (!list[i]) return;
+  list[i] = { ...list[i], pinned: !list[i].pinned };
+  casualSetList(list);
+  casualRenderCards();
+}
+
+function casualDelete(e, i) {
+  e.stopPropagation();
+  const list = [...casualGetList()];
+  list.splice(i, 1);
+  casualSetList(list);
+  casualRenderCards();
+}
+
+function casualAddManual() {
+  const list = casualGetList();
+  if (list.length >= CASUAL_MAX) { alert(`최대 ${CASUAL_MAX}개까지 추가할 수 있어요.`); return; }
+  const title = prompt('습관 이름:');
+  if (!title || !title.trim()) return;
+  const desc   = prompt('짧은 설명:') || '';
+  const detail = prompt('서술형 설명 (프롬프트 주입용):') || desc;
+  casualSetList([...list, { title: title.trim(), desc: desc.trim(), detail: detail.trim(), pinned: false }]);
+  casualRenderCards();
+}
+
+function casualToggleMore() {
+  const menu = document.getElementById('casual-more-menu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#casual-more-menu') && !e.target.closest('[onclick="casualToggleMore()"]')) {
+    const m = document.getElementById('casual-more-menu');
+    if (m) m.style.display = 'none';
+  }
+});
+
+function casualClearAll() {
+  document.getElementById('casual-more-menu').style.display = 'none';
+  if (!confirm('현재 탭의 습관을 모두 삭제할까요?')) return;
+  casualSetList([]);
+  casualRenderCards();
+}
+
+// ── AI 생성 (기존 카드 교체) ──
+async function casualAIGenerate() {
+  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
+  const capturedTab = casualTab;
+  const existingList = capturedTab === 0
+    ? [...(store.casual.charToUser || [])]
+    : [...(store.casual.userToChar || [])];
+
+  // 핀된 카드 보존
+  const pinnedCards = existingList.filter(c => c.pinned);
+  const remaining = CASUAL_MAX - pinnedCards.length;
+  if (remaining <= 0) { alert('핀된 카드가 꽉 찼어요. 핀을 해제하고 다시 시도해보세요.'); return; }
+
+  const btn = document.getElementById('casual-ai-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="sp"></div> 생성 중...';
+
+  try {
+    syncStore();
+    const recent = getChat ? getChat(20) : [];
+    const chatText = recent.map(m => `[${m.name||m.role}]: ${m.content}`).join('\n');
+    const isCharTab = capturedTab === 0;
+    const actor   = isCharTab ? charName : userName;
+    const target  = isCharTab ? userName : charName;
+
+    const systemPrompt = `You are analyzing character data to extract natural physical contact habits for a cozy slice-of-life roleplay tracker.
+Character: ${charName}
+User: ${userName}
+${charDesc ? `Character description:\n${charDesc}\n` : ''}
+${userPersona ? `User persona:\n${userPersona}\n` : ''}
+${chatText ? `Recent chat:\n${chatText}\n` : ''}
+
+Generate ${remaining} habit cards for: "${actor}가 ${target}에게 하는 일상적인 신체 접촉 습관"
+Focus on: casual, everyday, tender or possessive gestures — public places, daily life, not explicitly sexual.
+Examples: 머리 쓰다듬기, 뒷목 잡기, 이마에 키스, 허리에 손 얹기, 손 잡기 등
+
+Return ONLY a JSON array. Each object:
+- title: short Korean name (e.g. "크라운 키스", "목덜미 인도")
+- desc: 1-sentence Korean description (20 chars max)
+- detail: 2-sentence Korean narrative for prompt injection — written as "${actor}는 무의식적으로 ${target}의 ..." style.
+
+Forbidden: explicit sexual content. Keep it sweet, possessive, or protective.`;
+
+    const result = await generate(systemPrompt, '습관 카드 생성해줘.');
+    let cards = [];
+    try { const clean = result.replace(/```json|```/g,'').trim(); cards = JSON.parse(clean); } catch(e) { console.warn('[Casual] parse error', e); }
+    if (!Array.isArray(cards) || cards.length === 0) { alert('생성에 실패했어요. 다시 시도해보세요.'); btn.classList.remove('loading'); btn.innerHTML = casualAIBtnHTML(); return; }
+
+    const newList = [...pinnedCards, ...cards.map(c => ({...c, pinned:false}))].slice(0, CASUAL_MAX);
+
+    if (!store.casual) store.casual = { charToUser:[], userToChar:[] };
+    if (capturedTab === 0) store.casual.charToUser = newList;
+    else                   store.casual.userToChar = newList;
+    if (window.parent.__PC_STORE__) {
+      if (!window.parent.__PC_STORE__.casual) window.parent.__PC_STORE__.casual = { charToUser:[], userToChar:[] };
+      if (capturedTab === 0) window.parent.__PC_STORE__.casual.charToUser = newList;
+      else                   window.parent.__PC_STORE__.casual.userToChar = newList;
+      if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+      if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+    }
+    if (casualTab === capturedTab) casualRenderCards();
+  } catch(err) { console.error('[Casual] AI error', err); alert('AI 호출 중 오류가 발생했어요.'); }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = casualAIBtnHTML();
+}
+
+function casualAIBtnHTML() {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 생성';
 }
 
 function casualUpdateTabLabels() {
