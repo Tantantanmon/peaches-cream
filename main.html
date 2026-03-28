@@ -1457,242 +1457,187 @@ function casualAIBtnHTML() {
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 생성';
 }
 
-function casualUpdateTabLabels() {
-  document.getElementById('casual-tab1-label').textContent = charName + ' → ' + userName;
-  document.getElementById('casual-tab2-label').textContent = userName + ' → ' + charName;
-  const hint = document.getElementById('casual-section-label');
-  hint.textContent = casualTab === 0 ? charName + '의 습관' : userName + '의 습관';
-}
-
-function casualSwitchTab(idx) {
-  casualTab = idx;
-  document.getElementById('casual-tab1').className = 'tab ' + (idx===0?'active':'inactive');
-  document.getElementById('casual-tab2').className = 'tab ' + (idx===1?'active':'inactive');
-  casualUpdateTabLabels();
-  casualRenderCards();
-}
-
-function casualGetList() {
+// ── VAULT ──
+function vaultInit() {
   syncStore();
-  return casualTab === 0
-    ? (store.casual.charToUser || [])
-    : (store.casual.userToChar || []);
+  const name = charName || '?';
+  document.getElementById('vault-char-name').textContent = name;
+  document.getElementById('vault-char-avatar').textContent = name.charAt(0).toUpperCase();
 }
 
-function casualSetList(arr) {
-  // 호출 시점의 탭 값을 캡처해서 비동기 타이밍 버그 방지
-  const tab = casualTab;
-  if (!store.casual) store.casual = { charToUser:[], userToChar:[], lorebookEntries:[] };
-  if (tab === 0) store.casual.charToUser = arr;
-  else           store.casual.userToChar = arr;
+// ── VAULT PROFILE ──
+let vpUnit = 'cm';
+function vpLoad() {
+  syncStore();
+  const cp = store.charProfile || {};
+  document.getElementById('vp-height').value = cp.height || '';
+  document.getElementById('vp-weight').value = cp.weight || '';
+  document.getElementById('vp-eye').value    = cp.eyeColor || '';
+  document.getElementById('vp-hair').value   = cp.hair || '';
+  document.getElementById('vp-size').value   = cp.size || '';
+  vpUnit = cp.sizeUnit || 'cm';
+  document.getElementById('vp-u-cm').classList.toggle('sel', vpUnit==='cm');
+  document.getElementById('vp-u-in').classList.toggle('sel', vpUnit==='in');
+  ['bodyType','pubicHair','circumcision'].forEach(key => {
+    const g = document.getElementById('vp-bg-'+key); if (!g) return;
+    g.querySelectorAll('.pg-btn').forEach(b => b.classList.toggle('sel', b.dataset.val===cp[key]));
+    g.onclick = e => { const b=e.target.closest('.pg-btn'); if(!b) return; g.querySelectorAll('.pg-btn').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
+  });
+  const wrap = document.getElementById('vp-addl-wrap');
+  const addBtn = wrap.querySelector('.add-tag');
+  wrap.querySelectorAll('.kw-tag').forEach(t=>t.remove());
+  (cp.additionalFeatures||[]).forEach(val => { wrap.insertBefore(vpMakeTag(val), addBtn); });
+}
+function vpMakeTag(val) {
+  const tag = document.createElement('div'); tag.className='kw-tag';
+  tag.innerHTML=`<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
+  tag.onclick=()=>tag.remove(); return tag;
+}
+function vpAddFeature() {
+  const val=prompt('Add feature:'); if(!val||!val.trim()) return;
+  const wrap=document.getElementById('vp-addl-wrap');
+  wrap.insertBefore(vpMakeTag(val.trim()), wrap.querySelector('.add-tag'));
+}
+function vpSwitchUnit(u) {
+  const v = parseFloat(document.getElementById('vp-size').value)||0;
+  if (u==='in'&&vpUnit==='cm') document.getElementById('vp-size').value=Math.round(v/2.54*10)/10;
+  else if (u==='cm'&&vpUnit==='in') document.getElementById('vp-size').value=Math.round(v*2.54*10)/10;
+  vpUnit=u;
+  document.getElementById('vp-u-cm').classList.toggle('sel',u==='cm');
+  document.getElementById('vp-u-in').classList.toggle('sel',u==='in');
+}
+function vpGetSelected(groupId) {
+  const g=document.getElementById(groupId); if(!g) return '';
+  const s=g.querySelector('.pg-btn.sel'); return s?s.dataset.val:'';
+}
+function vpSave() {
+  const features = Array.from(document.getElementById('vp-addl-wrap').querySelectorAll('.kw-tag'))
+    .map(t=>t.textContent.replace('×','').replace('#','').trim());
+  const data = {
+    height:   document.getElementById('vp-height').value,
+    weight:   document.getElementById('vp-weight').value,
+    eyeColor: document.getElementById('vp-eye').value,
+    hair:     document.getElementById('vp-hair').value,
+    size:     document.getElementById('vp-size').value,
+    sizeUnit: vpUnit,
+    bodyType:      vpGetSelected('vp-bg-bodyType'),
+    pubicHair:     vpGetSelected('vp-bg-pubicHair'),
+    circumcision:  vpGetSelected('vp-bg-circumcision'),
+    additionalFeatures: features,
+  };
   if (window.parent.__PC_STORE__) {
-    if (!window.parent.__PC_STORE__.casual) window.parent.__PC_STORE__.casual = { charToUser:[], userToChar:[], lorebookEntries:[] };
-    if (tab === 0) window.parent.__PC_STORE__.casual.charToUser = arr;
-    else           window.parent.__PC_STORE__.casual.userToChar = arr;
+    window.parent.__PC_STORE__.charProfile = data;
     if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
     if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
   }
+  store.charProfile = data;
+  showToast('Saved ✓');
 }
 
-function casualRenderCards() {
-  const list = casualGetList();
-  const wrap = document.getElementById('casual-cards');
-  const aiBtn = document.getElementById('casual-ai-btn');
-  const atMax = list.length >= 10;
-  aiBtn.disabled = atMax;
-  aiBtn.style.opacity = atMax ? '0.4' : '1';
-  aiBtn.style.pointerEvents = atMax ? 'none' : '';
-
-  if (list.length === 0) {
-    wrap.innerHTML = `<div class="casual-empty">아직 기록이 없어요<br><span style="font-size:13px;">AI 생성 또는 + 버튼으로 추가하세요</span></div>`;
-    return;
-  }
-  wrap.innerHTML = list.map((c, i) => {
-    const col = CASUAL_COLORS[i % CASUAL_COLORS.length];
-    return `<div class="casual-card" id="casual-card-${i}" onclick="casualToggle(${i})">
-      <div class="casual-icon" style="background:${col.bg};">
-        <svg viewBox="0 0 24 24" fill="none" stroke="${col.stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${CASUAL_ICON}</svg>
-      </div>
-      <div class="casual-body">
-        <div class="casual-title">${esc(c.title)}</div>
-        <div class="casual-desc">${esc(c.desc)}</div>
-        <div class="casual-detail" id="casual-detail-${i}">${esc(c.detail)}</div>
-      </div>
-      <button class="casual-x" onclick="casualDelete(event,${i})">✕</button>
-    </div>`;
-  }).join('');
-}
-
-function casualToggle(i) {
-  const d = document.getElementById('casual-detail-'+i);
-  if (!d) return;
-  const open = d.style.display === 'block';
-  document.querySelectorAll('.casual-detail').forEach(x => x.style.display='none');
-  if (!open) d.style.display = 'block';
-}
-
-function casualDelete(e, i) {
-  e.stopPropagation();
-  const list = [...casualGetList()];
-  list.splice(i, 1);
-  casualSetList(list);
-  casualRenderCards();
-}
-
-function casualAddManual() {
-  const list = casualGetList();
-  if (list.length >= 10) { alert('최대 10개까지 추가할 수 있어요.'); return; }
-  const title = prompt('습관 이름:');
-  if (!title || !title.trim()) return;
-  const desc  = prompt('짧은 설명:') || '';
-  const detail = prompt('서술형 설명 (프롬프트 주입용):') || desc;
-  const newList = [...list, { title: title.trim(), desc: desc.trim(), detail: detail.trim() }];
-  casualSetList(newList);
-  casualRenderCards();
-}
-
-// ── AI 생성 ──
-async function casualAIGenerate() {
-  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
-  // 비동기 시작 전에 탭 값 고정 캡처
-  const capturedTab = casualTab;
-  const list = capturedTab === 0
-    ? [...(store.casual.charToUser || [])]
-    : [...(store.casual.userToChar || [])];
-  if (list.length >= 10) { alert('최대 10개까지 추가할 수 있어요.'); return; }
-
-  const btn = document.getElementById('casual-ai-btn');
-  btn.classList.add('loading');
-  btn.innerHTML = '<div class="sp"></div> 생성 중...';
-
-  try {
-    syncStore();
-    const selectedUids = store.casual.lorebookEntries || [];
-    const lbText = lorebook
-      .filter(e => selectedUids.includes(e.uid))
-      .map(e => `[${e.comment}]\n${e.content}`)
-      .join('\n\n');
-
-    const recent = getChat ? getChat(20) : [];
-    const chatText = recent.map(m => `[${m.name||m.role}]: ${m.content}`).join('\n');
-
-    const isCharTab = capturedTab === 0;
-    const actor   = isCharTab ? charName : userName;
-    const target  = isCharTab ? userName : charName;
-    const remaining = 10 - list.length;
-
-    const systemPrompt = `You are analyzing character data to extract natural physical contact habits for a cozy slice-of-life roleplay tracker.
-Character: ${charName}
-User: ${userName}
-${charDesc ? `Character description:\n${charDesc}\n` : ''}
-${userPersona ? `User persona:\n${userPersona}\n` : ''}
-${lbText ? `Lorebook entries:\n${lbText}\n` : ''}
-
-Generate ${remaining} habit cards for: "${actor}가 ${target}에게 하는 일상적인 신체 접촉 습관"
-Focus on: casual, everyday, tender or possessive gestures — public places, daily life, not explicitly sexual.
-Examples: 머리 쓰다듬기, 뒷목 잡기, 이마에 키스, 허리에 손 얹기, 손 잡기 등
-
-Return ONLY a JSON array. Each object:
-- title: short Korean name (e.g. "크라운 키스", "목덜미 인도")
-- desc: 1-sentence Korean description (20 chars max)
-- detail: 2-sentence Korean narrative for prompt injection — written as "${actor}는 무의식적으로 ${target}의 ..." style. Describes when/how/why it happens naturally. This text will be injected into the AI's system prompt to influence roleplay behavior.
-
-Forbidden: explicit sexual content. Keep it sweet, possessive, or protective.`;
-
-    const result = await generate(systemPrompt, '습관 카드 생성해줘.');
-    let cards = [];
-    try { const clean = result.replace(/```json|```/g,'').trim(); cards = JSON.parse(clean); } catch(e) { console.warn('[Casual] parse error', e); }
-    if (!Array.isArray(cards) || cards.length === 0) { alert('생성에 실패했어요. 다시 시도해보세요.'); btn.classList.remove('loading'); btn.innerHTML = casualAIBtnHTML(); return; }
-
-    const newList = [...list, ...cards].slice(0, 10);
-    // capturedTab 기준으로 직접 저장 (casualTab이 바뀌어도 안전)
-    if (!store.casual) store.casual = { charToUser:[], userToChar:[], lorebookEntries:[] };
-    if (capturedTab === 0) store.casual.charToUser = newList;
-    else                   store.casual.userToChar = newList;
-    if (window.parent.__PC_STORE__) {
-      if (!window.parent.__PC_STORE__.casual) window.parent.__PC_STORE__.casual = { charToUser:[], userToChar:[], lorebookEntries:[] };
-      if (capturedTab === 0) window.parent.__PC_STORE__.casual.charToUser = newList;
-      else                   window.parent.__PC_STORE__.casual.userToChar = newList;
-      if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
-      if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
-    }
-    // 현재 탭이 생성한 탭과 같을 때만 리렌더
-    if (casualTab === capturedTab) casualRenderCards();
-  } catch(err) { console.error('[Casual] AI error', err); alert('AI 호출 중 오류가 발생했어요.'); }
-
-  btn.classList.remove('loading');
-  btn.innerHTML = casualAIBtnHTML();
-}
-
-function casualAIBtnHTML() {
-  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 생성';
-}
-
-// ── 로어북 모달 ──
-function casualToggleMore() {
-  const menu = document.getElementById('casual-more-menu');
-  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('#casual-more-menu') && !e.target.closest('[onclick="casualToggleMore()"]')) {
-    const m = document.getElementById('casual-more-menu');
-    if (m) m.style.display = 'none';
-  }
-});
-
-function casualOpenLb() {
-  document.getElementById('casual-more-menu').style.display = 'none';
+// ── VAULT EROGENOUS ZONE ──
+const VEZ_AFTERCARE = ['Affectionate','Deep Devotion','Protective','Detached','Cold/Silent','Indifferent','Reflective','Remorseful','Marking Territory'];
+function vezLoad() {
   syncStore();
-  casualLbSelected = [...(store.casual.lorebookEntries || [])];
-  const list = document.getElementById('casual-lb-list');
-  if (lorebook.length === 0) {
-    list.innerHTML = '<div style="font-size:14px;color:var(--text-muted);text-align:center;padding:20px 0;">연결된 로어북이 없어요</div>';
-  } else {
-    list.innerHTML = lorebook.map(e => {
-      const sel = casualLbSelected.includes(e.uid);
-      return `<div class="lb-item${sel?' selected':''}" id="lb-item-${e.uid}" onclick="casualLbToggle('${e.uid}')">
-        <div class="lb-check"></div>
-        <div>
-          <div class="lb-comment">${esc(String(e.comment))}</div>
-          <div class="lb-preview">${esc(String(e.content).slice(0,80))}...</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  const modal = document.getElementById('casual-lb-modal');
-  modal.style.display = 'flex';
-}
-
-function casualLbToggle(uid) {
-  const parsed = isNaN(uid) ? uid : parseInt(uid);
-  const idx = casualLbSelected.indexOf(parsed);
-  if (idx >= 0) casualLbSelected.splice(idx, 1);
-  else casualLbSelected.push(parsed);
-  document.querySelectorAll('[id^="lb-item-"]').forEach(el => {
-    const id = el.id.replace('lb-item-','');
-    const pid = isNaN(id) ? id : parseInt(id);
-    el.className = 'lb-item' + (casualLbSelected.includes(pid) ? ' selected' : '');
+  const ce = store.charErogenous || {};
+  ['moaning','semen','preCum','responsivity','multiRound','stamina'].forEach(key => {
+    const g = document.getElementById('vez-bg-'+key); if (!g) return;
+    g.querySelectorAll('.pg-btn').forEach(b => b.classList.toggle('sel', b.dataset.val===ce[key]));
+    g.onclick = e => { const b=e.target.closest('.pg-btn'); if(!b) return; g.querySelectorAll('.pg-btn').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
   });
+  // aftercare mood 태그
+  const acWrap = document.getElementById('vez-aftercare-wrap');
+  const saved = ce.aftercareMoods || [];
+  acWrap.innerHTML = VEZ_AFTERCARE.map(t =>
+    `<div class="kink-tag${saved.includes(t)?' active':''}" onclick="this.classList.toggle('active')">${esc(t)}</div>`
+  ).join('');
+  // sensitive zones
+  const szWrap = document.getElementById('vez-sensitive-wrap');
+  const addBtn = szWrap.querySelector('.add-tag');
+  szWrap.querySelectorAll('.kw-tag').forEach(t=>t.remove());
+  (ce.sensitiveZones||[]).forEach(val => { szWrap.insertBefore(vezMakeTag(val), addBtn); });
 }
-
-function casualLbSave() {
+function vezMakeTag(val) {
+  const tag=document.createElement('div'); tag.className='kw-tag';
+  tag.innerHTML=`<span class="hash">#</span>${esc(val)}<span class="x">×</span>`;
+  tag.onclick=()=>tag.remove(); return tag;
+}
+function vezAddTag(wrapId) {
+  const val=prompt('Add:'); if(!val||!val.trim()) return;
+  const wrap=document.getElementById(wrapId);
+  wrap.insertBefore(vezMakeTag(val.trim()), wrap.querySelector('.add-tag'));
+}
+function vezGetSelected(groupId) {
+  const g=document.getElementById(groupId); if(!g) return '';
+  const s=g.querySelector('.pg-btn.sel'); return s?s.dataset.val:'';
+}
+function vezSave() {
+  const aftercareMoods = Array.from(document.getElementById('vez-aftercare-wrap').querySelectorAll('.kink-tag.active')).map(t=>t.textContent);
+  const sensitiveZones = Array.from(document.getElementById('vez-sensitive-wrap').querySelectorAll('.kw-tag')).map(t=>t.textContent.replace('×','').replace('#','').trim());
+  const data = {
+    moaning:      vezGetSelected('vez-bg-moaning'),
+    semen:        vezGetSelected('vez-bg-semen'),
+    preCum:       vezGetSelected('vez-bg-preCum'),
+    responsivity: vezGetSelected('vez-bg-responsivity'),
+    multiRound:   vezGetSelected('vez-bg-multiRound'),
+    stamina:      vezGetSelected('vez-bg-stamina'),
+    aftercareMoods, sensitiveZones,
+  };
   if (window.parent.__PC_STORE__) {
-    window.parent.__PC_STORE__.casual.lorebookEntries = [...casualLbSelected];
+    window.parent.__PC_STORE__.charErogenous = data;
     if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
   }
-  store.casual.lorebookEntries = [...casualLbSelected];
-  document.getElementById('casual-lb-modal').style.display = 'none';
+  store.charErogenous = data;
+  showToast('Saved ✓');
 }
 
-function casualLbCancel() {
-  document.getElementById('casual-lb-modal').style.display = 'none';
+// ── VAULT KINK & FETISH ──
+const VKF_DATA = {
+  acts:     ['Dominance','Bondage','Exhibitionism','Praising','Degradation','Impact Play','Sensory Play','Overstimulation','Roleplay','Voyeurism'],
+  positions:['Missionary','Doggy Style','Cowgirl','Reverse Cowgirl','Spooning','Lotus','Standing','69','Face Sitting','Prone Bone','The Anvil','Wheelbarrow','Legs Up'],
+  foreplay: ['Deep Kissing','Neck Kissing','Teasing','Blowjob','Cunnilingus','Fingering','Handjob','Body Massage','Temperature Play','Blindfolding'],
+  intercourse:['Deep Kissing','Nipple Play','Dirty Talk','Hair Pulling','Spanking','Light Choking','Eye Contact','Grinding','Slow & Deep','Fast & Rough','Orgasm Control'],
+  location: ['Internal (Vaginal)','External','On Body','On Face','Inside Mouth'],
+  fetishes: ['Uniforms','Lingerie','Stockings','High Heels','Leather','Latex','Glasses','Chokers','Silk & Satin','Thigh-highs','Formal Wear','Body Oil'],
+};
+function vkfLoad() {
+  syncStore();
+  const ck = store.charKink || {};
+  Object.entries(VKF_DATA).forEach(([key, items]) => {
+    const saved = ck[key==='location'?'ejaculationLocation':key] || [];
+    const wrap = document.getElementById('vkf-'+key+'-wrap'); if (!wrap) return;
+    wrap.innerHTML = items.map(t =>
+      `<div class="kink-tag${saved.includes(t)?' active':''}" onclick="this.classList.toggle('active')">${esc(t)}</div>`
+    ).join('');
+  });
+  const roleG = document.getElementById('vkf-bg-role');
+  roleG.querySelectorAll('.pg-btn').forEach(b => b.classList.toggle('sel', b.dataset.val===(ck.role||'')));
+  roleG.onclick = e => { const b=e.target.closest('.pg-btn'); if(!b) return; roleG.querySelectorAll('.pg-btn').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
 }
-
-function casualClearAll() {
-  document.getElementById('casual-more-menu').style.display = 'none';
-  if (!confirm('현재 탭의 습관을 모두 삭제할까요?')) return;
-  casualSetList([]);
-  casualRenderCards();
+function vkfGetTags(wrapId) {
+  return Array.from(document.getElementById(wrapId).querySelectorAll('.kink-tag.active')).map(t=>t.textContent);
+}
+function vkfGetSelected(groupId) {
+  const g=document.getElementById(groupId); if(!g) return '';
+  const s=g.querySelector('.pg-btn.sel'); return s?s.dataset.val:'';
+}
+function vkfSave() {
+  const data = {
+    acts:               vkfGetTags('vkf-acts-wrap'),
+    positions:          vkfGetTags('vkf-positions-wrap'),
+    foreplay:           vkfGetTags('vkf-foreplay-wrap'),
+    intercourse:        vkfGetTags('vkf-intercourse-wrap'),
+    ejaculationLocation:vkfGetTags('vkf-location-wrap'),
+    fetishes:           vkfGetTags('vkf-fetishes-wrap'),
+    role:               vkfGetSelected('vkf-bg-role'),
+  };
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.charKink = data;
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  }
+  store.charKink = data;
+  showToast('Saved ✓');
 }
 
 // ── 유틸 ──
