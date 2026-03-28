@@ -71,8 +71,10 @@ const defaultCharData = {
 
 // 전역 설정 (캐릭터 무관)
 const defaultGlobalConfig = {
-    apiSource: 'main',
-    maxTokens: 1500,
+    enabled:            true,
+    apiSource:          'main',
+    connectionProfileId: '',
+    maxTokens:          1500,
 };
 
 // ═══════════════════════════════════════════════
@@ -304,6 +306,12 @@ function buildPrompt() {
 function refreshPrompt() {
     try {
         const { setExtensionPrompt } = ctx();
+        const store = getStore();
+        // 비활성화 시 빈 프롬프트 주입
+        if (!store.config.enabled) {
+            setExtensionPrompt(MODULE_NAME, '', 1, 0);
+            return;
+        }
         const full = buildPrompt();
         setExtensionPrompt(MODULE_NAME, full, 1, 0);
     } catch (e) {
@@ -360,42 +368,56 @@ function getUserPersona() {
 }
 
 // ═══════════════════════════════════════════════
-// 멀티 API 목록
+// 멀티 API 목록 (ConnectionManagerRequestService 기반)
 // ═══════════════════════════════════════════════
 function getAvailableApis() {
+    const apis = [{ value: 'main', label: 'Main API' }];
     try {
         const c = ctx();
-        const apis = [{ value: 'main', label: 'Main API' }];
-        if (c.extensionSettings && c.extensionSettings.secondary_api)
-            apis.push({ value: 'secondary', label: 'Secondary API' });
-        const connections = c.openAICompatibleApis || c.oai_settings?.connections || [];
-        connections.forEach((conn, i) => {
-            if (conn && conn.name) apis.push({ value: `oai_${i}`, label: conn.name });
-        });
-        const apiType = c.main_api || '';
-        if (apiType === 'kobold') apis.push({ value: 'kobold', label: 'KoboldAI' });
-        if (apiType === 'horde')  apis.push({ value: 'horde',  label: 'AI Horde' });
-        if (apiType === 'novel')  apis.push({ value: 'novel',  label: 'NovelAI' });
-        return apis;
+        const cmrs = c.ConnectionManagerRequestService;
+        if (cmrs && typeof cmrs.getSupportedProfiles === 'function') {
+            const profiles = cmrs.getSupportedProfiles();
+            if (Array.isArray(profiles)) {
+                profiles.forEach(p => {
+                    const id   = p.id || p.profileId || p.uuid || '';
+                    const name = p.name || p.profileName || id;
+                    if (id) apis.push({ value: `profile:${id}`, label: name });
+                });
+            }
+        }
     } catch(e) {
         console.warn(`[${MODULE_NAME}] getAvailableApis error`, e);
-        return [{ value: 'main', label: 'Main API' }];
     }
+    return apis;
 }
 
 // ═══════════════════════════════════════════════
-// generateRaw 래퍼
+// generateRaw 래퍼 (Connection Profile 지원)
 // ═══════════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt) {
-    const { generateRaw } = ctx();
+    const c         = ctx();
+    const { generateRaw } = c;
     const store     = getStore();
     const apiSource = store.config.apiSource || 'main';
     const params    = {
         systemPrompt,
-        prompt: userPrompt,
+        prompt:         userPrompt,
         max_new_tokens: store.config.maxTokens || 1500,
     };
-    if (apiSource !== 'main') params.api = apiSource;
+
+    // Connection Profile 전환
+    if (apiSource.startsWith('profile:')) {
+        const profileId = apiSource.replace('profile:', '');
+        try {
+            const cmrs = c.ConnectionManagerRequestService;
+            if (cmrs && typeof cmrs.loadProfile === 'function') {
+                await cmrs.loadProfile(profileId);
+            }
+        } catch(e) {
+            console.warn(`[${MODULE_NAME}] profile load error`, e);
+        }
+    }
+
     return await generateRaw(params);
 }
 
@@ -441,10 +463,6 @@ function getChatRange(startNum, endNum) {
 // ═══════════════════════════════════════════════
 function renderSettingsPanel() {
     const store = getStore();
-    const apis  = getAvailableApis();
-    const apiOptions = apis.map(a =>
-        `<option value="${a.value}" ${store.config.apiSource === a.value ? 'selected' : ''}>${a.label}</option>`
-    ).join('');
 
     $('#extensions_settings2').append(`
         <div id="pc-settings-panel">
@@ -455,11 +473,18 @@ function renderSettingsPanel() {
                 </div>
                 <div class="inline-drawer-content">
                     <div class="pc-setting-row">
+                        <label class="checkbox_label">
+                            <input type="checkbox" id="pc-enabled" ${store.config.enabled ? 'checked' : ''}/>
+                            <span>활성화 (프롬프트 주입)</span>
+                        </label>
+                    </div>
+                    <hr>
+                    <div class="pc-setting-row">
                         <label for="pc-api-source">API 소스</label>
-                        <select id="pc-api-source">${apiOptions}</select>
+                        <select id="pc-api-source"><option value="main">Main API</option></select>
                     </div>
                     <div class="pc-setting-row" style="margin-top:6px;">
-                        <button id="pc-api-refresh" style="font-size:12px;padding:3px 8px;cursor:pointer;">🔄 API 목록 새로고침</button>
+                        <button id="pc-api-refresh" style="font-size:12px;padding:3px 8px;cursor:pointer;">🔄 새로고침</button>
                     </div>
                     <div class="pc-setting-row">
                         <label for="pc-max-tokens">최대 응답 토큰 수</label>
@@ -472,19 +497,41 @@ function renderSettingsPanel() {
         </div>
     `);
 
-    $('#pc-api-source').on('change', function() { updateConfig({ apiSource: $(this).val() }); });
-    $('#pc-max-tokens').on('change', function() { updateConfig({ maxTokens: parseInt($(this).val()) || 1500 }); });
-    $('#pc-api-refresh').on('click', function() {
-        const currentVal  = getStore().config.apiSource;
-        const freshApis   = getAvailableApis();
-        const $select     = $('#pc-api-source');
-        $select.empty();
-        freshApis.forEach(a => {
-            const opt = $(`<option value="${a.value}">${a.label}</option>`);
-            if (a.value === currentVal) opt.attr('selected', true);
-            $select.append(opt);
-        });
+    // enabled 토글
+    $('#pc-enabled').on('change', function() {
+        updateConfig({ enabled: $(this).prop('checked') });
+        refreshPrompt();
     });
+
+    // API 드롭다운 채우기
+    function fillApiSelect() {
+        const $select = $('#pc-api-source');
+        const currentVal = getStore().config.apiSource || 'main';
+        $select.empty().append('<option value="main">Main API</option>');
+        try {
+            const cmrs = ctx().ConnectionManagerRequestService;
+            if (cmrs && typeof cmrs.getSupportedProfiles === 'function') {
+                const profiles = cmrs.getSupportedProfiles();
+                if (Array.isArray(profiles)) {
+                    profiles.forEach(p => {
+                        const id   = p.id || p.profileId || p.uuid || '';
+                        const name = p.name || p.profileName || id;
+                        if (id) $select.append(`<option value="profile:${id}">${name}</option>`);
+                    });
+                }
+            }
+        } catch(e) {}
+        $select.val(currentVal);
+    }
+    fillApiSelect();
+
+    $('#pc-api-source').on('change', function() {
+        updateConfig({ apiSource: $(this).val() });
+    });
+    $('#pc-max-tokens').on('change', function() {
+        updateConfig({ maxTokens: parseInt($(this).val()) || 1500 });
+    });
+    $('#pc-api-refresh').on('click', fillApiSelect);
 }
 
 // ═══════════════════════════════════════════════

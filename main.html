@@ -334,6 +334,16 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 
     <!-- HOME -->
     <div id="screen-home">
+      <!-- 프롬프트 주입 토글 -->
+      <div id="pc-toggle-row" style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:14px 18px;margin-bottom:14px;box-shadow:var(--shadow);">
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text-primary);" id="pc-toggle-label">프롬프트 주입 ON</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">NSFW 씬에서 켜세요</div>
+        </div>
+        <div id="pc-toggle-btn" onclick="pcToggleEnabled()" style="width:48px;height:28px;border-radius:14px;cursor:pointer;transition:background .2s;position:relative;flex-shrink:0;">
+          <div id="pc-toggle-thumb" style="position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:left .2s;"></div>
+        </div>
+      </div>
       <div class="section-label">APPS</div>
       <div class="app-grid">
         <div class="app-card" onclick="goTo('profile')">
@@ -777,9 +787,41 @@ function initBridge() {
   document.getElementById('rf-char-name').textContent   = charName;
   document.getElementById('rf-char-avatar').textContent = charName.charAt(0);
   document.getElementById('rf-flag-who').textContent    = charName + "'s behavior. What do you think?";
+  // 토글 초기 렌더
+  const globalStore = p && p.__PC_GLOBAL_STORE__;
+  const enabled = globalStore ? (globalStore.config.enabled !== false) : true;
+  pcRenderToggle(enabled);
 }
 window.__PC_ON_BRIDGE__ = function() { initBridge(); };
 if (window.parent && window.parent.__PC_STORE__) initBridge();
+
+// ── 프롬프트 주입 토글 ──
+function pcToggleEnabled() {
+  const globalStore = window.parent && window.parent.__PC_GLOBAL_STORE__;
+  if (!globalStore) return;
+  globalStore.config.enabled = !globalStore.config.enabled;
+  if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+  if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  pcRenderToggle(globalStore.config.enabled);
+}
+
+function pcRenderToggle(enabled) {
+  const btn   = document.getElementById('pc-toggle-btn');
+  const thumb = document.getElementById('pc-toggle-thumb');
+  const label = document.getElementById('pc-toggle-label');
+  if (!btn) return;
+  if (enabled) {
+    btn.style.background   = '#1e293e';
+    thumb.style.left       = '23px';
+    label.textContent      = '프롬프트 주입 ON';
+    label.style.color      = 'var(--text-primary)';
+  } else {
+    btn.style.background   = '#c0ccd8';
+    thumb.style.left       = '3px';
+    label.textContent      = '프롬프트 주입 OFF';
+    label.style.color      = 'var(--text-muted)';
+  }
+}
 
 // ── Router ──
 let currentScreen = 'home';
