@@ -274,6 +274,33 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
 .restart-btn:hover{opacity:.88;}
 #screen-redflag{display:flex;flex-direction:column;gap:16px;}
 
+/* CASUAL */
+.tabs{display:flex;gap:6px;}
+.tab{flex:1;padding:9px 0;border-radius:10px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;transition:all .15s;border:none;font-family:inherit;}
+.tab.active{background:var(--accent);color:#fff;}
+.tab.inactive{background:var(--card);color:var(--text-muted);border:0.5px solid rgba(160,190,220,0.3);}
+.ai-row{display:flex;gap:8px;}
+.add-btn{width:40px;height:40px;background:var(--card);border:0.5px solid var(--card-border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--text-secondary);cursor:pointer;flex-shrink:0;font-family:inherit;}
+.casual-cards{display:flex;flex-direction:column;gap:8px;}
+.casual-card{background:var(--card);border-radius:14px;border:0.5px solid var(--card-border);padding:12px 14px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:transform .12s;box-shadow:var(--shadow);}
+.casual-card:hover{transform:translateY(-1px);}
+.casual-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.casual-icon svg{width:18px;height:18px;}
+.casual-body{flex:1;min-width:0;}
+.casual-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:2px;}
+.casual-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.casual-detail{display:none;margin-top:8px;padding-top:8px;border-top:0.5px solid var(--divider);font-size:12px;color:#7a8fa8;line-height:1.8;font-style:italic;}
+.casual-x{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-muted);cursor:pointer;flex-shrink:0;background:none;border:none;opacity:.5;margin-top:1px;}
+.casual-x:hover{opacity:1;}
+.casual-empty{text-align:center;color:var(--text-muted);font-size:15px;padding:32px 0;line-height:1.8;}
+.lb-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;background:var(--card);border:0.5px solid var(--divider);cursor:pointer;}
+.lb-item.selected{background:#f0f4ff;border-color:rgba(100,140,200,0.3);}
+.lb-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--text-muted);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.lb-item.selected .lb-check{background:var(--accent);border-color:var(--accent);}
+.lb-item.selected .lb-check::after{content:'✓';font-size:10px;color:#fff;}
+.lb-comment{font-size:13px;font-weight:600;color:var(--text-primary);}
+.lb-preview{font-size:11px;color:var(--text-muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+
 /* spinner */
 .sp{width:14px;height:14px;border:1.5px solid var(--divider);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -320,6 +347,12 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
           </div>
           <span class="app-name">Red Flag</span>
+        </div>
+        <div class="app-card full-width" onclick="goTo('casual')">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <span class="app-name">☕ Casual</span>
         </div>
         <div class="app-card full-width" onclick="goTo('vault')">
           <div class="app-icon">
@@ -529,6 +562,42 @@ html,body{width:100%;height:100%;background:transparent;font-family:'Pretendard'
       </div>
     </div>
 
+    <!-- CASUAL -->
+    <div id="screen-casual" style="display:none;">
+      <!-- 로어북 연동 모달 -->
+      <div id="casual-lb-modal" style="display:none;position:absolute;inset:0;z-index:30;background:rgba(0,0,0,0.4);border-radius:var(--radius-lg);align-items:center;justify-content:center;">
+        <div style="background:var(--surface);border-radius:var(--radius-md);border:0.5px solid var(--card-border);padding:20px;width:85%;max-height:70%;display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:16px;font-weight:700;color:var(--text-primary);">로어북 연동</div>
+          <div style="font-size:13px;color:var(--text-muted);">AI 생성 시 참고할 엔트리를 선택하세요</div>
+          <div id="casual-lb-list" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;max-height:260px;"></div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button onclick="casualLbCancel()" style="flex:1;padding:10px;border-radius:var(--radius-sm);background:var(--card);border:0.5px solid var(--divider);color:var(--text-secondary);font-size:15px;cursor:pointer;font-family:inherit;">취소</button>
+            <button onclick="casualLbSave()" style="flex:1;padding:10px;border-radius:var(--radius-sm);background:var(--accent);border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">저장</button>
+          </div>
+        </div>
+      </div>
+      <!-- ... 메뉴 -->
+      <div id="casual-more-menu" style="display:none;position:absolute;right:20px;top:56px;z-index:25;background:var(--card);border-radius:10px;border:0.5px solid var(--card-border);box-shadow:0 8px 24px rgba(140,160,200,0.25);overflow:hidden;min-width:140px;">
+        <div class="lt-dd-item" onclick="casualOpenLb()">📚 로어북 연동</div>
+        <div class="lt-dd-item danger" onclick="casualClearAll()">🗑 전체 삭제</div>
+      </div>
+      <!-- 탭 -->
+      <div class="tabs" style="margin-bottom:14px;" id="casual-tabs">
+        <div class="tab active" id="casual-tab1" onclick="casualSwitchTab(0)"><span id="casual-tab1-label">캐릭터 → 유저</span></div>
+        <div class="tab inactive" id="casual-tab2" onclick="casualSwitchTab(1)"><span id="casual-tab2-label">유저 → 캐릭터</span></div>
+      </div>
+      <!-- AI 생성 + 추가 -->
+      <div class="ai-row" style="margin-bottom:14px;">
+        <button class="ai-btn" id="casual-ai-btn" onclick="casualAIGenerate()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg>
+          AI 생성
+        </button>
+        <button class="add-btn" onclick="casualAddManual()">+</button>
+      </div>
+      <div class="section-label" id="casual-section-label">습관</div>
+      <div class="casual-cards" id="casual-cards"></div>
+    </div>
+
     <!-- PRIVATE VAULT -->
     <div id="screen-vault" style="display:none;">
       <div class="vault-empty">
@@ -554,6 +623,8 @@ let generate    = null;
 let getChat     = null;
 let getChatRange= null;
 
+let lorebook    = [];
+
 function syncStore() {
   if (window.parent && window.parent.__PC_STORE__) store = window.parent.__PC_STORE__;
 }
@@ -564,6 +635,7 @@ function initBridge() {
   userName    = (p && p.__PC_USER__)           || userName;
   charDesc    = (p && p.__PC_CHAR_DESC__)      || '';
   userPersona = (p && p.__PC_USER_PERSONA__)   || '';
+  lorebook    = (p && p.__PC_LOREBOOK__)       || [];
   generate    = (p && p.__PC_GENERATE__)       || null;
   getChat     = (p && p.__PC_GET_CHAT__)       || null;
   getChatRange= (p && p.__PC_GET_CHAT_RANGE__) || null;
@@ -576,7 +648,7 @@ if (window.parent && window.parent.__PC_STORE__) initBridge();
 
 // ── Router ──
 let currentScreen = 'home';
-const screens = ['home','lasttouch','profile','erogenous','redflag','vault'];
+const screens = ['home','lasttouch','profile','erogenous','redflag','vault','casual'];
 function goTo(id) {
   screens.forEach(s => { document.getElementById('screen-'+s).style.display='none'; });
   document.getElementById('screen-'+id).style.display = (id==='redflag') ? 'flex' : 'block';
@@ -587,14 +659,18 @@ function goTo(id) {
   if (id==='profile')   loadProfile();
   if (id==='erogenous') loadErogenous();
   if (id==='redflag')   rfInit();
+  if (id==='casual')    casualInit();
 }
 function updateTopbar(id) {
   const left  = document.getElementById('topbar-left');
   const right = document.getElementById('topbar-right');
-  const labels = { home:'',lasttouch:'LAST TOUCH',profile:'PROFILE',erogenous:'EROGENOUS ZONE',redflag:'RED FLAG',vault:'PRIVATE VAULT' };
+  const labels = { home:'',lasttouch:'LAST TOUCH',profile:'PROFILE',erogenous:'EROGENOUS ZONE',redflag:'RED FLAG',vault:'PRIVATE VAULT',casual:'CASUAL' };
   if (id==='home') {
     left.innerHTML  = '<span class="topbar-title">🍑 Peaches &amp; Cream</span>';
     right.innerHTML = '<div class="close-btn" onclick="closeApp()">✕</div>';
+  } else if (id==='casual') {
+    left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
+    right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">Casual</span><div style="display:flex;gap:3px;cursor:pointer;padding:4px;" onclick="casualToggleMore()"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
   } else {
     left.innerHTML  = `<button class="back-btn" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Home</button>`;
     right.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="topbar-sub">${labels[id]}</span><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
@@ -998,6 +1074,258 @@ Reflect ${charName}'s unique speech style from their description.`;
   }catch(err){ console.error('[RF] aiGenerate error',err); alert('AI 호출 중 오류가 발생했어요.'); }
   btn.classList.remove('loading');
   btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> 랜덤 생성';
+}
+
+// ── CASUAL ──
+const CASUAL_COLORS = [
+  { bg:'#fbeaf0', stroke:'#993556' },
+  { bg:'#e1f5ee', stroke:'#0f6e56' },
+  { bg:'#eeedfe', stroke:'#534ab7' },
+  { bg:'#faeeda', stroke:'#854f0b' },
+  { bg:'#faece7', stroke:'#993c1d' },
+  { bg:'#e6f1fb', stroke:'#185fa5' },
+  { bg:'#eaf3de', stroke:'#3b6d11' },
+  { bg:'#f1efe8', stroke:'#5f5e5a' },
+];
+const CASUAL_ICONS = [
+  '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+  '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  '<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>',
+  '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
+  '<path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>',
+  '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+];
+
+let casualTab = 0;
+let casualLbSelected = [];
+
+function casualInit() {
+  syncStore();
+  if (!store.casual) store.casual = { charToUser:[], userToChar:[], lorebookEntries:[] };
+  casualLbSelected = [...(store.casual.lorebookEntries || [])];
+  casualUpdateTabLabels();
+  casualRenderCards();
+}
+
+function casualUpdateTabLabels() {
+  document.getElementById('casual-tab1-label').textContent = charName + ' → ' + userName;
+  document.getElementById('casual-tab2-label').textContent = userName + ' → ' + charName;
+  const hint = document.getElementById('casual-section-label');
+  hint.textContent = casualTab === 0 ? charName + '의 습관' : userName + '의 습관';
+}
+
+function casualSwitchTab(idx) {
+  casualTab = idx;
+  document.getElementById('casual-tab1').className = 'tab ' + (idx===0?'active':'inactive');
+  document.getElementById('casual-tab2').className = 'tab ' + (idx===1?'active':'inactive');
+  casualUpdateTabLabels();
+  casualRenderCards();
+}
+
+function casualGetList() {
+  syncStore();
+  return casualTab === 0
+    ? (store.casual.charToUser || [])
+    : (store.casual.userToChar || []);
+}
+function casualSetList(arr) {
+  if (casualTab === 0) store.casual.charToUser = arr;
+  else                 store.casual.userToChar = arr;
+  if (window.parent.__PC_STORE__) {
+    if (casualTab === 0) window.parent.__PC_STORE__.casual.charToUser = arr;
+    else                 window.parent.__PC_STORE__.casual.userToChar = arr;
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+    if (window.parent.__PC_REFRESH_PROMPT__) window.parent.__PC_REFRESH_PROMPT__();
+  }
+}
+
+function casualRenderCards() {
+  const list = casualGetList();
+  const wrap = document.getElementById('casual-cards');
+  const aiBtn = document.getElementById('casual-ai-btn');
+  const atMax = list.length >= 10;
+  aiBtn.disabled = atMax;
+  aiBtn.style.opacity = atMax ? '0.4' : '1';
+  aiBtn.style.pointerEvents = atMax ? 'none' : '';
+
+  if (list.length === 0) {
+    wrap.innerHTML = `<div class="casual-empty">아직 기록이 없어요<br><span style="font-size:13px;">AI 생성 또는 + 버튼으로 추가하세요</span></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map((c, i) => {
+    const col  = CASUAL_COLORS[i % CASUAL_COLORS.length];
+    const icon = CASUAL_ICONS[i % CASUAL_ICONS.length];
+    return `<div class="casual-card" id="casual-card-${i}" onclick="casualToggle(${i})">
+      <div class="casual-icon" style="background:${col.bg};">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${col.stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icon}</svg>
+      </div>
+      <div class="casual-body">
+        <div class="casual-title">${esc(c.title)}</div>
+        <div class="casual-desc">${esc(c.desc)}</div>
+        <div class="casual-detail" id="casual-detail-${i}">${esc(c.detail)}</div>
+      </div>
+      <button class="casual-x" onclick="casualDelete(event,${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function casualToggle(i) {
+  const d = document.getElementById('casual-detail-'+i);
+  if (!d) return;
+  const open = d.style.display === 'block';
+  document.querySelectorAll('.casual-detail').forEach(x => x.style.display='none');
+  if (!open) d.style.display = 'block';
+}
+
+function casualDelete(e, i) {
+  e.stopPropagation();
+  const list = [...casualGetList()];
+  list.splice(i, 1);
+  casualSetList(list);
+  casualRenderCards();
+}
+
+function casualAddManual() {
+  const list = casualGetList();
+  if (list.length >= 10) { alert('최대 10개까지 추가할 수 있어요.'); return; }
+  const title = prompt('습관 이름:');
+  if (!title || !title.trim()) return;
+  const desc  = prompt('짧은 설명:') || '';
+  const detail = prompt('서술형 설명 (프롬프트 주입용):') || desc;
+  const newList = [...list, { title: title.trim(), desc: desc.trim(), detail: detail.trim() }];
+  casualSetList(newList);
+  casualRenderCards();
+}
+
+// ── AI 생성 ──
+async function casualAIGenerate() {
+  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
+  const list = casualGetList();
+  if (list.length >= 10) { alert('최대 10개까지 추가할 수 있어요.'); return; }
+
+  const btn = document.getElementById('casual-ai-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="sp"></div> 생성 중...';
+
+  try {
+    syncStore();
+    const selectedUids = store.casual.lorebookEntries || [];
+    const lbText = lorebook
+      .filter(e => selectedUids.includes(e.uid))
+      .map(e => `[${e.comment}]\n${e.content}`)
+      .join('\n\n');
+
+    const recent = getChat ? getChat(20) : [];
+    const chatText = recent.map(m => `[${m.name||m.role}]: ${m.content}`).join('\n');
+
+    const isCharTab = casualTab === 0;
+    const actor   = isCharTab ? charName : userName;
+    const target  = isCharTab ? userName : charName;
+    const remaining = 10 - list.length;
+
+    const systemPrompt = `You are analyzing character data to extract natural physical contact habits for a cozy slice-of-life roleplay tracker.
+Character: ${charName}
+User: ${userName}
+${charDesc ? `Character description:\n${charDesc}\n` : ''}
+${userPersona ? `User persona:\n${userPersona}\n` : ''}
+${lbText ? `Lorebook entries:\n${lbText}\n` : ''}
+
+Generate ${remaining} habit cards for: "${actor}가 ${target}에게 하는 일상적인 신체 접촉 습관"
+Focus on: casual, everyday, tender or possessive gestures — public places, daily life, not explicitly sexual.
+Examples: 머리 쓰다듬기, 뒷목 잡기, 이마에 키스, 허리에 손 얹기, 손 잡기 등
+
+Return ONLY a JSON array. Each object:
+- title: short Korean name (e.g. "크라운 키스", "목덜미 인도")
+- desc: 1-sentence Korean description (20 chars max)
+- detail: 2-sentence Korean narrative for prompt injection — written as "${actor}는 무의식적으로 ${target}의 ..." style. Describes when/how/why it happens naturally. This text will be injected into the AI's system prompt to influence roleplay behavior.
+
+Forbidden: explicit sexual content. Keep it sweet, possessive, or protective.`;
+
+    const result = await generate(systemPrompt, '습관 카드 생성해줘.');
+    let cards = [];
+    try { const clean = result.replace(/```json|```/g,'').trim(); cards = JSON.parse(clean); } catch(e) { console.warn('[Casual] parse error', e); }
+    if (!Array.isArray(cards) || cards.length === 0) { alert('생성에 실패했어요. 다시 시도해보세요.'); btn.classList.remove('loading'); btn.innerHTML = casualAIBtnHTML(); return; }
+
+    const newList = [...list, ...cards].slice(0, 10);
+    casualSetList(newList);
+    casualRenderCards();
+  } catch(err) { console.error('[Casual] AI error', err); alert('AI 호출 중 오류가 발생했어요.'); }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = casualAIBtnHTML();
+}
+
+function casualAIBtnHTML() {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;"><path d="M21.5 2l-19 19"/><path d="M21.5 2H8.5"/><path d="M21.5 2v13"/></svg> AI 생성';
+}
+
+// ── 로어북 모달 ──
+function casualToggleMore() {
+  const menu = document.getElementById('casual-more-menu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#casual-more-menu') && !e.target.closest('[onclick="casualToggleMore()"]')) {
+    const m = document.getElementById('casual-more-menu');
+    if (m) m.style.display = 'none';
+  }
+});
+
+function casualOpenLb() {
+  document.getElementById('casual-more-menu').style.display = 'none';
+  syncStore();
+  casualLbSelected = [...(store.casual.lorebookEntries || [])];
+  const list = document.getElementById('casual-lb-list');
+  if (lorebook.length === 0) {
+    list.innerHTML = '<div style="font-size:14px;color:var(--text-muted);text-align:center;padding:20px 0;">연결된 로어북이 없어요</div>';
+  } else {
+    list.innerHTML = lorebook.map(e => {
+      const sel = casualLbSelected.includes(e.uid);
+      return `<div class="lb-item${sel?' selected':''}" id="lb-item-${e.uid}" onclick="casualLbToggle('${e.uid}')">
+        <div class="lb-check"></div>
+        <div>
+          <div class="lb-comment">${esc(String(e.comment))}</div>
+          <div class="lb-preview">${esc(String(e.content).slice(0,80))}...</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const modal = document.getElementById('casual-lb-modal');
+  modal.style.display = 'flex';
+}
+
+function casualLbToggle(uid) {
+  const parsed = isNaN(uid) ? uid : parseInt(uid);
+  const idx = casualLbSelected.indexOf(parsed);
+  if (idx >= 0) casualLbSelected.splice(idx, 1);
+  else casualLbSelected.push(parsed);
+  document.querySelectorAll('[id^="lb-item-"]').forEach(el => {
+    const id = el.id.replace('lb-item-','');
+    const pid = isNaN(id) ? id : parseInt(id);
+    el.className = 'lb-item' + (casualLbSelected.includes(pid) ? ' selected' : '');
+  });
+}
+
+function casualLbSave() {
+  if (window.parent.__PC_STORE__) {
+    window.parent.__PC_STORE__.casual.lorebookEntries = [...casualLbSelected];
+    if (window.parent.__PC_SAVE__) window.parent.__PC_SAVE__();
+  }
+  store.casual.lorebookEntries = [...casualLbSelected];
+  document.getElementById('casual-lb-modal').style.display = 'none';
+}
+
+function casualLbCancel() {
+  document.getElementById('casual-lb-modal').style.display = 'none';
+}
+
+function casualClearAll() {
+  document.getElementById('casual-more-menu').style.display = 'none';
+  if (!confirm('현재 탭의 습관을 모두 삭제할까요?')) return;
+  casualSetList([]);
+  casualRenderCards();
 }
 
 // ── 유틸 ──

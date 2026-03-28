@@ -51,6 +51,11 @@ const defaultSettings = {
         cards: [],
         pinned: [],
     },
+    casual: {
+        charToUser: [],
+        userToChar: [],
+        lorebookEntries: [],
+    },
 };
 
 // ═══════════════════════════════════════════════
@@ -66,6 +71,7 @@ function getStore() {
     if (!s.profile)    s.profile    = { ...defaultSettings.profile };
     if (!s.erogenous)  s.erogenous  = { ...defaultSettings.erogenous };
     if (!s.lastTouch)  s.lastTouch  = { cards: [], pinned: [] };
+    if (!s.casual)     s.casual     = { charToUser: [], userToChar: [], lorebookEntries: [] };
     return s;
 }
 
@@ -221,12 +227,78 @@ function buildPrompt() {
 }
 
 // ═══════════════════════════════════════════════
-// 프롬프트 주입
+// 로어북 엔트리 가져오기
 // ═══════════════════════════════════════════════
+function getLorebookEntries() {
+    try {
+        const c = ctx();
+        const raw =
+            c.worldInfo ||
+            c.worldInfoData ||
+            c.activeWorldInfo ||
+            c.lorebook ||
+            null;
+        if (!raw) return [];
+
+        // 배열 형태
+        if (Array.isArray(raw)) {
+            return raw.map((e, i) => ({
+                uid:     e.uid  ?? e.id  ?? i,
+                comment: e.comment || e.key || e.name || `Entry ${i}`,
+                content: e.content || e.text || '',
+            })).filter(e => e.content);
+        }
+
+        // 객체 형태 { entries: {...} }
+        const entries = raw.entries || raw;
+        return Object.values(entries).map((e, i) => ({
+            uid:     e.uid  ?? e.id  ?? i,
+            comment: e.comment || e.key || e.name || `Entry ${i}`,
+            content: e.content || e.text || '',
+        })).filter(e => e.content);
+    } catch (err) {
+        console.warn(`[${MODULE_NAME}] getLorebookEntries error`, err);
+        return [];
+    }
+}
+
+// ═══════════════════════════════════════════════
+// Casual 프롬프트 빌더
+// ═══════════════════════════════════════════════
+function buildCasualPrompt() {
+    const s = getStore();
+    const casual = s.casual || {};
+    const charToUser = casual.charToUser || [];
+    const userToChar = casual.userToChar || [];
+    if (!charToUser.length && !userToChar.length) return '';
+
+    const charName = getCurrentCharName();
+    const userName = getCurrentUserName();
+    const lines = ['[Casual — 일상 스킨십 습관]'];
+
+    if (charToUser.length) {
+        lines.push(`\n[${charName}가 ${userName}에게]`);
+        charToUser.forEach(c => {
+            if (c.detail) lines.push(c.detail);
+        });
+    }
+    if (userToChar.length) {
+        lines.push(`\n[${userName}가 ${charName}에게]`);
+        userToChar.forEach(c => {
+            if (c.detail) lines.push(c.detail);
+        });
+    }
+    return lines.join('\n');
+}
+
+
 function refreshPrompt() {
     try {
         const { setExtensionPrompt } = ctx();
-        setExtensionPrompt(MODULE_NAME, buildPrompt(), 1, 0);
+        const main   = buildPrompt();
+        const casual = buildCasualPrompt();
+        const full   = [main, casual].filter(Boolean).join('\n\n');
+        setExtensionPrompt(MODULE_NAME, full, 1, 0);
     } catch (e) {
         console.warn(`[${MODULE_NAME}] setExtensionPrompt error`, e);
     }
@@ -498,6 +570,7 @@ async function openMainHub() {
     window.__PC_USER__           = getCurrentUserName();
     window.__PC_CHAR_DESC__      = getCharDescription();
     window.__PC_USER_PERSONA__   = getUserPersona();
+    window.__PC_LOREBOOK__       = getLorebookEntries();
     window.__PC_SAVE__           = saveStore;
 
     const extUrl = `scripts/extensions/third-party/${MODULE_NAME}/main.html`;
@@ -541,6 +614,7 @@ async function openMainHub() {
             iw.__PC_USER__           = getCurrentUserName();
             iw.__PC_CHAR_DESC__      = getCharDescription();
             iw.__PC_USER_PERSONA__   = getUserPersona();
+            iw.__PC_LOREBOOK__       = getLorebookEntries();
             iw.__PC_SAVE__           = saveStore;
             if (typeof iw.__PC_ON_BRIDGE__ === 'function') {
                 iw.__PC_ON_BRIDGE__();
