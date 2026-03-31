@@ -1,0 +1,10 @@
+{
+  "display_name": "Peaches & Cream",
+  "version": "2.3.0",
+  "author": "",
+  "description": "NSFW companion — profile, erogenous zone, last touch, toolbar, vault and more.",
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "auto_update": true
+}
