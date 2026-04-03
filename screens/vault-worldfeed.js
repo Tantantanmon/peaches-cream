@@ -71,45 +71,46 @@ window.ffGenerate = async function() {
     syncStore();
     const cfg     = store.fanFeedConfig || {};
     const history = store.fanFeedHistory || [];
-    const excluded = history.length ? `\nDo NOT reuse these ideas: ${history.slice(-10).join(' / ')}` : '';
+    const excluded = history.length ? `\nDo NOT reuse these ideas: ${history.slice(-15).join(' / ')}` : '';
     const npcs    = cfg.npcs && cfg.npcs.length ? cfg.npcs.slice(0,8).join(', ') : '';
 
     const sys = `You are generating a World Feed — a fictional SNS timeline for NPCs in ${cfg.group||'this world'}.
 Main character (CHAR): ${charName}
-${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 NPCs who post: ${npcs||'none specified'}
 ${excluded}
 
-Generate exactly 5 post objects. Return ONLY a JSON array (no markdown).
-Mix these vibes: comic(2), fight/trolling(1), nsfw(1), serious(1).
-Posts should feel like real SNS — short, punchy, raw. Max 2 sentences per post/reply.
-NPCs argue, troll each other, talk about girls, share world events, react to ${charName}.
-One post must be from ${charName} (isChar: true) — posting like a real person in this world. React to NPCs, share something about the world, or troll someone. Stay in character. Do NOT make it directed at any specific person outside the world.
+Generate exactly 7 post objects. Return ONLY a JSON array (no markdown).
+Sort by likeCount descending (most liked first).
+Mix these vibes freely: comic, fight/trolling, nsfw, serious, meme_reaction, flex/brag, reunion/hangout_plan.
+Posts feel like real SNS — short, punchy, raw. Max 2 sentences per post.
+NPCs argue, troll, brag, plan meetups, react to world events, talk about girls.
+${charName} must appear in: 1 original post (isChar:true) + at least 1 reply on someone else's post. Stay in character, post naturally about the world.
 
 Each post object:
 - from: NPC name or ${charName}
 - handle: @handle
 - time: Korean time ago
-- text: post content in Korean. 1-2 sentences max. No female-degrading slurs.
-- isChar: boolean (true only for ${charName})
+- text: 1-2 sentences Korean. No female-degrading slurs.
+- isChar: boolean (true only for ${charName}'s original post)
 - nsfw: boolean
-- likeCount: number
+- likeCount: number (vary widely, some posts go viral)
 - rtCount: number
 - replyCount: number
-- replies: array of 1-3 reply objects. Each reply: { from, handle, text }`;
+- replies: array of 3-4 reply objects. Each reply: { from, handle, text }. ${charName} may appear in replies too.`;
 
-    const result = await generateWithRole(sys, '피드 5개 생성해줘', 'worldfeed');
+    const result = await generateWithRole(sys, '피드 7개 생성해줘', 'worldfeed');
     let posts = [];
     try { posts = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(posts)||!posts.length) { alert('생성에 실패했어요.'); document.getElementById('ff-loading').style.display='none'; return; }
 
-    const newHistory = [...history, ...posts.map(p=>p.text.slice(0,30))].slice(-20);
+    const newHistory = [...history, ...posts.map(p=>p.text.slice(0,30))].slice(-30);
     if (window.parent?.__PC_STORE__) {
       window.parent.__PC_STORE__.fanFeedHistory = newHistory;
       if (saveStore) saveStore();
     }
-    feedPosts = posts;
-    renderFeed(posts);
+    feedPosts = [...posts].sort((a,b) => (b.likeCount||0) - (a.likeCount||0));
+    renderFeed(feedPosts);
   } catch(err) { console.error('[WorldFeed] error', err); alert('AI 호출 중 오류가 발생했어요.'); }
 
   document.getElementById('ff-loading').style.display = 'none';
