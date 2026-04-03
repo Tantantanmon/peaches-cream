@@ -6,6 +6,7 @@ let userName    = '{{user}}';
 let charDesc    = '';
 let userPersona = '';
 let generate    = null;
+let generateWithRole = null;
 let getChat     = null;
 let getChatRange= null;
 let saveStore   = null;
@@ -23,6 +24,7 @@ function initBridge() {
   charDesc      = p.__PC_CHAR_DESC__      || '';
   userPersona   = p.__PC_USER_PERSONA__   || '';
   generate      = p.__PC_GENERATE__       || null;
+  generateWithRole = p.__PC_GENERATE__    || null;
   getChat       = p.__PC_GET_CHAT__       || null;
   getChatRange  = p.__PC_GET_CHAT_RANGE__ || null;
   saveStore     = p.__PC_SAVE__           || null;
