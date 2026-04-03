@@ -130,7 +130,7 @@ function mlPickTodayCards() {
 }
 
 async function generateCard(cardIdx) {
-  if (!generate) { showLoadingFail(); return; }
+  if (!generateWithRole) { showLoadingFail(); return; }
 
   const wrap = document.getElementById('ml-wrap');
   if (wrap && cardIdx === todayIdx) wrap.innerHTML = `<div class="ml-loading-card"><div class="sp" style="margin:0 auto 12px;"></div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:#b2bec3;letter-spacing:2px;">Writing...</div></div>`;
@@ -156,7 +156,7 @@ Return ONLY a JSON object (no markdown):
 }`;
 
   try {
-    const result = await generate(sys, '모놀로그 작성해줘', 'monologue');
+    const result = await generateWithRole(sys, '모놀로그 작성해줘', 'monologue');
     let data = null;
     try { data = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (data && data.en) {
