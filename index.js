@@ -53,6 +53,7 @@ const APP_TOKENS = {
   reviews:    500,
   offrecord:  300,
   worldfeed:  1000,
+  blackbox:   600,
   dreamlog:   300,
 };
 

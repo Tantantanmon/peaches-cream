@@ -48,6 +48,7 @@ const SCREENS = {
   'vault-reviews':  () => import('./screens/vault-reviews.js').then(m => m.render()),
   'vault-offrecord':() => import('./screens/vault-offrecord.js').then(m => m.render()),
   'vault-worldfeed': () => import('./screens/vault-worldfeed.js').then(m => m.render()),
+  'vault-blackbox':  () => import('./screens/vault-blackbox.js').then(m => m.render()),
   'vault-settings': () => import('./screens/vault-settings.js').then(m => m.render()),
   'vault-dreamlog': () => import('./screens/vault-dreamlog.js').then(m => m.render()),
 };
@@ -61,6 +62,7 @@ const TOPBAR_LABELS = {
   'vault-reviews':  'Reviews',
   'vault-offrecord':'Off the Record',
   'vault-worldfeed': 'World Feed',
+  'vault-blackbox':  'Blackbox',
   'vault-settings': 'Settings',
   'vault-dreamlog': 'Dream Log',
 };
@@ -73,6 +75,7 @@ const BACK_MAP = {
   'vault-reviews':  'vault',
   'vault-offrecord':'vault',
   'vault-worldfeed': 'vault',
+  'vault-blackbox':  'vault',
   'vault-settings': 'vault',
   'vault-dreamlog': 'vault',
 };
