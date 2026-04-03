@@ -82,7 +82,7 @@ window.otrPrev = function(type) {
 };
 
 window.otrGenerate = async function(type) {
-  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
+  if (!generateWithRole) { alert('ST와 연결되지 않았어요.'); return; }
   const loading = document.getElementById(`${type}-loading`);
   if (loading) loading.style.display = 'flex';
 
