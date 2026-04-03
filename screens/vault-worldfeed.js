@@ -84,7 +84,7 @@ Generate exactly 5 post objects. Return ONLY a JSON array (no markdown).
 Mix these vibes: comic(2), fight/trolling(1), nsfw(1), serious(1).
 Posts should feel like real SNS — short, punchy, raw. Max 2 sentences per post/reply.
 NPCs argue, troll each other, talk about girls, share world events, react to ${charName}.
-One post must be from ${charName} (isChar: true) — something minimal or cryptic that gets reactions.
+One post must be from ${charName} (isChar: true) — posting like a real person in this world. React to NPCs, share something about the world, or troll someone. Stay in character. Do NOT make it directed at any specific person outside the world.
 
 Each post object:
 - from: NPC name or ${charName}
