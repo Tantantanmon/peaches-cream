@@ -54,10 +54,7 @@ function renderList(reviews) {
       <div class="acc-body">
         <div class="review-text">${esc(r.text)}</div>
 
-        <div class="reason-block">
-          <div class="reason-label">${r.rec?'👍 추천 이유':'👎 비추 이유'}</div>
-          <div class="reason-text">${esc(r.reason?.text||'')}</div>
-        </div>
+
       </div>
     </div>
   `).join('');
@@ -86,7 +83,7 @@ ${excluded}
 
 IMPORTANT: Be creative. Do NOT reference specific chat events.
 Return ONLY a JSON array of 3 objects (no markdown).
-Each: emoji, name(Korean anonymous e.g. "익명의 클럽녀"), tag(e.g. "클럽 · 3개월 전"), rating(1-5), rec(boolean), text(2-3 sentence Korean review, explicit ok, no slurs), reason(1 sentence).
+Each: emoji, name(Korean anonymous e.g. "익명의 클럽녀"), tag(e.g. "클럽 · 3개월 전"), rating(1-5), rec(boolean), text(2-3 sentence Korean review, explicit ok, no slurs).
 Vary sentiment and context.`
 
     const result = await generateWithRole(sys, '후기 3개 생성해줘', 'reviews');
