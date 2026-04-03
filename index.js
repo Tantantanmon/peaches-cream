@@ -164,47 +164,8 @@ function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSetti
 // generateRaw 래퍼
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
-  const c=ctx(), store=getStore(), apiSrc=store.config.apiSource||'main';
+  const c=ctx(), store=getStore();
   const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
-
-  if(apiSrc.startsWith('profile:')) {
-    try {
-      const cmrs=c.ConnectionManagerRequestService;
-      if(!cmrs) throw new Error('Connection Manager 미로드');
-      const profileId=apiSrc.replace('profile:','');
-      const msgs=[];
-      if(systemPrompt) msgs.push({role:'system', content:systemPrompt});
-      if(userPrompt)   msgs.push({role:'user',   content:userPrompt});
-      const optionSets=[
-        {stream:false, extractData:true},
-        {streaming:false, extractData:true},
-        {stream:false, extractData:true, includePreset:false, includeInstruct:false},
-        {streaming:false},
-      ];
-      let lastError=null;
-      for(const opts of optionSets){
-        try{
-          const resp=await cmrs.sendRequest(profileId, msgs, tokens, opts);
-          if(typeof resp==='string') return resp;
-          if(resp?.choices?.[0]?.message){
-            const m=resp.choices[0].message;
-            return m.reasoning_content||m.content||'';
-          }
-          if(resp?.responseContent?.parts?.[0]?.text) return resp.responseContent.parts[0].text;
-          if(resp?.candidates?.[0]?.content?.parts?.[0]?.text) return resp.candidates[0].content.parts[0].text;
-          if(resp?.content?.parts?.[0]?.text) return resp.content.parts[0].text;
-          if(resp?.content) return resp.content;
-          if(resp?.message) return resp.message;
-          lastError=new Error('응답 형식 인식 실패');
-        }catch(e){ lastError=e; }
-      }
-      throw new Error('Profile 오류: '+(lastError?.message||'알 수 없는 오류'));
-    }catch(e){
-      console.error('[peaches-cream] profile request error', e);
-      throw e;
-    }
-  }
-
   const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
 }
@@ -517,13 +478,7 @@ function renderSettingsPanel(){
           <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
         </div>
         <div class="inline-drawer-content">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-            <label style="white-space:nowrap;">API 소스</label>
-            <select id="pc-api-source" style="flex:1;padding:4px 8px;border-radius:6px;border:1px solid #ccc;font-size:13px;">
-              <option value="main">Main API</option>
-            </select>
-            <button id="pc-api-refresh" style="padding:4px 8px;font-size:12px;cursor:pointer;border-radius:6px;border:1px solid #ccc;background:#f5f5f5;">🔄</button>
-          </div>
+
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
             <label style="white-space:nowrap;">최대 토큰</label>
             <input id="pc-max-tokens" type="number" value="${store.config.maxTokens||1500}" min="100" max="8000" style="width:80px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;font-size:13px;"/>
@@ -534,57 +489,8 @@ function renderSettingsPanel(){
       </div>
     </div>
   `);
-  function discoverProfiles(){
-    const cmrs=ctx().ConnectionManagerRequestService;
-    if(!cmrs) return [];
-    const knownMethods=['getSupportedProfiles','getConnectionProfiles','getAllProfiles','getProfiles','listProfiles'];
-    for(const m of knownMethods){
-      if(typeof cmrs[m]==='function'){
-        try{
-          const result=cmrs[m]();
-          if(Array.isArray(result)&&result.length) return result;
-        }catch(e){}
-      }
-    }
-    try{
-      const proto=Object.getPrototypeOf(cmrs);
-      const dynMethods=Object.getOwnPropertyNames(proto)
-        .filter(k=>typeof cmrs[k]==='function'&&/rofile/i.test(k)&&!knownMethods.includes(k));
-      for(const m of dynMethods){
-        try{
-          const result=cmrs[m]();
-          if(Array.isArray(result)&&result.length) return result;
-        }catch{}
-      }
-    }catch{}
-    const paths=[
-      ctx().extensionSettings?.connectionManager?.profiles,
-      ctx().extensionSettings?.ConnectionManager?.profiles,
-      ctx().extensionSettings?.connection_manager?.profiles,
-    ];
-    for(const s of paths){
-      if(!s) continue;
-      const arr=Array.isArray(s)?s:Object.values(s);
-      if(arr.length) return arr;
-    }
-    return [];
-  }
+  function fillApiSelect(){ }
 
-  function fillApiSelect(){
-    const $sel=$('#pc-api-source'),cur=getStore().config.apiSource||'main';
-    $sel.empty().append('<option value="main">Main API</option>');
-    try{
-      const profiles=discoverProfiles();
-      profiles.forEach(p=>{
-        const id=p.id||p.profileId||p.uuid||'',name=p.name||p.profileName||id;
-        if(id) $sel.append(`<option value="profile:${id}">${name}</option>`);
-      });
-    }catch(e){}
-    $sel.val(cur);
-  }
-  fillApiSelect();
-  $('#pc-api-refresh').on('click',fillApiSelect);
-  $('#pc-api-source').on('change',function(){ getStore().config.apiSource=$(this).val(); saveStore(); });
   $('#pc-max-tokens').on('change',function(){ getStore().config.maxTokens=parseInt($(this).val())||1500; saveStore(); });
 }
 
