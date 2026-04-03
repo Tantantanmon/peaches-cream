@@ -165,13 +165,43 @@ function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSetti
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
   const c=ctx(), store=getStore(), apiSrc=store.config.apiSource||'main';
-  if(apiSrc.startsWith('profile:')){
-    try{
-      const cmrs=c.ConnectionManagerRequestService;
-      if(cmrs&&typeof cmrs.loadProfile==='function') await cmrs.loadProfile(apiSrc.replace('profile:',''));
-    }catch(e){}
-  }
   const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
+
+  if(apiSrc.startsWith('profile:')) {
+    try {
+      const cmrs=c.ConnectionManagerRequestService;
+      if(!cmrs) throw new Error('Connection Manager 미로드');
+      const profileId=apiSrc.replace('profile:','');
+      const msgs=[];
+      if(systemPrompt) msgs.push({role:'system', content:systemPrompt});
+      if(userPrompt)   msgs.push({role:'user',   content:userPrompt});
+      const optionSets=[
+        {stream:false, extractData:true, includePreset:false, includeInstruct:false},
+        {streaming:false, extractData:true, includePreset:false, includeInstruct:false},
+        {stream:false, extractData:true},
+        {streaming:false},
+      ];
+      let lastError=null;
+      for(const opts of optionSets){
+        try{
+          const resp=await cmrs.sendRequest(profileId, msgs, tokens, opts);
+          if(typeof resp==='string') return resp;
+          if(resp?.choices?.[0]?.message){
+            const m=resp.choices[0].message;
+            return m.reasoning_content||m.content||'';
+          }
+          if(resp?.content) return resp.content;
+          if(resp?.message) return resp.message;
+          lastError=new Error('응답 형식 인식 실패');
+        }catch(e){ lastError=e; }
+      }
+      throw new Error('Profile 오류: '+(lastError?.message||'알 수 없는 오류'));
+    }catch(e){
+      console.error('[peaches-cream] profile request error', e);
+      throw e;
+    }
+  }
+
   const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
 }
