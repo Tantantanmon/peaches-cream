@@ -52,7 +52,7 @@ const APP_TOKENS = {
   clinic:    800,
   reviews:    500,
   offrecord:  300,
-  worldfeed:  1200,
+  worldfeed:  1800,
   dreamlog:   300,
 };
 
