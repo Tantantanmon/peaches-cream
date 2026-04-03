@@ -50,10 +50,10 @@ const CHAR_REACTION_INSTRUCTION = `React based on your character's personality a
 const APP_TOKENS = {
   redflag:   600,
   clinic:    800,
-  reviews:   900,
-  offrecord:  400,
+  reviews:    500,
+  offrecord:  300,
   worldfeed:  1200,
-  dreamlog:  400,
+  dreamlog:   300,
 };
 
 // ═══════════════════════════════════════════
