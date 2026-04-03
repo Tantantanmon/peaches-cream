@@ -50,7 +50,6 @@ const SCREENS = {
   'vault-worldfeed': () => import('./screens/vault-worldfeed.js').then(m => m.render()),
   'vault-settings': () => import('./screens/vault-settings.js').then(m => m.render()),
   'vault-dreamlog': () => import('./screens/vault-dreamlog.js').then(m => m.render()),
-  'vault-monologue':() => import('./screens/vault-monologue.js').then(m => m.render()),
 };
 
 const TOPBAR_LABELS = {
@@ -64,7 +63,6 @@ const TOPBAR_LABELS = {
   'vault-worldfeed': 'World Feed',
   'vault-settings': 'Settings',
   'vault-dreamlog': 'Dream Log',
-  'vault-monologue':'Monologue',
 };
 
 const BACK_MAP = {
@@ -77,7 +75,6 @@ const BACK_MAP = {
   'vault-worldfeed': 'vault',
   'vault-settings': 'vault',
   'vault-dreamlog': 'vault',
-  'vault-monologue':'vault',
 };
 
 const router = {

@@ -31,7 +31,6 @@ const defaultCharData = {
   darkHistory:[], darkCards:[],
   fanFeedHistory:[],
   fanFeedConfig: { group:'', fandomName:'', npcs:[] },
-  monologueUsed:[], monologuePinned:[],
   dreamLogCurrent: null,
 };
 
@@ -52,10 +51,9 @@ const APP_TOKENS = {
   redflag:   600,
   clinic:    800,
   reviews:   900,
-  offrecord: 1000,
-  fanfeed:   1200,
+  offrecord:  400,
+  worldfeed:  1200,
   dreamlog:  400,
-  monologue: 320,
 };
 
 // ═══════════════════════════════════════════
@@ -450,9 +448,9 @@ window.pcTbApply=async function(){
   pcTbReset();
 
   try{
-    const {setExtensionPrompt} = ctx();
+    const {setExtensionPrompt, generate} = ctx();
     setExtensionPrompt(MODULE_NAME+'_action', actionMsg, 1, 0);
-    await ctx().generateQuietPrompt(actionMsg, false, false, '', 'system', 500);
+    await generate('normal', {});
     setTimeout(()=>{ try{ setExtensionPrompt(MODULE_NAME+'_action','',1,0); }catch(e){} }, 300);
   }catch(e){ console.error(`[${MODULE_NAME}] apply error`,e); }
 };
