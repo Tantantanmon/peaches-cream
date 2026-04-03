@@ -54,8 +54,8 @@ const APP_TOKENS = {
   reviews:   900,
   offrecord: 1000,
   fanfeed:   1200,
-  dreamlog:  600,
-  monologue: 600,
+  dreamlog:  400,
+  monologue: 320,
 };
 
 // ═══════════════════════════════════════════
