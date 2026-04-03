@@ -52,16 +52,13 @@ window.rfGenerate = async function() {
   try {
     const excluded = rfSessionUsed.length ? `\nDo NOT repeat these questions: ${rfSessionUsed.slice(-21).join(' / ')}` : '';
 
-    const sys = `You are generating Red Flag game cards for a sexual roleplay game featuring ${charName}.
-${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
+    const sys = `You are generating Red Flag game cards for ${charName}.
+${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 ${excluded}
 
 Return ONLY a JSON array of exactly ${RF_TOTAL} objects (no markdown).
-Each object:
-- q: short Korean sentence (15 words or less) describing one specific sexual behavior/habit of ${charName}
-- red: ${charName}'s Korean rebuttal when user says red flag. 3-5 sentences. ${charReaction}
-- good: ${charName}'s excited Korean response when user says they love it. 3-5 sentences. ${charReaction}
-Make behaviors varied. Reflect ${charName}'s unique personality.`;
+Each: q(1 short Korean sentence, specific sexual behavior/habit), red(2 sentence Korean rebuttal), good(2 sentence Korean excited response).
+Vary behaviors. Reflect ${charName}'s personality.`
 
     const result = await generateWithRole(sys, `${charName}의 레드플래그 카드 ${RF_TOTAL}장 생성`, 'redflag');
     let cards = [];

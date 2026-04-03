@@ -81,16 +81,13 @@ window.clinicAsk = async function() {
 
 Patient context:
 ${contextData || 'No patient data available'}
+${charDesc ? `Character: ${charDesc.slice(0,100)}` : ''}
 
-Character ${charName} brief info:
-${charDesc ? charDesc.slice(0, 200) : 'No description'}
-
-Instructions:
-1. Answer the patient's question in Korean. 3-4 sentences. Stay fully in character as the doctor. Do NOT give generic advice — react specifically to the patient context above.
-2. Add a comic prescription line starting with exactly "처방:" on a new line.
-3. Output exactly this on its own line: ---CHAR---
-4. Write ${charName}'s reaction in Korean. 3-4 sentences. ${charReaction}
-5. Do NOT output any XML tags, HTML tags, or system tags of any kind.`;
+1. Answer in Korean. 3 sentences. Stay in character. React to patient context specifically.
+2. Add a comic prescription starting with "처방:" on a new line.
+3. Output exactly: ---CHAR---
+4. Write ${charName}'s reaction in Korean. 3 sentences.
+5. No XML or HTML tags.`
 
     const raw      = await generateWithRole(sys, `환자 질문: ${q}`, 'clinic');
     const cleaned  = stripTags(raw);

@@ -1,11 +1,13 @@
 // screens/vault-dreamlog.js — v2.6
 
 const DREAM_TYPES = [
-  { type:'nsfw',    emoji:'🔥', label:'NSFW',    weight:40 },
-  { type:'comic',   emoji:'😂', label:'코믹',    weight:20 },
-  { type:'weird',   emoji:'🌀', label:'개꿈',    weight:10 },
-  { type:'farewell',emoji:'💔', label:'이별',    weight:15 },
-  { type:'fight',   emoji:'😡', label:'싸움',    weight:15 },
+  { type:'nsfw',      emoji:'🔥', label:'NSFW',      weight:25 },
+  { type:'comic',     emoji:'😂', label:'코믹',      weight:20 },
+  { type:'weird',     emoji:'🌀', label:'개꿈',      weight:15 },
+  { type:'farewell',  emoji:'💔', label:'이별',      weight:15 },
+  { type:'fight',     emoji:'😡', label:'싸움',      weight:10 },
+  { type:'realistic', emoji:'🌿', label:'현실적',    weight:10 },
+  { type:'trauma',    emoji:'🖤', label:'트라우마',  weight:5  },
 ];
 
 const MOOD_KEYWORDS = {
@@ -148,16 +150,17 @@ window.dlGenerate = async function() {
   const lv = setInterval(() => { ltEl.textContent = `${loadingMsgs[li++ % loadingMsgs.length]} 꿈 기록 중...`; }, 500);
 
   try {
-    const chatText = (()=>{try{return buildChatText(10);}catch(e){return '';}})();
     const up       = userPersona ? userPersona.slice(0, 100) : '';
-    const picked   = pickDreamType(chatText);
+    const picked   = pickDreamType('');
 
     const typeInstructions = {
-      nsfw:     `Write an NSFW dream. Include explicit sexual content and desires. Explicit language and descriptions are fully allowed.`,
-      comic:    `Write a comic dream. Something realistic but funny — ${charName} is being serious inside the dream even though it's ridiculous.`,
-      weird:    `Write a completely random nonsense dream with no logic. Something surreal and inexplicable.`,
-      farewell: `Write an emotional, bittersweet dream about separation, longing, or not being able to reach ${userName}.`,
-      fight:    `Write a dream where ${charName} and ${userName} fight or there's conflict. ${charName} caves first in the end.`,
+      nsfw:     `Write an NSFW dream. Include explicit sexual content and desires.`,
+      comic:    `Write a comic dream. Realistic but funny — ${charName} is serious even though it's ridiculous.`,
+      weird:    `Write a completely surreal nonsense dream with no logic.`,
+      farewell: `Write an emotional bittersweet dream about separation or longing.`,
+      fight:    `Write a dream where ${charName} and ${userName} fight. ${charName} caves first in the end.`,
+      realistic:`Write a hyper-realistic mundane dream — ordinary daily life, awkward small moments, nothing special but oddly vivid.`,
+      trauma:   `Write a dark unsettling dream rooted in ${charName}'s fears, regrets, or unresolved pain. No resolution.`,
     };
 
     const sys = `You are writing a dream diary entry for ${charName} about ${userName}. {{char}} is always male. {{user}} is always female.
@@ -172,8 +175,8 @@ Write STRICTLY in ${charName}'s exact voice and personality.
 Return ONLY a JSON object (no markdown):
 {
   "title": "dream title in Korean, max 10 chars, punchy one-liner",
-  "body": "dream content in ${charName}'s diary voice. exactly 5 lines. first-person, casual Korean. Explicit if NSFW.",
-  "after": "3 lines. ${charName}'s reaction after waking up. If ${userName} is nearby, describe how ${charName} acts toward them. ${charReaction}"
+  "body": "dream content in ${charName}'s diary voice. exactly 4 lines. first-person, casual Korean. Explicit if NSFW.",
+  "after": "2 lines. ${charName}'s reaction after waking up. If ${userName} is nearby, describe how ${charName} acts toward them."
 }`;
 
     const result = await generateWithRole(sys, '꿈 일기 작성해줘', 'dreamlog');

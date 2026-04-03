@@ -53,7 +53,7 @@ function renderList(reviews) {
       </div>
       <div class="acc-body">
         <div class="review-text">${esc(r.text)}</div>
-        <div class="rtag-row">${(r.tags||[]).map(t=>`<span class="rtag ${t.g?'good':'bad'}">${esc(t.t)}</span>`).join('')}</div>
+
         <div class="reason-block">
           <div class="reason-label">${r.rec?'👍 추천 이유':'👎 비추 이유'}</div>
           <div class="reason-text">${esc(r.reason?.text||'')}</div>
@@ -80,23 +80,16 @@ window.rvGenerate = async function() {
     const history  = store.reviewsHistory || [];
     const excluded = history.length ? `\nDo NOT repeat these reviewer names: ${history.slice(-15).join(', ')}` : '';
 
-    const sys = `You are generating anonymous reviews for a fictional character ${charName} in a NSFW roleplay context.
-${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
+    const sys = `You are generating anonymous reviews for ${charName} in a NSFW roleplay context.
+${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 ${excluded}
 
-Return ONLY a JSON array of 5 review objects (no markdown).
-Each object:
-- emoji: single emoji for avatar
-- name: Korean anonymous reviewer name (e.g. "익명의 클럽녀", "익명의 틴더녀")
-- tag: context tag (e.g. "클럽 · 3개월 전", "앱 매치 · 2주 전")
-- rating: integer 1-5
-- rec: boolean
-- text: 3-4 sentence Korean review. Honest, raw, explicit. From reviewer's perspective. No female-degrading slurs.
-- tags: array of 3-4 tag objects {t: string, g: boolean}
-- reason: {rec: boolean, text: 2 sentence reason for rec/norec}
-Make reviews varied in sentiment. Reflect ${charName}'s actual personality and behaviors.`;
+IMPORTANT: Be creative. Do NOT reference specific chat events.
+Return ONLY a JSON array of 3 objects (no markdown).
+Each: emoji, name(Korean anonymous e.g. "익명의 클럽녀"), tag(e.g. "클럽 · 3개월 전"), rating(1-5), rec(boolean), text(2-3 sentence Korean review, explicit ok, no slurs), reason(1 sentence).
+Vary sentiment and context.`
 
-    const result = await generateWithRole(sys, '후기 5개 생성해줘', 'reviews');
+    const result = await generateWithRole(sys, '후기 3개 생성해줘', 'reviews');
     let reviews = [];
     try { reviews = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(reviews)||!reviews.length) { alert('생성에 실패했어요.'); return; }

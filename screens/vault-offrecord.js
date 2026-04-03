@@ -93,26 +93,24 @@ window.otrGenerate = async function(type) {
 
     let sys;
     if (type === 'cog') {
-      sys = `You are generating "Caught Off Guard" cards — things ${charName} does secretly or privately related to ${userName}.
-${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
+      sys = `You are generating "Caught Off Guard" cards for ${charName} about ${userName}.
+${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 ${excluded}
 
-Return ONLY a JSON array of 5 objects (no markdown).
-Each:
-- text: 1 sentence Korean — a specific everyday action ${charName} does secretly (SFW, subtle emotions, soft obsession)
-- comment: 2-3 line Korean comment in ${charName}'s voice (inner monologue). ${charReaction}`;
+IMPORTANT: Be creative. Do NOT reference specific chat events.
+Return ONLY a JSON array of 3 objects (no markdown).
+Each: text(1 sentence Korean, secret SFW action), comment(2 line Korean inner monologue).`
     } else {
-      sys = `You are generating "Dark Thoughts" cards — ${charName}'s explicit sexual confessions and fantasies about ${userName}.
-${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
+      sys = `You are generating "Dark Thoughts" cards for ${charName} about ${userName}.
+${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 ${excluded}
 
-Return ONLY a JSON array of 5 objects (no markdown).
-Each:
-- text: 1 sentence Korean — an explicit sexual confession or fantasy ${charName} hasn't said out loud.
-- comment: 2-3 line Korean comment in ${charName}'s exact voice. ${charReaction}`;
+IMPORTANT: Be creative. Do NOT reference specific chat events.
+Return ONLY a JSON array of 3 objects (no markdown).
+Each: text(1 sentence Korean, explicit sexual confession), comment(2 line Korean inner monologue).`
     }
 
-    const result = await generateWithRole(sys, '카드 5장 생성해줘', 'offrecord');
+    const result = await generateWithRole(sys, '카드 3장 생성해줘', 'offrecord');
     let cards = [];
     try { cards = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(cards)||!cards.length) { alert('생성에 실패했어요.'); if(loading) loading.style.display='none'; return; }
