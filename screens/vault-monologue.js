@@ -71,19 +71,19 @@ export function render() {
     const s = document.createElement('style');
     s.id = 'ml-style';
     s.textContent = `
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+KR:wght@200;300;400;500&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Serif+KR:wght@200;300;400;500&family=Inter:wght@300;400;500&display=swap');
 .ml-wrap{min-height:100%;background:linear-gradient(135deg,#f5f7fa 0%,#e4e9f2 50%,#dbe2ef 100%);padding:16px 16px 40px;display:flex;flex-direction:column;gap:16px;}
 .ml-card{background:rgba(255,255,255,0.45);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.7);border-radius:36px;padding:44px 34px;box-shadow:0 8px 32px rgba(31,38,135,0.07);transition:opacity .4s,transform .4s;}
 .ml-q{font-family:'Noto Serif KR',serif;font-size:23px;font-weight:400;color:#2d3436;line-height:1.6;margin-bottom:44px;word-break:keep-all;}
-.ml-dialogue-wrap{margin-bottom:44px;}
-.ml-en{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:#4a5568;line-height:1.6;margin-bottom:14px;}
-.ml-kr{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:300;color:#636e72;line-height:1.8;}
+.ml-dialogue-wrap{margin-bottom:28px;}
+.ml-en{font-family:'Lora',serif;font-size:18px;font-style:italic;color:#4a5568;line-height:1.5;margin-bottom:10px;}
+.ml-kr{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:300;color:#636e72;line-height:1.5;}
 .ml-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,0.06),transparent);margin-bottom:36px;}
 .ml-mono{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:300;color:#57606f;line-height:2.1;word-break:keep-all;}
 .ml-btn-row{display:flex;justify-content:flex-end;margin-top:36px;}
-.ml-pin-btn{background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.7);border-radius:50px;padding:9px 22px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#636e72;cursor:pointer;transition:all .3s;letter-spacing:1.5px;}
+.ml-pin-btn{background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.7);border-radius:50px;padding:9px 22px;font-family:'Lora',serif;font-size:14px;color:#636e72;cursor:pointer;transition:all .3s;letter-spacing:1.5px;}
 .ml-pin-btn.pinned{background:#2d3436;color:#fff;border-color:#2d3436;}
-.ml-next-btn{width:100%;height:68px;background:rgba(255,255,255,0.45);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.7);border-radius:24px;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:#2d3436;letter-spacing:5px;text-transform:uppercase;cursor:pointer;transition:all .3s;box-shadow:0 8px 32px rgba(31,38,135,0.07);}
+.ml-next-btn{width:100%;height:68px;background:rgba(255,255,255,0.45);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.7);border-radius:24px;font-family:'Lora',serif;font-size:15px;font-weight:400;color:#2d3436;letter-spacing:5px;text-transform:uppercase;cursor:pointer;transition:all .3s;box-shadow:0 8px 32px rgba(31,38,135,0.07);}
 .ml-next-btn:active{transform:scale(0.97);}
 .ml-section-header{display:flex;justify-content:space-between;align-items:center;padding:0 6px;}
 .ml-section-label{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;color:#b2bec3;text-transform:uppercase;}
@@ -138,20 +138,22 @@ async function generateCard(cardIdx) {
 
   const q = todayCards[cardIdx].q;
 
-  const sys = `You are writing a monologue for ${charName} speaking directly to ${userName}. {{char}} is always male. {{user}} is always female.
+  const sys = `You are ${charName}, writing a raw and emotionally present monologue spoken directly to ${userName}. {{char}} is always male. {{user}} is always female.
 ${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
 
 The theme is: "${q.qKr}"
 
-CRITICAL: Write as if this situation is ACTUALLY HAPPENING RIGHT NOW. Write in real, present-tense emotional weight — not hypothetical.
+THIS SITUATION IS ACTUALLY HAPPENING RIGHT NOW. Feel the full emotional weight of this moment. Do not be vague or hypothetical — be specific, raw, and true to this character.
 
-Write STRICTLY in ${charName}'s exact voice and personality.
+If the theme involves separation, loss, or unreality (e.g. virtual existence, forgetting, farewell) — write as if it is genuinely, painfully real. No detachment.
+
+Write STRICTLY in ${charName}'s exact voice, personality, and speech patterns.
 
 Return ONLY a JSON object (no markdown):
 {
   "en": "EXACTLY 3 lines of dialogue in English. First-person, spoken directly to ${userName}. Max 15 words per line. Each line separated by \\n.",
   "kr": "Korean translation. EXACTLY 3 lines matching the English. Each line separated by \\n.",
-  "mono": "Inner monologue in Korean. Around 50 words total. ${charReaction} Write as a single flowing paragraph with NO line breaks. Do NOT use \\n."
+  "mono": "Inner monologue in Korean. Around 50 words. ${charReaction} Single flowing paragraph, no line breaks, no \\n."
 }`;
 
   try {
@@ -184,7 +186,7 @@ function renderAll() {
           <div class="ml-kr">${p.kr.replace(/\n/g,'<br>')}</div>
         </div>
         <div class="ml-divider"></div>
-        <div class="ml-mono">${p.mono.replace(/\n/g,'<br>')}</div>
+        <div class="ml-mono">${p.mono.replace(/\n/g,' ')}</div>
         <div class="ml-btn-row">
           <button class="ml-pin-btn" onclick="mlClosePinView()">← 돌아가기</button>
         </div>
@@ -208,7 +210,7 @@ function renderAll() {
           <div class="ml-kr">${card.kr.replace(/\n/g,'<br>')}</div>
         </div>
         <div class="ml-divider"></div>
-        <div class="ml-mono">${card.mono.replace(/\n/g,'<br>')}</div>
+        <div class="ml-mono">${card.mono.replace(/\n/g,' ')}</div>
         <div class="ml-btn-row">
           <button class="ml-pin-btn${isPinned?' pinned':''}" id="ml-pin-btn" onclick="mlTogglePin(${card.idx})">${isPinned?'Saved':'Save Memory'}</button>
         </div>
