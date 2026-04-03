@@ -174,8 +174,16 @@ async function generateWithRole(systemPrompt, userPrompt, appName) {
     }catch(e){}
   }
   const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
-  const prompt = [systemPrompt, userPrompt].filter(Boolean).join('\n\n');
-  return await c.generateQuietPrompt(prompt, false, false, '', 'system', tokens);
+
+  const params = {
+    prompt: userPrompt,
+    max_new_tokens: tokens,
+    quiet: true,
+    stop: [],
+  };
+  if (systemPrompt) params.systemPrompt = systemPrompt;
+
+  return await c.generateRaw(params);
 }
 
 // ═══════════════════════════════════════════
@@ -450,9 +458,9 @@ window.pcTbApply=async function(){
   pcTbReset();
 
   try{
-    const {setExtensionPrompt} = ctx();
+    const {setExtensionPrompt, generate} = ctx();
     setExtensionPrompt(MODULE_NAME+'_action', actionMsg, 1, 0);
-    await ctx().generateQuietPrompt(actionMsg, false, false, '', 'system', 500);
+    await generate('normal', {});
     setTimeout(()=>{ try{ setExtensionPrompt(MODULE_NAME+'_action','',1,0); }catch(e){} }, 300);
   }catch(e){ console.error(`[${MODULE_NAME}] apply error`,e); }
 };
