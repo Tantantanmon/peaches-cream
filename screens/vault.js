@@ -17,6 +17,7 @@ export function render() {
       ${appItem('vault-offrecord', 'Off the Record', offRecordIcon())}
       ${appItem('vault-worldfeed',  'World Feed',     worldFeedIcon())}
       ${appItem('vault-dreamlog',  'Dream Log',      dreamLogIcon())}
+      ${appItem('vault-blackbox',  'Blackbox',       blackboxIcon())}
       ${appItem('vault-settings',  'Settings',       settingsIcon())}
     </div>
   `;
