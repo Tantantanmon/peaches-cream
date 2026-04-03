@@ -80,7 +80,7 @@ ${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 NPCs who post: ${npcs||'none specified'}
 ${excluded}
 
-Generate exactly 7 post objects. Return ONLY a JSON array (no markdown).
+Generate exactly 5 post objects. Return ONLY a JSON array (no markdown).
 Sort by likeCount descending (most liked first).
 Mix these vibes freely: comic, fight/trolling, nsfw, serious, meme_reaction, flex/brag, reunion/hangout_plan.
 Posts feel like real SNS — short, punchy, raw. Max 2 sentences per post.
@@ -99,7 +99,7 @@ Each post object:
 - replyCount: number
 - replies: array of 3-4 reply objects. Each reply: { from, handle, text }. ${charName} may appear in replies too.`;
 
-    const result = await generateWithRole(sys, '피드 7개 생성해줘', 'worldfeed');
+    const result = await generateWithRole(sys, '피드 5개 생성해줘', 'worldfeed');
     let posts = [];
     try { posts = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(posts)||!posts.length) { alert('생성에 실패했어요.'); document.getElementById('ff-loading').style.display='none'; return; }
