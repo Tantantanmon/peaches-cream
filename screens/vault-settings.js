@@ -2,7 +2,7 @@
 
 export function render() {
   syncStore();
-  const cfg = store.fanFeedConfig || { group:'', fandomName:'', npcs:[] };
+  const cfg = store.fanFeedConfig || { group:'', npcs:[] };
   const area = document.getElementById('scroll-area');
 
   area.innerHTML = `

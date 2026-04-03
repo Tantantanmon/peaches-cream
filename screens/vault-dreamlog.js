@@ -133,7 +133,7 @@ window.dlToggleAfter = function() {
 };
 
 window.dlGenerate = async function() {
-  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
+  if (!generateWithRole) { alert('ST와 연결되지 않았어요.'); return; }
 
   const btn = document.getElementById('dl-gen-btn');
   const loading = document.getElementById('dl-loading');
@@ -176,7 +176,7 @@ Return ONLY a JSON object (no markdown):
   "after": "3 lines. ${charName}'s reaction after waking up. If ${userName} is nearby, describe how ${charName} acts toward them. ${charReaction}"
 }`;
 
-    const result = await generate(sys, '꿈 일기 작성해줘', 'dreamlog');
+    const result = await generateWithRole(sys, '꿈 일기 작성해줘', 'dreamlog');
     let dream = null;
     try { dream = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
 

@@ -98,7 +98,7 @@ Each post object:
 - replyCount: number
 - replies: array of 1-3 reply objects. Each reply: { from, handle, text }`;
 
-    const result = await generateWithRole(sys, '피드 5개 생성해줘', 'fanfeed');
+    const result = await generateWithRole(sys, '피드 5개 생성해줘', 'worldfeed');
     let posts = [];
     try { posts = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(posts)||!posts.length) { alert('생성에 실패했어요.'); document.getElementById('ff-loading').style.display='none'; return; }

@@ -45,7 +45,7 @@ window.clinicSetQ = function(q) { document.getElementById('clinic-input').value 
 window.clinicAsk = async function() {
   const q = document.getElementById('clinic-input')?.value.trim();
   if (!q) return;
-  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
+  if (!generateWithRole) { alert('ST와 연결되지 않았어요.'); return; }
 
   const doc = pickDoctor();
   const btn = document.getElementById('clinic-ask-btn');
@@ -92,7 +92,7 @@ Instructions:
 4. Write ${charName}'s reaction in Korean. 3-4 sentences. ${charReaction}
 5. Do NOT output any XML tags, HTML tags, or system tags of any kind.`;
 
-    const raw      = await generate(sys, `환자 질문: ${q}`, 'clinic');
+    const raw      = await generateWithRole(sys, `환자 질문: ${q}`, 'clinic');
     const cleaned  = stripTags(raw);
     const splitIdx = cleaned.indexOf('---CHAR---');
     const docRaw   = splitIdx >= 0 ? cleaned.slice(0, splitIdx).trim() : cleaned.trim();

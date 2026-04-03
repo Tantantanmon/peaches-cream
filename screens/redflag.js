@@ -45,7 +45,7 @@ export function render() {
 }
 
 window.rfGenerate = async function() {
-  if (!generate) { rfQuestions = rfFallback(); rfStart(); return; }
+  if (!generateWithRole) { rfQuestions = rfFallback(); rfStart(); return; }
   const btn = document.getElementById('rf-gen-btn');
   if (btn) { btn.classList.add('loading'); btn.textContent = '카드 생성 중...'; }
 
@@ -63,7 +63,7 @@ Each object:
 - good: ${charName}'s excited Korean response when user says they love it. 3-5 sentences. ${charReaction}
 Make behaviors varied. Reflect ${charName}'s unique personality.`;
 
-    const result = await generate(sys, `${charName}의 레드플래그 카드 ${RF_TOTAL}장 생성`, 'redflag');
+    const result = await generateWithRole(sys, `${charName}의 레드플래그 카드 ${RF_TOTAL}장 생성`, 'redflag');
     let cards = [];
     try { cards = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (Array.isArray(cards) && cards.length) {

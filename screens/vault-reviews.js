@@ -70,7 +70,7 @@ window.rvToggle = function(i) {
 };
 
 window.rvGenerate = async function() {
-  if (!generate) { alert('ST와 연결되지 않았어요.'); return; }
+  if (!generateWithRole) { alert('ST와 연결되지 않았어요.'); return; }
   const btn = document.getElementById('rv-gen-btn');
   btn.classList.add('loading'); btn.textContent = '후기 생성 중...';
   document.getElementById('rv-loading').style.display = 'flex';
@@ -96,7 +96,7 @@ Each object:
 - reason: {rec: boolean, text: 2 sentence reason for rec/norec}
 Make reviews varied in sentiment. Reflect ${charName}'s actual personality and behaviors.`;
 
-    const result = await generate(sys, '후기 5개 생성해줘', 'reviews');
+    const result = await generateWithRole(sys, '후기 5개 생성해줘', 'reviews');
     let reviews = [];
     try { reviews = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(reviews)||!reviews.length) { alert('생성에 실패했어요.'); return; }
