@@ -6,29 +6,22 @@ export function render() {
   const area = document.getElementById('scroll-area');
 
   area.innerHTML = `
-    <!-- FAN FEED -->
-    <div class="section-label" style="margin-top:4px;">Fan Feed</div>
+    <!-- WORLD FEED -->
+    <div class="section-label" style="margin-top:4px;">World Feed</div>
     <div class="list-group">
       <div class="list-row">
         <div>
-          <div class="row-label">소속 집단</div>
-          <div class="row-sub">AI가 트윗 생성할 때 참고해요</div>
+          <div class="row-label">세계관</div>
+          <div class="row-sub">AI가 피드 생성할 때 참고해요</div>
         </div>
-        <input class="row-text-input" id="ff-group" type="text" placeholder="예: F1팀, 대학교, 군대" value="${esc(cfg.group||'')}"/>
-      </div>
-      <div class="list-row">
-        <div>
-          <div class="row-label">팬덤 이름</div>
-          <div class="row-sub">팬 계정 이름에 사용돼요</div>
-        </div>
-        <input class="row-text-input" id="ff-fandom" type="text" placeholder="예: 아리아팬" value="${esc(cfg.fandomName||'')}"/>
+        <input class="row-text-input" id="ff-group" type="text" placeholder="예: 콜오브듀티, F1, 대학교" value="${esc(cfg.group||'')}"/>
       </div>
     </div>
     <div class="list-group">
       <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
         <div>
-          <div class="row-label">등장 NPC</div>
-          <div class="row-sub">트윗에 자주 등장할 인물들</div>
+          <div class="row-label">등장 NPC <span style="font-size:11px;color:var(--text-hint);">최대 8명</span></div>
+          <div class="row-sub">피드에 등장할 인물들</div>
         </div>
         <div class="tag-wrap" id="ff-npc-wrap">
           ${(cfg.npcs||[]).map(n=>`<div class="kw-tag">${esc(n)}<span class="kw-x" onclick="this.parentElement.remove()">×</span></div>`).join('')}
@@ -45,7 +38,7 @@ export function render() {
         <span class="row-chevron">›</span>
       </div>
     </div>
-    <button class="save-btn" id="ff-save-btn" onclick="ffSaveConfig()" style="margin:0 0 20px;">Fan Feed 설정 저장</button>
+    <button class="save-btn" id="ff-save-btn" onclick="ffSaveConfig()" style="margin:0 0 20px;">World Feed 설정 저장</button>
 
     <!-- OFF THE RECORD -->
     <div class="section-label">Off the Record</div>
@@ -86,9 +79,11 @@ export function render() {
 }
 
 window.ffAddNPC = function() {
+  const wrap = document.getElementById('ff-npc-wrap');
+  const current = wrap.querySelectorAll('.kw-tag').length;
+  if (current >= 8) { showToast('NPC는 최대 8명까지 추가할 수 있어요'); return; }
   const val = prompt('NPC 이름:');
   if (!val||!val.trim()) return;
-  const wrap   = document.getElementById('ff-npc-wrap');
   const addBtn = wrap.querySelector('.add-tag');
   const tag    = document.createElement('div');
   tag.className = 'kw-tag';
@@ -97,12 +92,11 @@ window.ffAddNPC = function() {
 };
 
 window.ffSaveConfig = function() {
-  const group      = document.getElementById('ff-group')?.value.trim()  || '';
-  const fandomName = document.getElementById('ff-fandom')?.value.trim() || '';
-  const npcs       = Array.from(document.getElementById('ff-npc-wrap')?.querySelectorAll('.kw-tag')||[])
-                       .map(t=>t.textContent.replace('×','').trim());
+  const group = document.getElementById('ff-group')?.value.trim() || '';
+  const npcs  = Array.from(document.getElementById('ff-npc-wrap')?.querySelectorAll('.kw-tag')||[])
+                  .map(t=>t.textContent.replace('×','').trim());
   if (window.parent?.__PC_STORE__) {
-    window.parent.__PC_STORE__.fanFeedConfig = { group, fandomName, npcs };
+    window.parent.__PC_STORE__.fanFeedConfig = { group, npcs };
     if (saveStore) saveStore();
   }
   showToast('저장됐어요 ✓');

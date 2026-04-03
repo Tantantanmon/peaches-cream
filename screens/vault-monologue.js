@@ -127,7 +127,6 @@ function mlPickTodayCards() {
   todayCards = picked.map(i => ({ idx:i, q:QUESTION_POOL[i], en:'', kr:'', mono:'', generated:false }));
   todayIdx = 0;
   generateCard(0);
-  generateCard(1);
 }
 
 async function generateCard(cardIdx) {

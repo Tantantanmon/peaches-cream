@@ -94,7 +94,7 @@ window.otrGenerate = async function(type) {
     let sys;
     if (type === 'cog') {
       sys = `You are generating "Caught Off Guard" cards — things ${charName} does secretly or privately related to ${userName}.
-${charDesc?`Character description:\n${charDesc}\n`:''}
+${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
 ${excluded}
 
 Return ONLY a JSON array of 5 objects (no markdown).
@@ -103,7 +103,7 @@ Each:
 - comment: 2-4 line Korean comment in ${charName}'s voice (inner monologue). ${charReaction}`;
     } else {
       sys = `You are generating "Dark Thoughts" cards — ${charName}'s explicit sexual confessions and fantasies about ${userName}.
-${charDesc?`Character description:\n${charDesc}\n`:''}
+${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
 ${excluded}
 
 Return ONLY a JSON array of 5 objects (no markdown).
@@ -112,7 +112,7 @@ Each:
 - comment: 2-4 line Korean comment in ${charName}'s exact voice. ${charReaction}`;
     }
 
-    const result = await generate(sys, '카드 5장 생성해줘', 'offrecord');
+    const result = await generateWithRole(sys, '카드 5장 생성해줘', 'offrecord');
     let cards = [];
     try { cards = JSON.parse(result.replace(/```json|```/g,'').trim()); } catch(e) {}
     if (!Array.isArray(cards)||!cards.length) { alert('생성에 실패했어요.'); if(loading) loading.style.display='none'; return; }

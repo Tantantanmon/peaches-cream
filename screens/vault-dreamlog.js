@@ -172,8 +172,8 @@ Write STRICTLY in ${charName}'s exact voice and personality.
 Return ONLY a JSON object (no markdown):
 {
   "title": "dream title in Korean, max 10 chars, punchy one-liner",
-  "body": "dream content in ${charName}'s diary voice. exactly 10 lines. first-person, casual Korean. Explicit if NSFW.",
-  "after": "4 lines. ${charName}'s reaction after waking up. If ${userName} is nearby, describe how ${charName} acts toward them. ${charReaction}"
+  "body": "dream content in ${charName}'s diary voice. exactly 5 lines. first-person, casual Korean. Explicit if NSFW.",
+  "after": "3 lines. ${charName}'s reaction after waking up. If ${userName} is nearby, describe how ${charName} acts toward them. ${charReaction}"
 }`;
 
     const result = await generate(sys, '꿈 일기 작성해줘', 'dreamlog');
