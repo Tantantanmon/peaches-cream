@@ -81,7 +81,7 @@ window.rvGenerate = async function() {
     const excluded = history.length ? `\nDo NOT repeat these reviewer names: ${history.slice(-15).join(', ')}` : '';
 
     const sys = `You are generating anonymous reviews for a fictional character ${charName} in a NSFW roleplay context.
-${charDesc?`Character description:\n${charDesc}\n`:''}
+${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
 ${excluded}
 
 Return ONLY a JSON array of 5 review objects (no markdown).
