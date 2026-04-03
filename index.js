@@ -176,9 +176,9 @@ async function generateWithRole(systemPrompt, userPrompt, appName) {
       if(systemPrompt) msgs.push({role:'system', content:systemPrompt});
       if(userPrompt)   msgs.push({role:'user',   content:userPrompt});
       const optionSets=[
-        {stream:false, extractData:true, includePreset:false, includeInstruct:false},
-        {streaming:false, extractData:true, includePreset:false, includeInstruct:false},
         {stream:false, extractData:true},
+        {streaming:false, extractData:true},
+        {stream:false, extractData:true, includePreset:false, includeInstruct:false},
         {streaming:false},
       ];
       let lastError=null;
@@ -190,6 +190,9 @@ async function generateWithRole(systemPrompt, userPrompt, appName) {
             const m=resp.choices[0].message;
             return m.reasoning_content||m.content||'';
           }
+          if(resp?.responseContent?.parts?.[0]?.text) return resp.responseContent.parts[0].text;
+          if(resp?.candidates?.[0]?.content?.parts?.[0]?.text) return resp.candidates[0].content.parts[0].text;
+          if(resp?.content?.parts?.[0]?.text) return resp.content.parts[0].text;
           if(resp?.content) return resp.content;
           if(resp?.message) return resp.message;
           lastError=new Error('응답 형식 인식 실패');
