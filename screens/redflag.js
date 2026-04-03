@@ -53,7 +53,7 @@ window.rfGenerate = async function() {
     const excluded = rfSessionUsed.length ? `\nDo NOT repeat these questions: ${rfSessionUsed.slice(-21).join(' / ')}` : '';
 
     const sys = `You are generating Red Flag game cards for a sexual roleplay game featuring ${charName}.
-${charDesc?`Character description:\n${charDesc}\n`:''}
+${charDesc?`Character description:\n${charDesc.slice(0,200)}\n`:''}
 ${excluded}
 
 Return ONLY a JSON array of exactly ${RF_TOTAL} objects (no markdown).
