@@ -534,17 +534,51 @@ function renderSettingsPanel(){
       </div>
     </div>
   `);
+  function discoverProfiles(){
+    const cmrs=ctx().ConnectionManagerRequestService;
+    if(!cmrs) return [];
+    const knownMethods=['getSupportedProfiles','getConnectionProfiles','getAllProfiles','getProfiles','listProfiles'];
+    for(const m of knownMethods){
+      if(typeof cmrs[m]==='function'){
+        try{
+          const result=cmrs[m]();
+          if(Array.isArray(result)&&result.length) return result;
+        }catch(e){}
+      }
+    }
+    try{
+      const proto=Object.getPrototypeOf(cmrs);
+      const dynMethods=Object.getOwnPropertyNames(proto)
+        .filter(k=>typeof cmrs[k]==='function'&&/rofile/i.test(k)&&!knownMethods.includes(k));
+      for(const m of dynMethods){
+        try{
+          const result=cmrs[m]();
+          if(Array.isArray(result)&&result.length) return result;
+        }catch{}
+      }
+    }catch{}
+    const paths=[
+      ctx().extensionSettings?.connectionManager?.profiles,
+      ctx().extensionSettings?.ConnectionManager?.profiles,
+      ctx().extensionSettings?.connection_manager?.profiles,
+    ];
+    for(const s of paths){
+      if(!s) continue;
+      const arr=Array.isArray(s)?s:Object.values(s);
+      if(arr.length) return arr;
+    }
+    return [];
+  }
+
   function fillApiSelect(){
     const $sel=$('#pc-api-source'),cur=getStore().config.apiSource||'main';
     $sel.empty().append('<option value="main">Main API</option>');
     try{
-      const cmrs=ctx().ConnectionManagerRequestService;
-      if(cmrs&&typeof cmrs.getSupportedProfiles==='function'){
-        (cmrs.getSupportedProfiles()||[]).forEach(p=>{
-          const id=p.id||p.profileId||p.uuid||'',name=p.name||p.profileName||id;
-          if(id) $sel.append(`<option value="profile:${id}">${name}</option>`);
-        });
-      }
+      const profiles=discoverProfiles();
+      profiles.forEach(p=>{
+        const id=p.id||p.profileId||p.uuid||'',name=p.name||p.profileName||id;
+        if(id) $sel.append(`<option value="profile:${id}">${name}</option>`);
+      });
     }catch(e){}
     $sel.val(cur);
   }
