@@ -52,6 +52,7 @@ const SCREENS = {
   'vault-blackbox':    () => import('./screens/vault-blackbox.js').then(m => m.render()),
   'vault-settings':    () => import('./screens/vault-settings.js').then(m => m.render()),
   'vault-dreamlog':    () => import('./screens/vault-dreamlog.js').then(m => m.render()),
+  'vault-wanted':      () => import('./screens/vault-wanted.js').then(m => m.render()),
   'toolbar-settings':  () => import('./screens/toolbar-settings.js').then(m => m.render()),
 };
 
@@ -68,6 +69,7 @@ const TOPBAR_LABELS = {
   'vault-blackbox':   'Blackbox',
   'vault-settings':   'Settings',
   'vault-dreamlog':   'Dream Log',
+  'vault-wanted':     'Wanted',
   'toolbar-settings': 'Toolbar Settings',
 };
 
@@ -84,6 +86,7 @@ const BACK_MAP = {
   'vault-blackbox':   'vault',
   'vault-settings':   'vault',
   'vault-dreamlog':   'vault',
+  'vault-wanted':     'vault',
 };
 
 const router = {
