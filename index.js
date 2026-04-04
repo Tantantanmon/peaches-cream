@@ -48,12 +48,12 @@ const CHAR_REACTION_INSTRUCTION = `React based on your character's personality a
 // 어플별 토큰
 // ═══════════════════════════════════════════
 const APP_TOKENS = {
-  redflag:   600,
-  clinic:    800,
+  redflag:   400,
+  clinic:    600,
   reviews:   500,
   offrecord: 300,
-  worldfeed: 1000,
-  blackbox:  600,
+  worldfeed: 700,
+  blackbox:  400,
   dreamlog:  300,
   apology:   300,
 };
