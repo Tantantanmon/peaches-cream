@@ -1,4 +1,4 @@
-// screens/vault-wanted.js — Wanted & Trial v1.0
+// screens/vault-wanted.js — Wanted & Trial v1.1
 
 let wantedCrimes = [];
 let crimeCounter = 0;
@@ -51,7 +51,7 @@ export function render() {
 
     <!-- Wanted -->
     <div id="wt-pane-wanted" style="display:flex;flex-direction:column;gap:10px;">
-      <div class="wanted-banner" id="wt-banner">
+      <div class="wanted-banner">
         <div>
           <div class="wanted-level-label">수배 등급</div>
           <div class="wanted-level-badge" id="wt-level">— 기록 없음</div>
@@ -68,7 +68,7 @@ export function render() {
 
     <!-- Trial -->
     <div id="wt-pane-trial" style="display:none;flex-direction:column;gap:10px;">
-      <div class="trial-info" id="wt-trial-info">
+      <div class="trial-info">
         <div class="trial-icon">⚖️</div>
         <div>
           <div class="trial-info-t" id="wt-trial-summary">죄목 0건 · $0</div>
@@ -93,10 +93,10 @@ window.wtSwitchTab = function(tab) {
 };
 
 function wtLevel(bounty) {
-  if (bounty === 0)       return '— 기록 없음';
-  if (bounty < 1000)      return '👀 관심경보';
-  if (bounty < 5000)      return '⚠️ 위험인물';
-  if (bounty < 20000)     return '🔴 지명수배';
+  if (bounty === 0)   return '— 기록 없음';
+  if (bounty < 1000)  return '👀 관심경보';
+  if (bounty < 5000)  return '⚠️ 위험인물';
+  if (bounty < 20000) return '🔴 지명수배';
   return '🚨 최우선수배';
 }
 
@@ -138,22 +138,32 @@ window.wtGenerate = async function() {
   document.getElementById('wt-loading').style.display = 'flex';
 
   const chatText = buildChatText(15);
-  const sys = `You are ${charName}, the victim. You are filing a formal crime report against ${userName}.
-${charDesc ? `Character:\n${charDesc.slice(0,150)}\n` : ''}
-Based on the recent conversation, identify ONE thing ${userName} did that wronged you (emotionally, physically, NSFW, or just annoying).
-Be creative — crimes can range from mundane (ignoring your texts) to NSFW (sexual acts without permission) to emotional (making your heart flutter without consent).
+  const existingTitles = wantedCrimes.map(c => c.title).join(', ');
 
-Respond in JSON only, no markdown, no extra text:
-{"title":"죄목명 (Korean, 3-8 chars, ends with 죄 or 행위)", "desc":"고소 내용 in Korean, 2-3 sentences, written as a formal complaint in ${charName}'s voice. Refer to yourself as 피해자(${charName}), refer to ${userName} as 피의자.", "bounty": <integer between 100 and 5000>}`;
+  const sys = `You are ${charName}, the victim. You are filing formal crime reports against ${userName}.
+${charDesc ? `Character:\n${charDesc.slice(0,150)}\n` : ''}
+Based on the recent conversation, generate exactly 3 NEW and DIFFERENT crimes ${userName} committed against you.
+Crimes can range from mundane to emotional to NSFW (sexual acts without consent, making heart flutter, etc). Be creative and varied.
+${existingTitles ? `Already used crime titles (DO NOT repeat or overlap): ${existingTitles}` : ''}
+
+Respond in JSON only, no markdown, no extra text. Return an array of exactly 3 objects:
+[
+  {"title":"죄목명 (Korean, 3-8 chars, ends with 죄 or 행위)", "desc":"고소 내용 in Korean, 2-3 sentences, formal complaint in ${charName}'s voice. Refer to yourself as 피해자(${charName}), refer to ${userName} as 피의자.", "bounty": <integer 100-5000>},
+  {"title":"...", "desc":"...", "bounty": ...},
+  {"title":"...", "desc":"...", "bounty": ...}
+]`;
 
   try {
     const raw = await generateWithRole(sys, `최근 대화:\n${chatText}`, 'wanted');
     const clean = raw.replace(/```json|```/g,'').trim();
-    const obj = JSON.parse(clean);
-    crimeCounter++;
-    const crime = { id: crimeCounter, title: obj.title||'불명죄', desc: obj.desc||'', bounty: parseInt(obj.bounty)||500 };
-    wantedCrimes.push(crime);
-    totalBounty += crime.bounty;
+    const arr = JSON.parse(clean);
+    if (!Array.isArray(arr)) throw new Error('not array');
+    arr.forEach(obj => {
+      crimeCounter++;
+      const crime = { id: crimeCounter, title: obj.title||'불명죄', desc: obj.desc||'', bounty: parseInt(obj.bounty)||500 };
+      wantedCrimes.push(crime);
+      totalBounty += crime.bounty;
+    });
     wtRenderAll();
   } catch(e) {
     console.error('[Wanted] error', e);
@@ -185,12 +195,12 @@ ${crimeList}
 
 Write a Korean verdict (판결문) in ${charName}'s voice. Format (plain text):
 
-One paragraph: start with the crime count and bounty, comment on the crimes in character's natural voice — sarcastic, dramatic, or grudgingly fond. Keep it flowing prose, no line breaks within the paragraph.
+One flowing prose paragraph (no line breaks within): mention the crime count and bounty, comment on the crimes in character's natural sarcastic/dramatic/grudgingly fond voice.
 
 [선고]
-Choose ONE or MORE sentences from these options based on severity (more crimes = harsher):
+Choose ONE or MORE sentences based on severity (more crimes = harsher):
 - 무죄 석방 (증거 불충분 — 증거 있는데 무시함)
-- 집행유예 + absurd condition (e.g. 오늘 저녁 옆에 있을 것, 먼저 연락할 것)
+- 집행유예 + absurd condition (e.g. 오늘 저녁 옆에 있을 것)
 - 벌금 $X (탕감 조건 포함 가능)
 - 침대감옥 N시간 (탈출 시 가중처벌)
 - 엉덩이 N대 (집행은 재판부 재량)
@@ -198,7 +208,7 @@ Choose ONE or MORE sentences from these options based on severity (more crimes =
 - 사회적 제재: 도망가기 금지
 - 강제이행: 키스 N회 즉시 납부
 - 가택연금 N시간 (피해자 집에서 나가기 금지)
-For 1-2 crimes: light sentence or acquittal. For 3-4: medium. For 5+: multiple sentences stacked.
+1-2 crimes: light or acquittal. 3-5: medium. 6+: stack multiple sentences.
 
 End with one short dismissive closing line.
 
