@@ -137,14 +137,13 @@ window.wtGenerate = async function() {
   btn.classList.add('loading'); btn.textContent = '작성 중...';
   document.getElementById('wt-loading').style.display = 'flex';
 
-  const chatText = buildChatText(15);
-  const existingTitles = wantedCrimes.map(c => c.title).join(', ');
+  const usedTitles = wantedCrimes.map(c => c.title).join(', ');
 
   const sys = `You are ${charName}, the victim. You are filing formal crime reports against ${userName}.
 ${charDesc ? `Character:\n${charDesc.slice(0,150)}\n` : ''}
-Based on the recent conversation, generate exactly 3 NEW and DIFFERENT crimes ${userName} committed against you.
-Crimes can range from mundane to emotional to NSFW (sexual acts without consent, making heart flutter, etc). Be creative and varied.
-${existingTitles ? `Already used crime titles (DO NOT repeat or overlap): ${existingTitles}` : ''}
+Invent exactly 3 creative, funny, and VARIED crimes ${userName} committed against you.
+Mix types freely: mundane annoyances, emotional crimes (making heart flutter without consent), NSFW acts, petty grievances — anything goes. Be imaginative, not repetitive.
+${usedTitles ? `These titles were already used — do NOT repeat or overlap with them: ${usedTitles}` : ''}
 
 Respond in JSON only, no markdown, no extra text. Return an array of exactly 3 objects:
 [
@@ -154,16 +153,20 @@ Respond in JSON only, no markdown, no extra text. Return an array of exactly 3 o
 ]`;
 
   try {
-    const raw = await generateWithRole(sys, `최근 대화:\n${chatText}`, 'wanted');
+    const raw = await generateWithRole(sys, '새 죄목 3개 생성', 'wanted');
     const clean = raw.replace(/```json|```/g,'').trim();
     const arr = JSON.parse(clean);
     if (!Array.isArray(arr)) throw new Error('not array');
+    // 이전 3개 교체 — 누적 현상금도 이전 것 빼고 새 것으로
+    totalBounty -= wantedCrimes.slice(-3).reduce((s, c) => s + c.bounty, 0);
+    wantedCrimes = wantedCrimes.slice(0, -3);
     arr.forEach(obj => {
       crimeCounter++;
       const crime = { id: crimeCounter, title: obj.title||'불명죄', desc: obj.desc||'', bounty: parseInt(obj.bounty)||500 };
       wantedCrimes.push(crime);
       totalBounty += crime.bounty;
     });
+    totalBounty = Math.max(0, totalBounty);
     wtRenderAll();
   } catch(e) {
     console.error('[Wanted] error', e);
