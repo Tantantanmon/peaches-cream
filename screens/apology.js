@@ -1,4 +1,4 @@
-// screens/apology.js — Sorry Not Sorry v1.0
+// screens/apology.js — Sorry Not Sorry v2.0
 
 let activeTab = 'apology';
 
@@ -9,16 +9,46 @@ export function render() {
     const s = document.createElement('style');
     s.id = 'apo-style';
     s.textContent = `
-.apo-paper{background:#fffef9;padding:22px 20px 26px;position:relative;font-size:13px;line-height:1.95;color:#1a1a1a;border:0.5px solid #e8e4d8;border-radius:var(--radius-md);}
-.apo-stamp{position:absolute;top:16px;right:16px;width:50px;height:50px;border-radius:50%;border:3px solid #c03020;display:flex;align-items:center;justify-content:center;color:#c03020;font-size:11px;font-weight:700;transform:rotate(-18deg);opacity:.85;}
-.apo-stamp.pending{border-color:#b07010;color:#b07010;transform:rotate(-12deg);}
-.apo-doc-title{text-align:center;font-size:17px;font-weight:700;letter-spacing:6px;margin-bottom:14px;color:#000;}
-.apo-meta{font-size:12px;color:#555;margin-bottom:3px;}
-.apo-divider{height:0.5px;background:#e0dcd0;margin:12px 0;}
-.apo-section{font-size:11px;font-weight:700;letter-spacing:1px;color:#888;text-transform:uppercase;margin:12px 0 5px;}
-.apo-body{font-size:13px;color:#2a2a2a;line-height:2;white-space:pre-wrap;word-break:keep-all;}
-.apo-closing{text-align:center;font-size:13px;color:#555;font-style:italic;margin-top:14px;line-height:1.8;}
-.apo-sign{margin-top:14px;text-align:right;font-size:12px;color:#888;border-top:0.5px solid #e8e4d8;padding-top:10px;}
+/* ── 공통 ── */
+.apo-gen-btn{width:100%;background:var(--surface);border:0.5px solid var(--divider);border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:500;color:var(--text-secondary);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow);}
+.apo-gen-btn:active{background:#f5f5f5;}
+.apo-gen-btn.loading{opacity:.5;pointer-events:none;}
+.apo-input{width:100%;border:none;background:var(--surface);border-radius:var(--radius-sm);border:0.5px solid var(--divider);font-size:15px;color:var(--text-primary);font-family:inherit;resize:none;outline:none;line-height:1.5;padding:14px 16px;display:block;box-shadow:var(--shadow);}
+
+/* ── 반성문 ── */
+.apo-doc-wrap{background:#fffef9;border-radius:var(--radius-md);border:0.5px solid #e8e4d8;overflow:hidden;}
+.apo-doc-header{padding:22px 20px 18px;text-align:center;position:relative;}
+.apo-stamp{position:absolute;top:18px;right:18px;width:46px;height:46px;border-radius:50%;border:2.5px solid #c03020;display:flex;align-items:center;justify-content:center;color:#c03020;font-size:10px;font-weight:700;transform:rotate(-15deg);opacity:.85;line-height:1.2;text-align:center;}
+.apo-doc-title{font-size:28px;font-weight:700;letter-spacing:2px;color:#000;font-family:Georgia,serif;}
+.apo-doc-divider{height:0.5px;background:#e8e4d8;margin:0 20px;}
+.apo-doc-body{padding:18px 20px 6px;font-size:13.5px;color:#1a1a1a;line-height:2;word-break:keep-all;}
+.apo-doc-sign{padding:14px 20px 16px;border-top:0.5px solid #e8e4d8;font-size:12px;color:#aaa;text-align:right;}
+
+/* ── 탄원서 ── */
+.pet-doc-wrap{background:#fafaf8;border-radius:var(--radius-md);border:0.5px solid #e0ddd4;overflow:hidden;}
+.pet-doc-header{padding:20px 20px 0;position:relative;}
+.pet-stamp{position:absolute;top:18px;right:18px;width:46px;height:46px;border-radius:50%;border:2.5px solid #b07010;display:flex;align-items:center;justify-content:center;color:#b07010;font-size:10px;font-weight:700;transform:rotate(-12deg);opacity:.85;line-height:1.2;text-align:center;}
+.pet-doc-title{font-size:26px;font-weight:700;letter-spacing:2px;color:#000;font-family:Georgia,serif;text-align:center;margin-bottom:14px;}
+.pet-meta{border-top:1.5px solid #1a1a1a;border-bottom:0.5px solid #d0cdc4;width:100%;}
+.pet-meta-row{display:flex;border-bottom:0.5px solid #e0ddd4;}
+.pet-meta-row:last-child{border-bottom:none;}
+.pet-meta-key{font-size:11px;font-weight:700;color:#888;letter-spacing:0.8px;padding:8px 12px;width:52px;flex-shrink:0;border-right:0.5px solid #e0ddd4;display:flex;align-items:center;}
+.pet-meta-val{font-size:13px;color:#1a1a1a;padding:8px 12px;line-height:1.5;}
+.pet-doc-body{padding:16px 20px 6px;font-size:13.5px;color:#1a1a1a;line-height:2;word-break:keep-all;}
+.pet-sign-area{margin:0 20px;border-top:0.5px solid #e0ddd4;padding:14px 0 16px;display:flex;justify-content:flex-end;}
+.pet-doc-sign{font-size:12px;color:#aaa;text-align:right;}
+
+/* ── 섹션 pill ── */
+.doc-section{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:600;margin:14px 0 6px;letter-spacing:0.3px;}
+.doc-section.why{background:#fff0f0;color:#c03020;}
+.doc-section.excuse{background:#fff8e0;color:#a07010;}
+.doc-section.plan{background:#f0f0ff;color:#5050c0;}
+.doc-section.main{background:#fff8e0;color:#a07010;}
+.doc-section.req{background:#e8f4e8;color:#2a7a40;}
+.doc-section.threat{background:#fff0f0;color:#c03020;}
+
+/* ── 형광펜 ── */
+.hl{background:#fffde7;color:#1a1a1a;border-radius:3px;padding:1px 3px;}
     `;
     document.head.appendChild(s);
   }
@@ -32,20 +62,17 @@ export function render() {
 
     <!-- Apology -->
     <div id="apo-pane-apology" style="display:flex;flex-direction:column;gap:12px;">
-      <div class="list-group">
-        <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
-          <span style="font-size:12px;font-weight:500;color:var(--text-muted);">무슨 일로?</span>
-          <textarea id="apo-reason" style="width:100%;background:var(--background);border:none;border-radius:10px;padding:10px 12px;font-size:15px;color:var(--text-primary);outline:none;font-family:inherit;resize:none;line-height:1.5;" rows="2" placeholder="예: 자다가 갑자기 끌어안아서"></textarea>
-        </div>
-      </div>
-      <button class="gen-btn" id="apo-gen-btn" onclick="apoGenerate()">✦ Apology 생성</button>
+      <textarea id="apo-reason" class="apo-input" rows="1"
+        placeholder="예: 자다가 갑자기 끌어안아서"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <button class="apo-gen-btn" id="apo-gen-btn" onclick="apoGenerate()">✦ Apology 생성</button>
       <div class="loading-card" id="apo-loading" style="display:none;"><div class="sp"></div><span class="loading-text">반성문 작성 중...</span></div>
       <div id="apo-result"></div>
     </div>
 
     <!-- Petition -->
     <div id="apo-pane-petition" style="display:none;flex-direction:column;gap:12px;">
-      <button class="gen-btn" id="pet-gen-btn" onclick="petGenerate()">✦ Petition 생성</button>
+      <button class="apo-gen-btn" id="pet-gen-btn" onclick="petGenerate()">✦ Petition 생성</button>
       <div class="loading-card" id="pet-loading" style="display:none;"><div class="sp"></div><span class="loading-text">탄원서 작성 중...</span></div>
       <div id="pet-result"></div>
     </div>
@@ -60,25 +87,63 @@ window.apoSwitchTab = function(tab) {
   document.getElementById('apo-pane-petition').style.display = tab==='petition' ? 'flex' : 'none';
 };
 
-function renderDoc(containerId, text, type) {
+function formatDoc(text) {
+  return text
+    .trim()
+    .replace(/<phone_trigger[^>]*>[\s\S]*?<\/phone_trigger>/gi, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/~~(.*?)~~/g, '<span class="hl">$1</span>')
+    .replace(/\[위반 사유\]/g, '<span class="doc-section why">🚩 위반 사유</span>')
+    .replace(/\[변명\]/g,      '<span class="doc-section excuse">🤷 변명</span>')
+    .replace(/\[향후 계획\]/g,  '<span class="doc-section plan">📋 향후 계획</span>')
+    .replace(/\[탄원 내용\]/g,  '<span class="doc-section main">📄 탄원 내용</span>')
+    .replace(/\[요청 사항\]/g,  '<span class="doc-section req">📋 요청 사항</span>')
+    .replace(/\[불수락 시 대책\]/g, '<span class="doc-section threat">⚠️ 불수락 시 대책</span>')
+    .replace(/\n/g, '<br>');
+}
+
+function renderApologyDoc(containerId, text) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  const stampLabel = type === 'apology' ? '거절' : '검토중';
-  const stampClass = type === 'apology' ? '' : ' pending';
   container.innerHTML = `
-    <div class="apo-paper">
-      <div class="apo-stamp${stampClass}">${stampLabel}</div>
-      <div class="apo-body">${formatDoc(text)}</div>
+    <div class="apo-doc-wrap">
+      <div class="apo-doc-header">
+        <div class="apo-stamp">거절</div>
+        <div class="apo-doc-title">I'm Sorry</div>
+      </div>
+      <div class="apo-doc-divider"></div>
+      <div class="apo-doc-body">${formatDoc(text)}</div>
+      <div class="apo-doc-sign">${esc(charName)} 올림</div>
     </div>
   `;
 }
 
-function formatDoc(text) {
-  return text
-    .trim()
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/~~(.*?)~~/g, '<span style="text-decoration:line-through;color:#bbb;">$1</span>')
-    .replace(/\n/g, '<br>');
+function renderPetitionDoc(containerId, text, toName, fromName) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = `
+    <div class="pet-doc-wrap">
+      <div class="pet-doc-header">
+        <div class="pet-stamp">검토중</div>
+        <div class="pet-doc-title">Petition</div>
+      </div>
+      <div class="pet-meta">
+        <div class="pet-meta-row">
+          <div class="pet-meta-key">수신</div>
+          <div class="pet-meta-val">${esc(toName)} 귀중</div>
+        </div>
+        <div class="pet-meta-row">
+          <div class="pet-meta-key">발신</div>
+          <div class="pet-meta-val">${esc(fromName)}</div>
+        </div>
+      </div>
+      <div class="pet-doc-body">${formatDoc(text)}</div>
+      <div class="pet-sign-area">
+        <div class="pet-doc-sign">${esc(fromName)} 올림</div>
+      </div>
+    </div>
+  `;
 }
 
 window.apoGenerate = async function() {
@@ -97,29 +162,24 @@ Write a Korean apology letter (반성문) in ${charName}'s exact natural voice a
 Reason for apology: "${reason}"
 
 Format (plain text, in order):
-반 성 문
-작성자: [name] / 직업: [job, make it funny] / 현재 상황: [funny current situation]
 
 [위반 사유]
 Explain what happened naturally in character's voice. Weave in who/what/when/where/why/how organically — do NOT list them as labels.
-
-~~[one crossed-out excuse that accidentally reveals the truth]~~
+Somewhere in this section, include one sentence that accidentally reveals the truth, wrapped in ~~text~~.
 
 [변명]
-2~3 excuses in character's voice. At least one struck through with ~~text~~.
+2~3 excuses in character's voice, each on a new line starting with -. At least one wrapped in ~~text~~.
 
 [향후 계획]
 Basically admit they'll do it again.
 
 [closing line — clearly insincere apology]
 
-[character name] 올림
-
-Rules: Write in ${charName}'s natural speech style. Shameless and comic tone. NSFW ok. No stiff formal language unless that IS the character. Plain text only, use ~~text~~ for strikethrough.`;
+Rules: Write in ${charName}'s natural speech style. Shameless and comic tone. NSFW ok. No stiff formal language unless that IS the character. Plain text only, use ~~text~~ for highlights.`;
 
   try {
     const result = await generateWithRole(sys, `${reason}에 대한 반성문`, 'apology');
-    renderDoc('apo-result', result, 'apology');
+    renderApologyDoc('apo-result', result);
   } catch(e) {
     console.error('[Apology] error', e);
     showToast('생성에 실패했어요');
@@ -143,11 +203,10 @@ Write a Korean petition letter (탄원서) to ${userName} in ${charName}'s exact
 Choose what ${charName} wants to petition for — based on the character's personality and desires. Be creative and specific.
 
 Format (plain text, in order):
-탄 원 서
-수신: ${userName} / 발신: ${charName} / 직책: [funny title]
 
-[main petition — what character wants, with shameless reasoning]
-~~[crossed-out real reason that reveals the truth]~~
+[탄원 내용]
+Main petition — what character wants, with shameless reasoning.
+Include one sentence wrapped in ~~text~~ that reveals the real reason.
 
 [요청 사항]
 Numbered list of specific asks.
@@ -157,13 +216,11 @@ What character will do if rejected — petty, dramatic, or mildly threatening. S
 
 [closing — overly formal but clearly desperate/bratty]
 
-${charName} 올림
-
-Rules: Write in ${charName}'s natural speech style. Mix of threatening and pathetic. NSFW ok. Plain text only, use ~~text~~ for strikethrough.`;
+Rules: Write in ${charName}'s natural speech style. Mix of threatening and pathetic. NSFW ok. Plain text only, use ~~text~~ for highlights.`;
 
   try {
     const result = await generateWithRole(sys, '탄원서 작성', 'apology');
-    renderDoc('pet-result', result, 'petition');
+    renderPetitionDoc('pet-result', result, userName, charName);
   } catch(e) {
     console.error('[Petition] error', e);
     showToast('생성에 실패했어요');

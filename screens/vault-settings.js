@@ -95,10 +95,10 @@ window.ffSaveConfig = function() {
   const group = document.getElementById('ff-group')?.value.trim() || '';
   const npcs  = Array.from(document.getElementById('ff-npc-wrap')?.querySelectorAll('.kw-tag')||[])
                   .map(t=>t.textContent.replace('×','').trim());
-  if (window.parent?.__PC_STORE__) {
-    window.parent.__PC_STORE__.fanFeedConfig = { group, npcs };
-    if (saveStore) saveStore();
-  }
+  syncStore();
+  store.fanFeedConfig = { group, npcs };
+  if (window.parent?.__PC_STORE__) window.parent.__PC_STORE__.fanFeedConfig = { group, npcs };
+  if (saveStore) saveStore();
   showToast('저장됐어요 ✓');
 };
 
@@ -115,11 +115,12 @@ window.resetHistory = function(type) {
     confirmText:'초기화',
     danger:true,
     onConfirm:() => {
-      if (!window.parent?.__PC_STORE__) return;
-      if (type==='fan-feed') window.parent.__PC_STORE__.fanFeedHistory = [];
-      if (type==='cog')      window.parent.__PC_STORE__.cogHistory     = [];
-      if (type==='dark')     window.parent.__PC_STORE__.darkHistory    = [];
-      if (type==='reviews')  window.parent.__PC_STORE__.reviewsHistory = [];
+      syncStore();
+      if (type==='fan-feed') store.fanFeedHistory = [];
+      if (type==='cog')      store.cogHistory     = [];
+      if (type==='dark')     store.darkHistory    = [];
+      if (type==='reviews')  store.reviewsHistory = [];
+      if (window.parent?.__PC_STORE__) Object.assign(window.parent.__PC_STORE__, store);
       if (saveStore) saveStore();
       showToast('초기화됐어요');
     }
@@ -133,9 +134,9 @@ window.resetAll = function() {
     confirmText:'초기화',
     danger:true,
     onConfirm:() => {
-      if (!window.parent?.__PC_STORE__) return;
-      const key = charKey;
-      const globalStore = window.parent.__PC_GLOBAL_STORE__;
+      // charKey는 팝업 열 때 스냅샷이므로, 실시간 값(__PC_CHAR_KEY__)을 우선 사용
+      const key = window.parent?.__PC_CHAR_KEY__ || charKey;
+      const globalStore = window.parent?.__PC_GLOBAL_STORE__;
       if (globalStore?.chars?.[key]) delete globalStore.chars[key];
       if (saveStore) saveStore();
       if (refreshPrompt) refreshPrompt();
