@@ -53,6 +53,7 @@ const SCREENS = {
   'vault-settings':    () => import('./screens/vault-settings.js').then(m => m.render()),
   'vault-dreamlog':    () => import('./screens/vault-dreamlog.js').then(m => m.render()),
   'vault-wanted':      () => import('./screens/vault-wanted.js').then(m => m.render()),
+  'vault-monologue':   () => import('./screens/vault-monologue.js').then(m => m.render()),
   'toolbar-settings':  () => import('./screens/toolbar-settings.js').then(m => m.render()),
 };
 
@@ -70,6 +71,7 @@ const TOPBAR_LABELS = {
   'vault-settings':   'Settings',
   'vault-dreamlog':   'Dream Log',
   'vault-wanted':     'Wanted',
+  'vault-monologue':  'Monologue',
   'toolbar-settings': 'Toolbar Settings',
 };
 
@@ -87,6 +89,7 @@ const BACK_MAP = {
   'vault-settings':   'vault',
   'vault-dreamlog':   'vault',
   'vault-wanted':     'vault',
+  'vault-monologue':  'vault',
 };
 
 const router = {
