@@ -18,8 +18,9 @@ export function render() {
       ${appItem('vault-worldfeed', 'World Feed',     worldFeedIcon())}
       ${appItem('vault-dreamlog',  'Dream Log',      dreamLogIcon())}
       ${appItem('vault-blackbox',  'Blackbox',       blackboxIcon())}
-      ${appItem('vault-wanted',    'Wanted',         wantedIcon())}
-      ${appItem('vault-settings',  'Settings',       settingsIcon())}
+      ${appItem('vault-wanted',      'Wanted',     wantedIcon())}
+      ${appItem('vault-monologue',   'Monologue',  monologueIcon())}
+      ${appItem('vault-settings',    'Settings',   settingsIcon())}
     </div>
   `;
 }
@@ -34,4 +35,5 @@ function worldFeedIcon() { return `<svg viewBox="0 0 24 24"><path d="M18.244 2.2
 function dreamLogIcon()  { return `<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`; }
 function blackboxIcon()  { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>`; }
 function wantedIcon()    { return `<svg viewBox="0 0 24 24"><path d="M14 4l6 6-8 8-6-6 8-8z"/><line x1="4" y1="20" x2="8" y2="16"/><line x1="18" y1="3" x2="21" y2="6"/></svg>`; }
+function monologueIcon() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>`; }
 function settingsIcon()  { return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`; }
