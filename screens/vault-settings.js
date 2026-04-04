@@ -29,43 +29,50 @@ export function render() {
         </div>
       </div>
     </div>
-    <div class="list-group">
-      <div class="list-row tappable" onclick="resetHistory('fan-feed')">
-        <div>
-          <div class="row-label">생성 히스토리 초기화</div>
-          <div class="row-sub">중복 방지 기록을 지워요</div>
-        </div>
-        <span class="row-chevron">›</span>
-      </div>
-    </div>
     <button class="save-btn" id="ff-save-btn" onclick="ffSaveConfig()" style="margin:0 0 20px;">World Feed 설정 저장</button>
 
-    <!-- OFF THE RECORD -->
-    <div class="section-label">Off the Record</div>
+    <!-- 앱별 초기화 -->
+    <div class="section-label">앱별 초기화</div>
     <div class="list-group">
-      <div class="list-row tappable" onclick="resetHistory('cog')">
+      <div class="list-row tappable" onclick="resetApp('reviews')">
         <div>
-          <div class="row-label">Caught Off Guard 초기화</div>
-          <div class="row-sub">생성된 카드 히스토리를 지워요</div>
+          <div class="row-label">Reviews</div>
+          <div class="row-sub">저장된 후기 전체 삭제</div>
         </div>
         <span class="row-chevron">›</span>
       </div>
-      <div class="list-row tappable" onclick="resetHistory('dark')">
+      <div class="list-row tappable" onclick="resetApp('offrecord')">
         <div>
-          <div class="row-label">Dark Thoughts 초기화</div>
-          <div class="row-sub">생성된 카드 히스토리를 지워요</div>
+          <div class="row-label">Off the Record</div>
+          <div class="row-sub">Caught Off Guard · Dark Thoughts 카드 삭제</div>
         </div>
         <span class="row-chevron">›</span>
       </div>
-    </div>
-
-    <!-- REVIEWS -->
-    <div class="section-label">Reviews</div>
-    <div class="list-group">
-      <div class="list-row tappable" onclick="resetHistory('reviews')">
+      <div class="list-row tappable" onclick="resetApp('worldfeed')">
         <div>
-          <div class="row-label">후기 히스토리 초기화</div>
-          <div class="row-sub">생성된 후기 기록을 지워요</div>
+          <div class="row-label">World Feed</div>
+          <div class="row-sub">생성 히스토리 초기화</div>
+        </div>
+        <span class="row-chevron">›</span>
+      </div>
+      <div class="list-row tappable" onclick="resetApp('blackbox')">
+        <div>
+          <div class="row-label">Blackbox</div>
+          <div class="row-sub">협박편지 · 민원 히스토리 삭제</div>
+        </div>
+        <span class="row-chevron">›</span>
+      </div>
+      <div class="list-row tappable" onclick="resetApp('dreamlog')">
+        <div>
+          <div class="row-label">Dream Log</div>
+          <div class="row-sub">현재 꿈 기록 삭제</div>
+        </div>
+        <span class="row-chevron">›</span>
+      </div>
+      <div class="list-row tappable" onclick="resetApp('monologue')">
+        <div>
+          <div class="row-label">Monologue</div>
+          <div class="row-sub">핀 · 오늘 카드 · 사용된 질문 전체 삭제</div>
         </div>
         <span class="row-chevron">›</span>
       </div>
@@ -74,7 +81,7 @@ export function render() {
     <!-- DANGER -->
     <div class="section-label">데이터</div>
     <button class="reset-btn" onclick="resetAll()">이 캐릭터 데이터 전체 초기화</button>
-    <div style="padding:8px 2px;"><span style="font-size:12px;color:var(--text-hint);">Character Profile, 모든 생성 기록이 삭제돼요.</span></div>
+    <div style="padding:8px 2px;"><span style="font-size:12px;color:var(--text-hint);">Character Profile, 모든 생성 기록이 삭제돼요. 툴바 커스텀 태그는 유지됩니다.</span></div>
   `;
 }
 
@@ -102,25 +109,59 @@ window.ffSaveConfig = function() {
   showToast('저장됐어요 ✓');
 };
 
-window.resetHistory = function(type) {
+window.resetApp = function(type) {
   const labels = {
-    'fan-feed': 'Fan Feed 히스토리를 초기화할까요?',
-    'cog':      'Caught Off Guard 히스토리를 초기화할까요?',
-    'dark':     'Dark Thoughts 히스토리를 초기화할까요?',
-    'reviews':  '후기 히스토리를 초기화할까요?',
+    'reviews':   '저장된 후기를 전부 삭제할까요?',
+    'offrecord': 'Off the Record 카드를 전부 삭제할까요?',
+    'worldfeed': 'World Feed 히스토리를 초기화할까요?',
+    'blackbox':  'Blackbox 히스토리를 전부 삭제할까요?',
+    'dreamlog':  'Dream Log 기록을 삭제할까요?',
+    'monologue': '핀된 카드와 모든 Monologue 기록을 삭제할까요?',
   };
   showModal({
-    title:'히스토리 초기화',
+    title: '초기화',
     desc: labels[type] || '초기화할까요?',
-    confirmText:'초기화',
-    danger:true,
-    onConfirm:() => {
+    confirmText: '초기화',
+    danger: true,
+    onConfirm: () => {
       syncStore();
-      if (type==='fan-feed') store.fanFeedHistory = [];
-      if (type==='cog')      store.cogHistory     = [];
-      if (type==='dark')     store.darkHistory    = [];
-      if (type==='reviews')  store.reviewsHistory = [];
-      if (window.parent?.__PC_STORE__) Object.assign(window.parent.__PC_STORE__, store);
+      const ps = window.parent?.__PC_STORE__;
+      if (type === 'reviews') {
+        store.reviewsSaved   = [];
+        store.reviewsHistory = [];
+        if (ps) { ps.reviewsSaved = []; ps.reviewsHistory = []; }
+      }
+      if (type === 'offrecord') {
+        store.cogCards    = [];
+        store.cogHistory  = [];
+        store.darkCards   = [];
+        store.darkHistory = [];
+        if (ps) { ps.cogCards = []; ps.cogHistory = []; ps.darkCards = []; ps.darkHistory = []; }
+      }
+      if (type === 'worldfeed') {
+        store.fanFeedHistory = [];
+        if (ps) ps.fanFeedHistory = [];
+      }
+      if (type === 'blackbox') {
+        store.blackboxHistory = { threat:[], complaint:[] };
+        if (ps) ps.blackboxHistory = { threat:[], complaint:[] };
+      }
+      if (type === 'dreamlog') {
+        store.dreamLogCurrent = null;
+        if (ps) ps.dreamLogCurrent = null;
+      }
+      if (type === 'monologue') {
+        store.monologuePinned      = [];
+        store.monologueToday       = [];
+        store.monologueLastDate    = '';
+        store.monologueUsedIndices = [];
+        if (ps) {
+          ps.monologuePinned      = [];
+          ps.monologueToday       = [];
+          ps.monologueLastDate    = '';
+          ps.monologueUsedIndices = [];
+        }
+      }
       if (saveStore) saveStore();
       showToast('초기화됐어요');
     }
@@ -130,11 +171,10 @@ window.resetHistory = function(type) {
 window.resetAll = function() {
   showModal({
     title:'전체 초기화',
-    desc:'이 캐릭터의 모든 데이터가 삭제돼요. 되돌릴 수 없어요.',
+    desc:'이 캐릭터의 모든 데이터가 삭제돼요. 되돌릴 수 없어요. (툴바 커스텀 태그는 유지됩니다)',
     confirmText:'초기화',
     danger:true,
     onConfirm:() => {
-      // charKey는 팝업 열 때 스냅샷이므로, 실시간 값(__PC_CHAR_KEY__)을 우선 사용
       const key = window.parent?.__PC_CHAR_KEY__ || charKey;
       const globalStore = window.parent?.__PC_GLOBAL_STORE__;
       if (globalStore?.chars?.[key]) delete globalStore.chars[key];
