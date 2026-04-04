@@ -215,6 +215,7 @@ const GROUPS = [
 
 let tbCollapsed = false;
 let tbActiveGroup = 'sfw';
+let tbSelected = {};
 
 function injectToolbarStyle(){
   if(document.getElementById('pc-tb-style')) return;
@@ -279,7 +280,8 @@ function buildTabTagsHTML(groupId){
   const fixed  = FIXED_TAGS[groupId]||[];
   const custom = ct[groupId]||[];
   const items  = [...fixed,...custom];
-  return items.map(t=>`<div class="pc-tb-tag" data-key="${groupId}" data-val="${t.replace(/"/g,'&quot;')}" onclick="pcTag(this)">${t}</div>`).join('')
+  const sel    = tbSelected[groupId]||[];
+  return items.map(t=>`<div class="pc-tb-tag${sel.includes(t)?' active':''}" data-key="${groupId}" data-val="${t.replace(/"/g,'&quot;')}" onclick="pcTag(this)">${t}</div>`).join('')
     + `<button class="pc-tb-add" onclick="pcAddCustom('${groupId}')">+</button>`;
 }
 
@@ -348,6 +350,13 @@ window.pcSwitchTab=function(groupId){
 
 window.pcTag=function(el){
   el.classList.toggle('active');
+  const key=el.dataset.key, val=el.dataset.val;
+  if(!tbSelected[key]) tbSelected[key]=[];
+  if(el.classList.contains('active')){
+    if(!tbSelected[key].includes(val)) tbSelected[key].push(val);
+  } else {
+    tbSelected[key]=tbSelected[key].filter(v=>v!==val);
+  }
   pcUpdateHint();
 };
 
@@ -376,22 +385,18 @@ window.pcAddCustom=function(key){
 
 window.pcTbReset=function(){
   document.querySelectorAll('.pc-tb-tag.active').forEach(t=>t.classList.remove('active'));
+  tbSelected={};
   pcUpdateHint();
 };
 
 function pcUpdateHint(){
-  const sel=Array.from(document.querySelectorAll('.pc-tb-tag.active')).map(t=>t.dataset.val);
+  const allSel=Object.values(tbSelected).flat();
   const hint=document.getElementById('pc-tb-hint');
-  if(hint) hint.textContent=sel.length?sel.join(', '):'태그를 선택하세요';
+  if(hint) hint.textContent=allSel.length?allSel.join(', '):'태그를 선택하세요';
 }
 
 window.pcTbApply=async function(){
-  const byKey={};
-  document.querySelectorAll('.pc-tb-tag.active').forEach(t=>{
-    const k=t.dataset.key, v=t.dataset.val;
-    if(!byKey[k]) byKey[k]=[];
-    byKey[k].push(v);
-  });
+  const byKey=Object.assign({},tbSelected);
 
   const store=getStore();
   const condom=store.config.condomState||'';
