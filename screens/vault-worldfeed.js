@@ -71,7 +71,7 @@ window.ffGenerate = async function() {
     syncStore();
     const cfg     = store.fanFeedConfig || {};
     const history = store.fanFeedHistory || [];
-    const excluded = history.length ? `\nDo NOT reuse these ideas: ${history.slice(-15).join(' / ')}` : '';
+    const excluded = history.length ? `\nDo NOT reuse these ideas: ${history.slice(-8).join(' / ')}` : '';
     const npcs    = cfg.npcs && cfg.npcs.length ? cfg.npcs.slice(0,8).join(', ') : '';
 
     const sys = `You are generating a World Feed — a fictional SNS timeline for NPCs in ${cfg.group||'this world'}.

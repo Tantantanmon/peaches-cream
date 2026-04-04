@@ -164,7 +164,7 @@ window.dlGenerate = async function() {
     };
 
     const sys = `You are writing a dream diary entry for ${charName} about ${userName}. {{char}} is always male. {{user}} is always female.
-${charDesc?`Character description:\n${charDesc.slice(0,300)}\n`:''}
+${charDesc?`Character description:\n${charDesc.slice(0,150)}\n`:''}
 ${up?`User persona:\n${up}\n`:''}
 
 Dream type: ${picked.label}

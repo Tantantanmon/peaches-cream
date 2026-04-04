@@ -75,7 +75,7 @@ window.rvGenerate = async function() {
   try {
     syncStore();
     const history  = store.reviewsHistory || [];
-    const excluded = history.length ? `\nDo NOT repeat these reviewer names: ${history.slice(-15).join(', ')}` : '';
+    const excluded = '';
 
     const sys = `You are generating anonymous reviews for ${charName} in a NSFW roleplay context.
 ${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}

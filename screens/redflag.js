@@ -1,6 +1,6 @@
 // screens/redflag.js — v2.6
 
-const RF_TOTAL = 5;
+const RF_TOTAL = 3;
 let rfQuestions = [];
 let rfCur = 0, rfRedCount = 0, rfGoodCount = 0, rfChosen = false;
 let rfSessionUsed = [];

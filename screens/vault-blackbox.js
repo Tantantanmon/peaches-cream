@@ -109,7 +109,7 @@ window.bbGenerate = async function(type) {
     syncStore();
     const bbStore = store.blackboxHistory || { threat:[], complaint:[] };
     const history = type==='threat' ? (bbStore.threat||[]) : (bbStore.complaint||[]);
-    const excluded = history.length ? `\nDo NOT reuse these ideas: ${history.slice(-9).join(' / ')}` : '';
+    const excluded = '';
     const isUserSender = Math.random() < 0.33;
 
     let sys;

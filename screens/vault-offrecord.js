@@ -89,7 +89,7 @@ window.otrGenerate = async function(type) {
   try {
     syncStore();
     const history  = type==='cog' ? (store.cogHistory||[])  : (store.darkHistory||[]);
-    const excluded = history.length ? `\nDo NOT repeat these: ${history.slice(-18).join(' / ')}` : '';
+    const excluded = '';
 
     let sys;
     if (type === 'cog') {
