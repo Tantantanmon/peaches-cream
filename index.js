@@ -35,7 +35,7 @@ const defaultCharData = {
 };
 
 const defaultGlobalConfig = {
-  apiSource:'main', maxTokens:1500, toolbarEnabled:false,
+  apiSource:'main', profileId:'', maxTokens:1500, toolbarEnabled:false,
   customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[] }
 };
 
@@ -162,11 +162,33 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
-// generateRaw 래퍼
+// generateRaw 래퍼 (API 라우팅)
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
-  const c=ctx(), store=getStore();
-  const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
+  const c = ctx(), store = getStore();
+  const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens || 1500);
+
+  if (store.config.apiSource === 'profile' && store.config.profileId) {
+    if (!c.ConnectionManagerRequestService) {
+      throw new Error('Connection Manager가 로드되지 않았습니다. SillyTavern을 재시작해주세요.');
+    }
+    const contextMessages = [
+      { role: 'system', content: systemPrompt || '' },
+      { role: 'user',   content: userPrompt   || '' }
+    ];
+    const response = await c.ConnectionManagerRequestService.sendRequest(
+      store.config.profileId,
+      contextMessages,
+      tokens,
+      { stream: false, extractData: true, includePreset: false, includeInstruct: false }
+    ).catch(err => {
+      throw new Error(`Connection Profile 연결 실패: ${err.message || '알 수 없는 오류'}`);
+    });
+    if (typeof response === 'string') return response;
+    return response?.text || response?.content || response?.choices?.[0]?.message?.content || String(response);
+  }
+
+  // 기본 Main API
   const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
 }
@@ -188,7 +210,7 @@ function getChatRange(s,e){
 }
 
 // ═══════════════════════════════════════════
-// NSFW 툴바 — 원본 방식 (setExtensionPrompt + generate)
+// NSFW 툴바
 // ═══════════════════════════════════════════
 const TOOLBAR_ID = 'pc-nsfw-toolbar';
 
@@ -451,6 +473,9 @@ window.__PC_TOOLBAR_TOGGLE__=function(enabled){
   else removeToolbar();
 };
 
+// ═══════════════════════════════════════════
+// 설정 UI (Connection Profile 드롭다운)
+// ═══════════════════════════════════════════
 function renderSettingsPanel(){
   const store=getStore();
   $('#extensions_settings2').append(`
@@ -462,6 +487,21 @@ function renderSettingsPanel(){
         </div>
         <div class="inline-drawer-content">
 
+          <div style="margin-bottom:10px;">
+            <label style="display:block;margin-bottom:4px;font-weight:bold;">API 소스</label>
+            <select id="pc-api-source" style="width:100%;padding:6px;border-radius:6px;border:1px solid #ccc;background:var(--bgSecondary);">
+              <option value="main"    ${store.config.apiSource==='main'   ?'selected':''}>Main API</option>
+              <option value="profile" ${store.config.apiSource==='profile'?'selected':''}>Connection Profile</option>
+            </select>
+          </div>
+
+          <div id="pc-profile-wrap" style="display:${store.config.apiSource==='profile'?'block':'none'};margin-bottom:12px;">
+            <label style="display:block;margin-bottom:4px;font-size:12px;">Connection Profile 선택</label>
+            <select class="pc-connection-profile" style="width:100%;padding:6px;border-radius:6px;border:1px solid #ccc;background:var(--bgSecondary);"></select>
+            <small style="display:block;margin-top:6px;color:#888;">SillyTavern API 설정 탭에서 만든 프로필을 선택하세요.</small>
+          </div>
+          <hr>
+
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
             <label style="white-space:nowrap;">최대 토큰</label>
             <input id="pc-max-tokens" type="number" value="${store.config.maxTokens||1500}" min="100" max="8000" style="width:80px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;font-size:13px;"/>
@@ -472,9 +512,33 @@ function renderSettingsPanel(){
       </div>
     </div>
   `);
-  function fillApiSelect(){ }
 
-  $('#pc-max-tokens').on('change',function(){ getStore().config.maxTokens=parseInt($(this).val())||1500; saveStore(); });
+  $('#pc-api-source').on('change', function(){
+    store.config.apiSource = $(this).val();
+    $('#pc-profile-wrap').toggle($(this).val() === 'profile');
+    saveStore();
+  });
+
+  $('#pc-max-tokens').on('change', function(){
+    getStore().config.maxTokens = parseInt($(this).val()) || 1500;
+    saveStore();
+  });
+
+  try {
+    const c = ctx();
+    if (c.ConnectionManagerRequestService) {
+      c.ConnectionManagerRequestService.handleDropdown(
+        '#pc-settings-panel .pc-connection-profile',
+        store.config.profileId,
+        (profile) => {
+          store.config.profileId = profile?.id ?? '';
+          saveStore();
+        }
+      );
+    }
+  } catch(e) {
+    console.warn(`[${MODULE_NAME}] ConnectionManagerRequestService 초기화 실패:`, e);
+  }
 }
 
 function addWandMenuItem(){
