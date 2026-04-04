@@ -162,7 +162,7 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
-// generateRaw 래퍼 (API 라우팅)
+// generateRaw 래퍼 (API 라우팅 - Gemini 호환)
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
   const c = ctx(), store = getStore();
@@ -170,27 +170,45 @@ async function generateWithRole(systemPrompt, userPrompt, appName) {
 
   if (store.config.apiSource === 'profile' && store.config.profileId) {
     if (!c.ConnectionManagerRequestService) {
-      throw new Error('Connection Manager가 로드되지 않았습니다. SillyTavern을 재시작해주세요.');
+      return '⚠️ Connection Manager가 로드되지 않았습니다. SillyTavern을 새로고침해주세요.';
     }
+
+    const combinedPrompt = [];
+    if (systemPrompt && systemPrompt.trim()) combinedPrompt.push(systemPrompt.trim());
+    if (userPrompt   && userPrompt.trim())   combinedPrompt.push(userPrompt.trim());
+
+    if (combinedPrompt.length === 0) {
+      console.warn(`[${MODULE_NAME}] 빈 프롬프트 — API 호출 취소`);
+      return '';
+    }
+
     const contextMessages = [
-      { role: 'system', content: systemPrompt || '' },
-      { role: 'user',   content: userPrompt   || '' }
+      { role: 'user', content: combinedPrompt.join('\n\n') }
     ];
-    const response = await c.ConnectionManagerRequestService.sendRequest(
-      store.config.profileId,
-      contextMessages,
-      tokens,
-      { stream: false, extractData: true, includePreset: false, includeInstruct: false }
-    ).catch(err => {
-      throw new Error(`Connection Profile 연결 실패: ${err.message || '알 수 없는 오류'}`);
-    });
-    if (typeof response === 'string') return response;
-    return response?.text || response?.content || response?.choices?.[0]?.message?.content || String(response);
+
+    try {
+      const response = await c.ConnectionManagerRequestService.sendRequest(
+        store.config.profileId,
+        contextMessages,
+        tokens,
+        { stream: false, extractData: true, includePreset: false, includeInstruct: false }
+      );
+      if (typeof response === 'string') return response;
+      return response?.text || response?.content || response?.choices?.[0]?.message?.content || String(response);
+    } catch(err) {
+      console.error(`[${MODULE_NAME}] 프로필 통신 에러:`, err);
+      return `⚠️ API 통신 에러: ${err.message}`;
+    }
   }
 
   // 기본 Main API
-  const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
-  return await c.generateRaw(params);
+  try {
+    const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
+    return await c.generateRaw(params);
+  } catch(err) {
+    console.error(`[${MODULE_NAME}] 메인 API 에러:`, err);
+    return `⚠️ 메인 API 에러: ${err.message}`;
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -557,7 +575,7 @@ async function openMainHub(){
     __PC_STORE__:          getCharStore(),
     __PC_GLOBAL_STORE__:   getStore(),
     __PC_CLOSE__:          closeMainHub,
-    __PC_GENERATE__:       generateWithRole,
+    __PC_GENERATE__:       (sys, usr, app) => generateWithRole(sys, usr, app),
     __PC_GET_CHAT__:       getRecentChat,
     __PC_GET_CHAT_RANGE__: getChatRange,
     __PC_CHAR__:           getCurrentCharName(),
