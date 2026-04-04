@@ -28,9 +28,10 @@ export function render() {
     </div>
     <div class="section-label">APPS</div>
     <div class="app-grid">
-      ${appItem('profile', 'Profile',  profileIcon())}
-      ${appItem('redflag', 'Red Flag', redFlagIcon())}
-      ${appItem('clinic',  'Clinic',   clinicIcon())}
+      ${appItem('profile', 'Profile',        profileIcon())}
+      ${appItem('redflag', 'Red Flag',        redFlagIcon())}
+      ${appItem('clinic',  'Clinic',          clinicIcon())}
+      ${appItem('apology', 'Sorry Not Sorry', apologyIcon())}
     </div>
     <div class="section-label">CHARACTER</div>
     <div class="vault-btn" onclick="router.go('vault')">
@@ -78,3 +79,4 @@ function appItem(id, name, iconSvg) {
 function profileIcon() { return `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`; }
 function redFlagIcon() { return `<svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`; }
 function clinicIcon()  { return `<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`; }
+function apologyIcon() { return `<svg viewBox="0 0 24 24"><path d="M12 21C12 21 4 13.5 4 8.5C4 5.42 6.42 3 9.5 3C11.04 3 12 4 12 4C12 4 12.96 3 14.5 3C17.58 3 20 5.42 20 8.5C20 13.5 12 21 12 21Z"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="10.5" y1="9" x2="10.5" y2="13"/></svg>`; }
