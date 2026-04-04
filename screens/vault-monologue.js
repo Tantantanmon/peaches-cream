@@ -215,11 +215,15 @@ Rules: Stay in character. Answer the scenario directly. No poetic abstraction th
       const speechEnMatch = raw.match(/\[speechEn\]([\s\S]*?)\[speechKo\]/);
       const speechKoMatch = raw.match(/\[speechKo\]([\s\S]*?)\[inner\]/);
       const innerMatch    = raw.match(/\[inner\]([\s\S]*?)$/);
+      const clean = (t) => t
+        .replace(/<phone_trigger[^>]*>[\s\S]*?<\/phone_trigger>/gi, '')
+        .replace(/<[^>]+>/g, '')
+        .trim();
       const card = {
         question: q,
-        speechEn: speechEnMatch ? speechEnMatch[1].trim() : '',
-        speechKo: speechKoMatch ? speechKoMatch[1].trim() : '',
-        inner:    innerMatch    ? innerMatch[1].trim()    : '',
+        speechEn: speechEnMatch ? clean(speechEnMatch[1]) : '',
+        speechKo: speechKoMatch ? clean(speechKoMatch[1]) : '',
+        inner:    innerMatch    ? clean(innerMatch[1])    : '',
       };
       cards.push(card);
       // 첫 카드 즉시 표시
