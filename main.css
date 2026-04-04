@@ -122,12 +122,12 @@ html,body{width:100%;height:100%;background:transparent;font-family:-apple-syste
 .modal-btn.confirm{background:var(--danger);color:#fff;}
 
 /* ── APP GRID ── */
-.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-.app-item{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;}
+.app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.app-item{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;}
 .app-item:active .app-icon-wrap{transform:scale(0.92);}
-.app-icon-wrap{width:72px;height:72px;border-radius:18px;background:var(--surface);border:0.5px solid var(--divider);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:transform .12s;}
-.app-icon-wrap svg{width:28px;height:28px;stroke:var(--text-secondary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.app-item-name{font-size:11px;font-weight:500;color:var(--text-secondary);text-align:center;line-height:1.4;}
+.app-icon-wrap{width:60px;height:60px;border-radius:15px;background:var(--surface);border:0.5px solid var(--divider);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:transform .12s;}
+.app-icon-wrap svg{width:24px;height:24px;stroke:var(--text-secondary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.app-item-name{font-size:10px;font-weight:500;color:var(--text-secondary);text-align:center;line-height:1.4;}
 
 /* ── VAULT BTN ── */
 .vault-btn{width:100%;background:var(--surface);border:0.5px solid var(--divider);border-radius:var(--radius-md);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:var(--shadow);}

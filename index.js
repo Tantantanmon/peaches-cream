@@ -50,11 +50,12 @@ const CHAR_REACTION_INSTRUCTION = `React based on your character's personality a
 const APP_TOKENS = {
   redflag:   600,
   clinic:    800,
-  reviews:    500,
-  offrecord:  300,
-  worldfeed:  1000,
-  blackbox:   600,
-  dreamlog:   300,
+  reviews:   500,
+  offrecord: 300,
+  worldfeed: 1000,
+  blackbox:  600,
+  dreamlog:  300,
+  apology:   300,
 };
 
 // ═══════════════════════════════════════════
@@ -493,7 +494,7 @@ async function openMainHub(){
     __PC_STORE__:          getCharStore(),
     __PC_GLOBAL_STORE__:   getStore(),
     __PC_CLOSE__:          closeMainHub,
-    __PC_GENERATE__:       generateWithRole,
+    __PC_GENERATE__:       (sys, usr, app) => generateWithRole(sys, usr, app),
     __PC_GET_CHAT__:       getRecentChat,
     __PC_GET_CHAT_RANGE__: getChatRange,
     __PC_CHAR__:           getCurrentCharName(),
