@@ -50,27 +50,17 @@ window.rfGenerate = async function() {
   if (btn) { btn.classList.add('loading'); btn.textContent = '카드 생성 중...'; }
 
   try {
-    const excluded = rfSessionUsed.length ? `\nDo NOT repeat these behaviors: ${rfSessionUsed.slice(-21).join(' / ')}` : '';
+    const excluded = rfSessionUsed.length ? `\nDo NOT repeat these questions: ${rfSessionUsed.slice(-21).join(' / ')}` : '';
 
-    const sys = `You are generating Red Flag game cards for a roleplay character named ${charName}.
-${charDesc?`Character description: ${charDesc.slice(0,200)}\n`:''}
-DO NOT reference any chat history. Base all questions ONLY on the character description above.
-
-Each card must describe a specific behavior or habit of ${charName} — always framed as "${charName}이/가 ~한다" (what ${charName} does).
-NEVER describe the user's behavior. ALWAYS describe ${charName}'s behavior.
+    const sys = `You are generating Red Flag game cards about ${charName}'s behavior and habits.
+${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
 ${excluded}
 
-Generate exactly ${RF_TOTAL} cards across these categories (mix freely):
-- 집착/소유욕: possessive or jealous behavior
-- 지배/주도: dominant or controlling behavior  
-- 감정 표현: emotional expression (tsundere, cold, tender)
-- 성적 행동 (NSFW): explicit sexual behavior — include at least 2 NSFW cards
-- 일상 행동: everyday habits or quirks
-- 귀여운 행동: cute/endearing behavior (sudden hugs, sulking, acts of care)
-
-Return ONLY a JSON array of exactly ${RF_TOTAL} objects (no markdown, no explanation).
-Each object: q(1 short Korean sentence describing ${charName}'s behavior), red(2 sentence Korean rebuttal when user says red flag), good(2 sentence Korean excited response when user says good).
-Vary the behaviors. Reflect ${charName}'s personality from the description.`
+CRITICAL: Every question MUST be about ${charName}'s behavior only. NEVER about ${userName}'s behavior.
+Do NOT reference any specific chat history. Be creative and varied.
+Return ONLY a JSON array of exactly ${RF_TOTAL} objects (no markdown).
+Each: q(1 short Korean sentence describing ${charName}'s specific sexual behavior/habit), red(2 sentence Korean rebuttal by ${charName}), good(2 sentence Korean excited response by ${charName}).
+Vary behaviors. Reflect ${charName}'s personality.`
 
     const result = await generateWithRole(sys, `${charName}의 레드플래그 카드 ${RF_TOTAL}장 생성`, 'redflag');
     let cards = [];
@@ -177,9 +167,9 @@ window.rfRestart = function() {
 function rfFallback() {
   return [
     {q:'관계 중에 절정 직전에 일부러 멈추고 뜸을 들인다',red:'레드플래그? 그때 네가 뭐라고 했는지 기억해? 제발 계속 해달라고 했잖아. 내가 멈추는 순간 네 허리가 알아서 따라오고 숨이 가빠졌잖아. 다음엔 세 번 멈출게.',good:'오히려 좋다고?! 그럼 오늘은 딱 절정 앞에서 다섯 번 멈출 거야. 네 몸이 원해서 미칠 지경이 될 때까지.'},
-    {q:'화가 나면 말 없이 사라지고 연락을 끊는다',red:'레드플래그? 그게 싫으면 먼저 말을 걸어봐. 내가 사라지는 건 네가 감당 못할 말 하기 전에 참는 거야.',good:'오히려 좋다고?! 그럼 오늘도 사라져줄까. 네가 찾아올 때까지.'},
-    {q:'자다가 갑자기 끌어안고 놔주질 않는다',red:'레드플래그? 근데 넌 왜 그때마다 더 파고들었어. 불편하면 밀어냈어야지.',good:'오히려 좋다고?! 그럼 오늘 밤은 아예 놔주질 않을게. 각오해.'},
-    {q:'다른 남자 얘기가 나오면 갑자기 분위기가 싸해진다',red:'레드플래그? 질투하는 거 아니야. 그냥 네가 왜 그 얘기를 나한테 하는지 이해가 안 가서 그래.',good:'오히려 좋다고?! 그럼 일부러 더 자주 얘기해봐. 내가 어떻게 반응하는지 보면서.'},
-    {q:'귀에 대고 낮은 목소리로 오늘 어떻게 할지 읊어준다',red:'레드플래그? 듣기 싫으면 귀 막으면 되잖아. 근데 넌 항상 더 가까이 기울었잖아.',good:'오히려 좋다고?! 그럼 오늘은 더 구체적으로 얘기해줄게. 네 표정이 바뀔 때까지.'},
+    {q:'귀에 대고 뭘 원하는지 직접 말하라고 강요한다',red:'말하기 싫어서 레드플래그야? 근데 귀에 대고 속삭이면 숨부터 막히잖아. 오늘도 말할 때까지 안 해줄게.',good:'오히려 좋다고?! 그럼 오늘은 더 구체적으로 시킬게. 네 목소리가 떨릴 때까지.'},
+    {q:'뒤에서 목을 잡고 고개를 뒤로 젖히게 한다',red:'목 잡히는 게 레드플래그야? 그럼 왜 잡힐 때 더 기댔어. 다음엔 더 천천히 잡아줄게.',good:'오히려 좋다고?! 오늘은 목만 아니야. 귓가에 오늘 어떻게 해줄 건지 하나하나 다 읊어줄게. 각오해.'},
+    {q:'끝난 척하다가 네가 안심하면 다시 시작한다',red:'속은 거 레드플래그야? 근데 다시 시작됐을 때 밀어냈어? 표정은 이미 답 하고 있거든.',good:'오히려 좋다고?! 오늘은 진짜로 끝낸 척 세 번 할게.'},
+    {q:'관계 도중 네 반응 보면서 낮게 웃는다',red:'비웃는 게 아니야. 그 표정이 나한테만 보여주는 거잖아. 창피하면 더 숨겨봐.',good:'오히려 좋다고?! 그럼 오늘은 더 대놓고 볼게.'},
   ];
 }

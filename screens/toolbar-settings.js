@@ -26,9 +26,9 @@ export function render() {
     s.id = 'tbs-style';
     s.textContent = `
 .tbs-group{margin-bottom:10px;}
-.tbs-group-header{display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:8px;}
+.tbs-group-header{padding:0 2px;margin-bottom:8px;}
 .tbs-group-name{font-size:12px;font-weight:600;letter-spacing:0.6px;color:var(--text-muted);text-transform:uppercase;}
-.tbs-group-add{font-size:13px;color:var(--text-primary);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;padding:2px 4px;}
+.tbs-group-add{display:inline-flex;align-items:center;padding:4px 10px;border-radius:var(--radius-btn);font-size:13px;background:transparent;color:var(--text-muted);border:0.5px dashed var(--text-hint);cursor:pointer;font-family:inherit;}
 .tbs-tag-card{background:var(--surface);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow);}
 .tbs-tag-wrap{display:flex;flex-wrap:wrap;gap:6px;}
 .tbs-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--radius-btn);font-size:13px;font-weight:500;background:var(--btn-idle);color:var(--text-secondary);border:none;font-family:inherit;}
@@ -57,10 +57,9 @@ export function render() {
       <div class="tbs-group">
         <div class="tbs-group-header">
           <span class="tbs-group-name">${g.label}</span>
-          <button class="tbs-group-add" onclick="tbsAdd('${g.id}')">+ 추가</button>
         </div>
         <div class="tbs-tag-card">
-          <div class="tbs-tag-wrap" id="tbs-wrap-${g.id}">${fixedHTML}${customHTML}</div>
+          <div class="tbs-tag-wrap" id="tbs-wrap-${g.id}">${fixedHTML}${customHTML}<button class="tbs-group-add" onclick="tbsAdd('${g.id}')">Add</button></div>
         </div>
       </div>`;
   }).join('') + `
