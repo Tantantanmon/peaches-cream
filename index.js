@@ -561,6 +561,27 @@ function closeMainHub(){
   eventSource.on(event_types.CHAT_CHANGED,()=>{
     refreshPrompt();
     if(getStore().config.toolbarEnabled) renderToolbar();
+    // 팝업이 열려있으면 iframe의 store/charKey/charName을 최신 캐릭터 데이터로 재주입
+    try{
+      const iw=window.__PC_IFRAME__?.contentWindow;
+      if(iw){
+        const newStore   = getCharStore();
+        const newCharKey = getCharKey();
+        const newCharName= getCurrentCharName();
+        iw.__PC_STORE__       = newStore;
+        iw.__PC_CHAR_KEY__    = newCharKey;
+        iw.__PC_CHAR__        = newCharName;
+        iw.__PC_USER__        = getCurrentUserName();
+        iw.__PC_CHAR_DESC__   = getCharDescription();
+        iw.__PC_USER_PERSONA__= getUserPersona();
+        // parent window도 동기화
+        window.__PC_STORE__    = newStore;
+        window.__PC_CHAR_KEY__ = newCharKey;
+        window.__PC_CHAR__     = newCharName;
+        // stale 데이터 표시 방지 — iframe 홈으로 리셋
+        if(typeof iw.router?.go==='function') iw.router.go('home');
+      }
+    }catch(e){ console.warn(`[${MODULE_NAME}] CHAT_CHANGED bridge sync error`,e); }
   });
   refreshPrompt();
   if(getStore().config.toolbarEnabled) renderToolbar();
