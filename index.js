@@ -36,7 +36,7 @@ const defaultCharData = {
 
 const defaultGlobalConfig = {
   apiSource:'main', maxTokens:1500, toolbarEnabled:false,
-  customTags:{ mood:[], location:[], foreplayActs:[], pace:[], toys:[], positions:[], action:[], finish:[], sensitiveZones:[], orgasm:[] }
+  customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[] }
 };
 
 // ═══════════════════════════════════════════
@@ -193,29 +193,27 @@ function getChatRange(s,e){
 const TOOLBAR_ID = 'pc-nsfw-toolbar';
 
 const FIXED_TAGS = {
-  mood:        ['Romantic','Dominant','Teasing','Passionate'],
-  location:    ['Bed','Wall','Floor','Chair'],
-  foreplayActs:['Neck Kissing','Cunnilingus','Fingering','Blowjob','Teasing','Body Massage','Nipple Play','Hair Pulling','Spanking','Light Choking'],
-  pace:        ['Slow','Normal','Fast','Rough'],
-  toys:        ['Vibrator','Dildo','Womanizer','Ohmibod','Magic Wand','Nipple Clamps','Handcuffs','Blindfold'],
-  positions:   ['Missionary','Doggy Style','Cowgirl','Reverse Cowgirl','Legs Up','Standing','Prone Bone','Face Sitting','Spooning','The Anvil'],
-  action:      ['Penetrate','Continue','Faster','Finish'],
-  finish:      ['Internal (Vaginal)','External','On Body','On Face','Inside Mouth'],
-  orgasm:      ['Thigh Trembling','Squirt','Scream','Pass Out'],
+  sfw:      ['Kiss','Hug','Cuddle','Head Pat','Back Hug','Forehead Kiss','Pout','Whisper in Ear'],
+  mood:     ['Romantic','Dominant','Bed','Wall'],
+  foreplay: ['Kissing','Fingering','Blowjob','Cunnilingus'],
+  position: ['Missionary','Doggy','Cowgirl','Standing'],
+  action:   ['Slow','Fast','Rough','Penetrate','Continue'],
+  finish:   ['Internal','External','On Body'],
+  orgasm:   ['Squirt','Scream'],
 };
 
 const GROUPS = [
-  { id:'g1', label:'1 · Mood & Setting',  subs:[ {key:'mood',label:'Mood'}, {key:'location',label:'Location'} ] },
-  { id:'g2', label:'2 · Foreplay',        subs:[ {key:'foreplayActs',label:'Acts'}, {key:'pace',label:'Pace'} ] },
-  { id:'g3', label:'3 · Toys',            subs:[ {key:'toys',label:'Toys'} ] },
-  { id:'g4', label:'4 · Positions',       subs:[ {key:'positions',label:'Position'} ] },
-  { id:'g5', label:'5 · Action',          subs:[ {key:'action',label:'Action'} ] },
-  { id:'g6', label:'6 · Finish',          subs:[ {key:'finish',label:'Location'} ] },
-  { id:'g7', label:'7 · User Response',   subs:[ {key:'sensitiveZones',label:'Sensitive zones'}, {key:'orgasm',label:'Orgasm'} ] },
+  { id:'sfw',      label:'SFW',          key:'sfw'      },
+  { id:'mood',     label:'Mood & Place', key:'mood'     },
+  { id:'foreplay', label:'Foreplay',     key:'foreplay' },
+  { id:'position', label:'Position',     key:'position' },
+  { id:'action',   label:'Action',       key:'action'   },
+  { id:'finish',   label:'Finish',       key:'finish'   },
+  { id:'orgasm',   label:'Orgasm',       key:'orgasm'   },
 ];
 
-let tbCollapsed = true;
-let tbGroupOpen = {};
+let tbCollapsed = false;
+let tbActiveGroup = 'sfw';
 
 function injectToolbarStyle(){
   if(document.getElementById('pc-tb-style')) return;
@@ -223,49 +221,50 @@ function injectToolbarStyle(){
   s.id='pc-tb-style';
   s.textContent=`
 #${TOOLBAR_ID}{width:100%;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;}
-.pc-tb-wrap{background:#fff;border-top:0.5px solid #e0e0e0;border-bottom:0.5px solid #e0e0e0;}
-.pc-tb-topbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:0.5px solid #f0f0f0;background:#fafafa;}
-.pc-tb-title{font-size:13px;font-weight:700;color:#1a1a1a;flex-shrink:0;}
-.pc-tb-condom{display:flex;gap:4px;margin-left:4px;}
-.pc-tb-condom-btn{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;border:0.5px solid #e0e0e0;background:#f4f4f4;color:#666;cursor:pointer;}
-.pc-tb-condom-btn.on.active{background:#2563eb;color:#fff;border-color:#2563eb;}
+.pc-tb-wrap{background:#fff;border-top:0.5px solid #e8e8e8;}
+.pc-tb-topbar{display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:0.5px solid #f0f0f0;}
+.pc-tb-title{font-size:12px;font-weight:500;color:#1a1a1a;flex-shrink:0;}
+.pc-tb-condom{display:flex;gap:3px;margin-left:2px;}
+.pc-tb-condom-btn{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;border:0.5px solid #e0e0e0;background:transparent;color:#888;cursor:pointer;transition:all .12s;}
+.pc-tb-condom-btn.on.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8;}
 .pc-tb-condom-btn.off.active{background:#dc2626;color:#fff;border-color:#dc2626;}
 .pc-tb-spacer{flex:1;}
-.pc-tb-collapse{font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;padding:4px 8px;}
-.pc-tb-close{font-size:14px;color:#bbb;background:none;border:none;cursor:pointer;padding:4px 8px;}
-.pc-tb-body{max-height:220px;overflow-y:auto;}
-.pc-tb-body.hidden{display:none;}
-.pc-tb-group{border-bottom:0.5px solid #f5f5f5;}
-.pc-tb-g-header{display:flex;align-items:center;justify-content:space-between;padding:7px 12px 5px;cursor:pointer;user-select:none;}
-.pc-tb-g-name{font-size:10px;font-weight:700;letter-spacing:0.8px;color:#bbb;text-transform:uppercase;}
-.pc-tb-g-arr{font-size:10px;color:#ccc;transition:transform .15s;}
-.pc-tb-g-arr.open{transform:rotate(90deg);}
-.pc-tb-g-content{padding:0 12px 8px;}
-.pc-tb-g-content.hidden{display:none;}
-.pc-tb-sub{margin-bottom:6px;}
-.pc-tb-sub-label{font-size:9px;font-weight:600;letter-spacing:0.5px;color:#d0d0d0;text-transform:uppercase;margin-bottom:4px;}
+.pc-tb-collapse{font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;padding:2px 6px;opacity:.7;}
+.pc-tb-collapse:hover{opacity:1;}
+.pc-tb-close{font-size:13px;color:#bbb;background:none;border:none;cursor:pointer;padding:2px 6px;opacity:.7;}
+.pc-tb-close:hover{opacity:1;}
+.pc-tb-collapsible{}
+.pc-tb-collapsible.hidden{display:none;}
+.pc-tb-tabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:0.5px solid #f0f0f0;padding:0 14px;gap:2px;}
+.pc-tb-tabs::-webkit-scrollbar{display:none;}
+.pc-tb-tab{padding:6px 10px;font-size:11px;font-weight:500;color:#888;border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:1.5px solid transparent;font-family:inherit;flex-shrink:0;margin-bottom:-0.5px;transition:color .12s;}
+.pc-tb-tab:hover{color:#1a1a1a;}
+.pc-tb-tab.active{color:#1a1a1a;border-bottom-color:#1a1a1a;}
+.pc-tb-body{padding:7px 14px 8px;}
 .pc-tb-tags{display:flex !important;flex-wrap:wrap !important;gap:4px !important;}
-.pc-tb-tag{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#f4f4f4;color:#444;cursor:pointer;border:0.5px solid #e8e8e8;transition:all .1s;user-select:none;display:inline-block !important;width:fit-content !important;}
-.pc-tb-tag:hover{background:#eee;}
+.pc-tb-tag{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;background:#f4f4f4;color:#555;cursor:pointer;border:0.5px solid transparent;transition:all .1s;user-select:none;display:inline-block !important;width:fit-content !important;}
+.pc-tb-tag:hover{border-color:#ddd;color:#1a1a1a;}
 .pc-tb-tag.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
-.pc-tb-add{padding:4px 10px;border-radius:20px;font-size:12px;background:transparent;color:#ccc;border:0.5px dashed #ddd;cursor:pointer;display:inline-block !important;width:fit-content !important;}
-.pc-tb-add:hover{border-color:#bbb;color:#999;}
-.pc-tb-footer{display:flex;align-items:center;gap:6px;padding:7px 12px;background:#fafafa;border-top:0.5px solid #f0f0f0;}
+.pc-tb-add{padding:3px 9px;border-radius:20px;font-size:11px;background:transparent;color:#aaa;border:0.5px dashed #ccc;cursor:pointer;display:inline-block !important;width:fit-content !important;}
+.pc-tb-add:hover{border-color:#999;color:#666;}
+.pc-tb-footer{display:flex;align-items:center;gap:6px;padding:6px 14px 7px;border-top:0.5px solid #f0f0f0;}
 .pc-tb-hint{flex:1;font-size:11px;color:#aaa;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.pc-tb-reset{font-size:11px;color:#ccc;background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:6px;}
-.pc-tb-reset:hover{color:#999;background:#f5f5f5;}
-.pc-tb-apply{background:#1a1a1a;color:#fff;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.pc-tb-reset{font-size:11px;color:#bbb;background:none;border:none;cursor:pointer;padding:2px 6px;}
+.pc-tb-reset:hover{color:#888;}
+.pc-tb-apply{background:#1a1a1a;color:#fff;border:none;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:500;cursor:pointer;flex-shrink:0;letter-spacing:0.2px;}
 .pc-tb-apply:active{opacity:.8;}
 @media(prefers-color-scheme:dark){
   .pc-tb-wrap{background:#1c1c1e;border-color:#3a3a3c;}
-  .pc-tb-topbar,.pc-tb-footer{background:#161618;border-color:#3a3a3c;}
+  .pc-tb-topbar,.pc-tb-footer{border-color:#2c2c2e;}
   .pc-tb-title{color:#fff;}
-  .pc-tb-g-header{color:#fff;}
-  .pc-tb-tag{background:#2c2c2e;color:#e0e0e0;border-color:#3a3a3c;}
+  .pc-tb-tabs{border-color:#2c2c2e;}
+  .pc-tb-tab{color:#888;}
+  .pc-tb-tab.active{color:#fff;border-bottom-color:#fff;}
+  .pc-tb-tag{background:#2c2c2e;color:#ccc;}
   .pc-tb-tag.active{background:#fff;color:#000;}
-  .pc-tb-condom-btn{background:#2c2c2e;color:#aaa;border-color:#3a3a3c;}
-  .pc-tb-group{border-color:#2c2c2e;}
+  .pc-tb-condom-btn{color:#888;border-color:#3a3a3c;}
   .pc-tb-apply{background:#fff;color:#000;}
+  .pc-tb-footer{border-color:#2c2c2e;}
 }
 @media(max-width:430px){
   #pc-popup-overlay{align-items:flex-end!important;justify-content:center!important;}
@@ -274,43 +273,21 @@ function injectToolbarStyle(){
   document.head.appendChild(s);
 }
 
-function buildToolbarHTML(){
-  const cd=getCharStore();
+function buildTabTagsHTML(groupId){
   const store=getStore(), ct=store.config.customTags||{};
+  const fixed  = FIXED_TAGS[groupId]||[];
+  const custom = ct[groupId]||[];
+  const items  = [...fixed,...custom];
+  return items.map(t=>`<div class="pc-tb-tag" data-key="${groupId}" data-val="${t.replace(/"/g,'&quot;')}" onclick="pcTag(this)">${t}</div>`).join('')
+    + `<button class="pc-tb-add" onclick="pcAddCustom('${groupId}')">+</button>`;
+}
+
+function buildToolbarHTML(){
+  const store=getStore();
   const condomActive = store.config.condomState||'';
-
-  const dynSrc = {
-    sensitiveZones: [],
-    orgasm: ['Thigh Trembling','Squirt','Scream','Pass Out'],
-  };
-
-  const groupsHTML = GROUPS.map(g=>{
-    const isOpen = tbGroupOpen[g.id]||false;
-    const subsHTML = g.subs.map(sub=>{
-      const fixed  = FIXED_TAGS[sub.key]||[];
-      const dyn    = dynSrc[sub.key]||[];
-      const custom = ct[sub.key]||[];
-      const items  = sub.key==='sensitiveZones' ? dyn : [...fixed,...custom];
-      if(!items.length && !dyn.length) return '';
-      return `
-        <div class="pc-tb-sub">
-          <div class="pc-tb-sub-label">${sub.label}</div>
-          <div class="pc-tb-tags" id="tags-${sub.key}">
-            ${items.map(t=>`<div class="pc-tb-tag" data-key="${sub.key}" data-val="${t.replace(/"/g,'&quot;')}" onclick="pcTag(this)">${t}</div>`).join('')}
-            <button class="pc-tb-add" onclick="pcAddCustom('${sub.key}')">+</button>
-          </div>
-        </div>`;
-    }).join('');
-    if(!subsHTML.trim()) return '';
-    return `
-      <div class="pc-tb-group">
-        <div class="pc-tb-g-header" onclick="pcGroupToggle('${g.id}')">
-          <span class="pc-tb-g-name">${g.label}</span>
-          <span class="pc-tb-g-arr${isOpen?' open':''}" id="garr-${g.id}">›</span>
-        </div>
-        <div class="pc-tb-g-content${isOpen?'':' hidden'}" id="gcontent-${g.id}">${subsHTML}</div>
-      </div>`;
-  }).join('');
+  const tabsHTML = GROUPS.map(g=>
+    `<button class="pc-tb-tab${g.id===tbActiveGroup?' active':''}" onclick="pcSwitchTab('${g.id}')">${g.label}</button>`
+  ).join('');
 
   return `
     <div id="${TOOLBAR_ID}">
@@ -322,13 +299,16 @@ function buildToolbarHTML(){
             <button class="pc-tb-condom-btn off${condomActive==='off'?' active':''}" onclick="pcCondom('off')">Condom OFF</button>
           </div>
           <span class="pc-tb-spacer"></span>
-          <button class="pc-tb-collapse" onclick="pcTbCollapse()">${tbCollapsed?'▲ 펼치기':'▼ 접기'}</button>
+          <button class="pc-tb-collapse" onclick="pcTbCollapse()">${tbCollapsed?'펼치기 ▲':'접기 ▼'}</button>
           <button class="pc-tb-close" onclick="pcTbClose()">✕</button>
         </div>
-        <div class="pc-tb-body${tbCollapsed?' hidden':''}" id="pc-tb-body">
-          ${groupsHTML}
+        <div class="pc-tb-collapsible${tbCollapsed?' hidden':''}" id="pc-tb-collapsible">
+          <div class="pc-tb-tabs" id="pc-tb-tabs">${tabsHTML}</div>
+          <div class="pc-tb-body">
+            <div class="pc-tb-tags" id="pc-tb-tag-area">${buildTabTagsHTML(tbActiveGroup)}</div>
+          </div>
         </div>
-        <div class="pc-tb-footer" id="pc-tb-footer">
+        <div class="pc-tb-footer">
           <span class="pc-tb-hint" id="pc-tb-hint">태그를 선택하세요</span>
           <button class="pc-tb-reset" onclick="pcTbReset()">초기화</button>
           <button class="pc-tb-apply" onclick="pcTbApply()">Apply →</button>
@@ -352,18 +332,17 @@ function removeToolbar(){ document.getElementById(TOOLBAR_ID)?.remove(); }
 
 window.pcTbCollapse=function(){
   tbCollapsed=!tbCollapsed;
-  const body=document.getElementById('pc-tb-body');
+  const col=document.getElementById('pc-tb-collapsible');
   const btn=document.querySelector('.pc-tb-collapse');
-  if(body) body.classList.toggle('hidden', tbCollapsed);
-  if(btn)  btn.textContent=tbCollapsed?'▲ 펼치기':'▼ 접기';
+  if(col) col.classList.toggle('hidden', tbCollapsed);
+  if(btn) btn.textContent=tbCollapsed?'펼치기 ▲':'접기 ▼';
 };
 
-window.pcGroupToggle=function(gid){
-  tbGroupOpen[gid]=!tbGroupOpen[gid];
-  const content=document.getElementById('gcontent-'+gid);
-  const arr=document.getElementById('garr-'+gid);
-  if(content) content.classList.toggle('hidden',!tbGroupOpen[gid]);
-  if(arr)     arr.classList.toggle('open',tbGroupOpen[gid]);
+window.pcSwitchTab=function(groupId){
+  tbActiveGroup=groupId;
+  document.querySelectorAll('.pc-tb-tab').forEach(t=>t.classList.toggle('active', t.textContent===GROUPS.find(g=>g.id===groupId)?.label));
+  const area=document.getElementById('pc-tb-tag-area');
+  if(area) area.innerHTML=buildTabTagsHTML(groupId);
 };
 
 window.pcTag=function(el){
@@ -387,19 +366,11 @@ window.pcAddCustom=function(key){
   const trimmed=val.trim();
   const store=getStore();
   if(!store.config.customTags[key]) store.config.customTags[key]=[];
+  if(store.config.customTags[key].includes(trimmed)) return;
   store.config.customTags[key].push(trimmed);
   saveStore();
-  const wrap=document.getElementById('tags-'+key);
-  if(wrap){
-    const addBtn=wrap.querySelector('.pc-tb-add');
-    const tag=document.createElement('div');
-    tag.className='pc-tb-tag';
-    tag.dataset.key=key;
-    tag.dataset.val=trimmed;
-    tag.textContent=trimmed;
-    tag.onclick=function(){ pcTag(this); };
-    wrap.insertBefore(tag, addBtn);
-  }
+  const area=document.getElementById('pc-tb-tag-area');
+  if(area) area.innerHTML=buildTabTagsHTML(key);
 };
 
 window.pcTbReset=function(){
@@ -424,24 +395,35 @@ window.pcTbApply=async function(){
   const store=getStore();
   const condom=store.config.condomState||'';
   const parts=[];
-  if(byKey.mood?.length)           parts.push(`set the mood to ${byKey.mood.join(' and ')}`);
-  if(byKey.location?.length)       parts.push(`do it on the ${byKey.location.join(', ')}`);
-  if(byKey.foreplayActs?.length)   parts.push(`perform ${byKey.foreplayActs.join(' and ')}`);
-  if(byKey.pace?.length)           parts.push(`pace is ${byKey.pace.join(', ')}`);
-  if(byKey.toys?.length)           parts.push(`use ${byKey.toys.join(' and ')}`);
-  if(byKey.positions?.length)      parts.push(`switch to ${byKey.positions.join(', ')} position`);
-  if(byKey.action?.length)         parts.push(byKey.action.includes('Penetrate') ? 'penetrate now without further foreplay' : byKey.action.join(', ').toLowerCase());
-  if(byKey.finish?.length)         parts.push(`finish ${byKey.finish.join(', ')}`);
-  if(byKey.sensitiveZones?.length) parts.push(`stimulate ${byKey.sensitiveZones.join(' and ')}`);
-  if(byKey.orgasm?.length)         parts.push(`user reaches orgasm with ${byKey.orgasm.join(' and ')}`);
-  if(condom==='on')                parts.push('put on a condom first');
-  else if(condom==='off')          parts.push('no condom');
+  let actionMsg='';
 
-  if(!parts.length) return;
+  if(byKey.sfw?.length){
+    const sfwMap={
+      'Kiss':           'kiss her softly',
+      'Hug':            'pull her into a hug',
+      'Cuddle':         'cuddle with her',
+      'Head Pat':       'gently pat her head',
+      'Back Hug':       'wrap your arms around her from behind',
+      'Forehead Kiss':  'kiss her forehead',
+      'Pout':           'pout and act sulky toward her',
+      'Whisper in Ear': 'lean in and whisper something in her ear',
+    };
+    const sfwParts=byKey.sfw.map(v=>sfwMap[v]||v.toLowerCase());
+    actionMsg=`IMMEDIATE INSTRUCTION: In your very next response, you MUST — ${sfwParts.join(', ')}. Stay in character. Do this without exception.`;
+  } else {
+    if(byKey.mood?.length)     parts.push(`set the mood to ${byKey.mood.join(' and ')}`);
+    if(byKey.foreplay?.length) parts.push(`perform ${byKey.foreplay.join(' and ')}`);
+    if(byKey.position?.length) parts.push(`switch to ${byKey.position.join(', ')} position`);
+    if(byKey.action?.length)   parts.push(byKey.action.includes('Penetrate')?'penetrate now without further foreplay':byKey.action.join(', ').toLowerCase());
+    if(byKey.finish?.length)   parts.push(`finish ${byKey.finish.join(', ')}`);
+    if(byKey.orgasm?.length)   parts.push(`user reaches orgasm with ${byKey.orgasm.join(' and ')}`);
+    if(condom==='on')          parts.push('put on a condom first');
+    else if(condom==='off')    parts.push('no condom');
+    if(!parts.length) return;
+    actionMsg=`IMMEDIATE INSTRUCTION: In your very next response, you MUST — ${parts.join(', ')}. Do this without exception.`;
+  }
 
-  const actionMsg = `IMMEDIATE INSTRUCTION: In your very next response, you MUST — ${parts.join(', ')}. Do this without exception.`;
   pcTbReset();
-
   try{
     const {setExtensionPrompt, generate} = ctx();
     setExtensionPrompt(MODULE_NAME+'_action', actionMsg, 1, 0);
