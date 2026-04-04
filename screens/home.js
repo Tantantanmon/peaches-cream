@@ -7,12 +7,23 @@ export function render() {
 
   const area = document.getElementById('scroll-area');
   area.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:var(--radius-md);border:0.5px solid var(--divider);padding:14px 18px;margin-bottom:14px;box-shadow:var(--shadow);">
-      <div>
-        <div style="font-size:15px;font-weight:600;color:var(--text-primary);" id="pc-toolbar-label">NSFW Toolbar ${toolbarEnabled?'ON':'OFF'}</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:var(--radius-md);border:0.5px solid var(--divider);padding:14px 18px;box-shadow:var(--shadow);">
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text-primary);" id="pc-toolbar-label">NSFW Toolbar ${toolbarEnabled?'ON':'OFF'}</div>
+        </div>
+        <div id="pc-toolbar-btn" onclick="pcToggleToolbar()" style="width:48px;height:28px;border-radius:14px;cursor:pointer;transition:background .2s;position:relative;flex-shrink:0;background:${toolbarEnabled?'#1a1a1a':'#c0ccd8'};">
+          <div id="pc-toolbar-thumb" style="position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:left .2s;left:${toolbarEnabled?'23px':'3px'};"></div>
+        </div>
       </div>
-      <div id="pc-toolbar-btn" onclick="pcToggleToolbar()" style="width:48px;height:28px;border-radius:14px;cursor:pointer;transition:background .2s;position:relative;flex-shrink:0;background:${toolbarEnabled?'#1a1a1a':'#c0ccd8'};">
-        <div id="pc-toolbar-thumb" style="position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:left .2s;left:${toolbarEnabled?'23px':'3px'};"></div>
+      <div class="list-group">
+        <div class="list-row tappable" onclick="router.go('toolbar-settings')">
+          <div>
+            <div class="row-label">Toolbar 태그 관리</div>
+            <div class="row-sub">커스텀 태그 추가 · 삭제</div>
+          </div>
+          <span class="row-chevron">›</span>
+        </div>
       </div>
     </div>
     <div class="section-label">APPS</div>
