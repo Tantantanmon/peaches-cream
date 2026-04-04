@@ -35,7 +35,7 @@ const defaultCharData = {
 };
 
 const defaultGlobalConfig = {
-  apiSource:'main', profileId:'', maxTokens:1500, toolbarEnabled:false,
+  apiSource:'main', maxTokens:1500, toolbarEnabled:false,
   customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[] }
 };
 
@@ -162,53 +162,13 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
-// generateRaw 래퍼 (API 라우팅 - Gemini 호환)
+// generateRaw 래퍼
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
-  const c = ctx(), store = getStore();
-  const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens || 1500);
-
-  if (store.config.apiSource === 'profile' && store.config.profileId) {
-    if (!c.ConnectionManagerRequestService) {
-      return '⚠️ Connection Manager가 로드되지 않았습니다. SillyTavern을 새로고침해주세요.';
-    }
-
-    const combinedPrompt = [];
-    if (systemPrompt && systemPrompt.trim()) combinedPrompt.push(systemPrompt.trim());
-    if (userPrompt   && userPrompt.trim())   combinedPrompt.push(userPrompt.trim());
-
-    if (combinedPrompt.length === 0) {
-      console.warn(`[${MODULE_NAME}] 빈 프롬프트 — API 호출 취소`);
-      return '';
-    }
-
-    const contextMessages = [
-      { role: 'user', content: combinedPrompt.join('\n\n') }
-    ];
-
-    try {
-      const response = await c.ConnectionManagerRequestService.sendRequest(
-        store.config.profileId,
-        contextMessages,
-        tokens,
-        { stream: false, extractData: true, includePreset: false, includeInstruct: false }
-      );
-      if (typeof response === 'string') return response;
-      return response?.text || response?.content || response?.choices?.[0]?.message?.content || String(response);
-    } catch(err) {
-      console.error(`[${MODULE_NAME}] 프로필 통신 에러:`, err);
-      return `⚠️ API 통신 에러: ${err.message}`;
-    }
-  }
-
-  // 기본 Main API
-  try {
-    const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
-    return await c.generateRaw(params);
-  } catch(err) {
-    console.error(`[${MODULE_NAME}] 메인 API 에러:`, err);
-    return `⚠️ 메인 API 에러: ${err.message}`;
-  }
+  const c=ctx(), store=getStore();
+  const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
+  const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
+  return await c.generateRaw(params);
 }
 
 // ═══════════════════════════════════════════
@@ -228,7 +188,7 @@ function getChatRange(s,e){
 }
 
 // ═══════════════════════════════════════════
-// NSFW 툴바
+// NSFW 툴바 — 원본 방식 (setExtensionPrompt + generate)
 // ═══════════════════════════════════════════
 const TOOLBAR_ID = 'pc-nsfw-toolbar';
 
@@ -491,9 +451,6 @@ window.__PC_TOOLBAR_TOGGLE__=function(enabled){
   else removeToolbar();
 };
 
-// ═══════════════════════════════════════════
-// 설정 UI (Connection Profile 드롭다운)
-// ═══════════════════════════════════════════
 function renderSettingsPanel(){
   const store=getStore();
   $('#extensions_settings2').append(`
@@ -505,21 +462,6 @@ function renderSettingsPanel(){
         </div>
         <div class="inline-drawer-content">
 
-          <div style="margin-bottom:10px;">
-            <label style="display:block;margin-bottom:4px;font-weight:bold;">API 소스</label>
-            <select id="pc-api-source" style="width:100%;padding:6px;border-radius:6px;border:1px solid #ccc;background:var(--bgSecondary);">
-              <option value="main"    ${store.config.apiSource==='main'   ?'selected':''}>Main API</option>
-              <option value="profile" ${store.config.apiSource==='profile'?'selected':''}>Connection Profile</option>
-            </select>
-          </div>
-
-          <div id="pc-profile-wrap" style="display:${store.config.apiSource==='profile'?'block':'none'};margin-bottom:12px;">
-            <label style="display:block;margin-bottom:4px;font-size:12px;">Connection Profile 선택</label>
-            <select class="pc-connection-profile" style="width:100%;padding:6px;border-radius:6px;border:1px solid #ccc;background:var(--bgSecondary);"></select>
-            <small style="display:block;margin-top:6px;color:#888;">SillyTavern API 설정 탭에서 만든 프로필을 선택하세요.</small>
-          </div>
-          <hr>
-
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
             <label style="white-space:nowrap;">최대 토큰</label>
             <input id="pc-max-tokens" type="number" value="${store.config.maxTokens||1500}" min="100" max="8000" style="width:80px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;font-size:13px;"/>
@@ -530,33 +472,9 @@ function renderSettingsPanel(){
       </div>
     </div>
   `);
+  function fillApiSelect(){ }
 
-  $('#pc-api-source').on('change', function(){
-    store.config.apiSource = $(this).val();
-    $('#pc-profile-wrap').toggle($(this).val() === 'profile');
-    saveStore();
-  });
-
-  $('#pc-max-tokens').on('change', function(){
-    getStore().config.maxTokens = parseInt($(this).val()) || 1500;
-    saveStore();
-  });
-
-  try {
-    const c = ctx();
-    if (c.ConnectionManagerRequestService) {
-      c.ConnectionManagerRequestService.handleDropdown(
-        '#pc-settings-panel .pc-connection-profile',
-        store.config.profileId,
-        (profile) => {
-          store.config.profileId = profile?.id ?? '';
-          saveStore();
-        }
-      );
-    }
-  } catch(e) {
-    console.warn(`[${MODULE_NAME}] ConnectionManagerRequestService 초기화 실패:`, e);
-  }
+  $('#pc-max-tokens').on('change',function(){ getStore().config.maxTokens=parseInt($(this).val())||1500; saveStore(); });
 }
 
 function addWandMenuItem(){
@@ -575,7 +493,7 @@ async function openMainHub(){
     __PC_STORE__:          getCharStore(),
     __PC_GLOBAL_STORE__:   getStore(),
     __PC_CLOSE__:          closeMainHub,
-    __PC_GENERATE__:       (sys, usr, app) => generateWithRole(sys, usr, app),
+    __PC_GENERATE__:       generateWithRole,
     __PC_GET_CHAT__:       getRecentChat,
     __PC_GET_CHAT_RANGE__: getChatRange,
     __PC_CHAR__:           getCurrentCharName(),
