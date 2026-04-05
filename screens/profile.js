@@ -1,5 +1,12 @@
 // screens/profile.js — v2.6 (User + Character unified)
 
+function escTA(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 export function render() {
   syncStore();
   const area = document.getElementById('scroll-area');
@@ -27,19 +34,19 @@ export function render() {
         <div class="section-label" style="padding:14px 16px 4px;">BODY</div>
         <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
           <textarea class="pf-textarea" id="pf-userBody" rows="5"
-            placeholder="e.g. Small perky breasts with pink inverted nipples, slender waist with venus dimples above the lower back. Labia is pink with no pubic hair. Skin is smooth and flushes rose when aroused.">${esc(store.userBody||'')}</textarea>
+            placeholder="e.g. Small perky breasts with pink inverted nipples, slender waist with venus dimples above the lower back. Labia is pink with no pubic hair. Skin is smooth and flushes rose when aroused.">${escTA(store.userBody||'')}</textarea>
         </div>
         <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
           <span class="row-label" style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Marks & Features</span>
           <textarea class="pf-textarea" id="pf-userMarks" rows="2"
-            placeholder="e.g. Small scar on inner left thigh, freckle below left collarbone">${esc(store.userMarks||'')}</textarea>
+            placeholder="e.g. Small scar on inner left thigh, freckle below left collarbone">${escTA(store.userMarks||'')}</textarea>
         </div>
       </div>
       <div class="list-group">
         <div class="section-label" style="padding:14px 16px 4px;">EROGENOUS</div>
         <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
           <textarea class="pf-textarea" id="pf-userErogenous" rows="4"
-            placeholder="e.g. Tight and gets wet easily. Ears and neck are extremely sensitive — light touch causes immediate moaning and full-body flushing. Reaches orgasm relatively quickly.">${esc(store.userErogenous||'')}</textarea>
+            placeholder="e.g. Tight and gets wet easily. Ears and neck are extremely sensitive — light touch causes immediate moaning and full-body flushing. Reaches orgasm relatively quickly.">${escTA(store.userErogenous||'')}</textarea>
         </div>
       </div>
     </div>
@@ -50,19 +57,19 @@ export function render() {
         <div class="section-label" style="padding:14px 16px 4px;">BODY</div>
         <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
           <textarea class="pf-textarea" id="pf-charBody" rows="5"
-            placeholder="e.g. Thick and girthy, becomes very hard and thick when fully erect. Broad shoulders, muscular build, thick neck and large hands.">${esc(store.charBody||'')}</textarea>
+            placeholder="e.g. Thick and girthy, becomes very hard and thick when fully erect. Broad shoulders, muscular build, thick neck and large hands.">${escTA(store.charBody||'')}</textarea>
         </div>
         <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
           <span class="row-label" style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Marks & Features</span>
           <textarea class="pf-textarea" id="pf-charMarks" rows="2"
-            placeholder="e.g. Scar on left shoulder, large rough hands">${esc(store.charMarks||'')}</textarea>
+            placeholder="e.g. Scar on left shoulder, large rough hands">${escTA(store.charMarks||'')}</textarea>
         </div>
       </div>
       <div class="list-group">
         <div class="section-label" style="padding:14px 16px 4px;">EROGENOUS</div>
         <div class="list-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;">
           <textarea class="pf-textarea" id="pf-charErogenous" rows="4"
-            placeholder="e.g. Back of the ears and nape are sensitive — gets visibly aroused when touched there. Low quiet moans when stimulated.">${esc(store.charErogenous||'')}</textarea>
+            placeholder="e.g. Back of the ears and nape are sensitive — gets visibly aroused when touched there. Low quiet moans when stimulated.">${escTA(store.charErogenous||'')}</textarea>
         </div>
       </div>
     </div>
