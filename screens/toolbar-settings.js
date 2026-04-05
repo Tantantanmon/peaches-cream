@@ -8,16 +8,20 @@ const TB_GROUPS = [
   { id:'action',   label:'Action' },
   { id:'finish',   label:'Finish' },
   { id:'orgasm',   label:'Orgasm' },
+  { id:'fetish',   label:'Fetish' },
+  { id:'tochar',   label:'To {{char}}' },
 ];
 
 const TB_FIXED = {
   sfw:      ['Kiss','Hug','Cuddle','Head Pat','Back Hug','Forehead Kiss','Pout','Whisper in Ear'],
-  mood:     ['Romantic','Dominant','Bed','Wall'],
+  mood:     ['Romantic','Dominant','Bed','Wall','Angry'],
   foreplay: ['Kissing','Fingering','Blowjob','Cunnilingus'],
   position: ['Missionary','Doggy','Cowgirl','Standing'],
   action:   ['Slow','Fast','Rough','Penetrate','Continue'],
   finish:   ['Internal','External','On Body'],
   orgasm:   ['Squirt','Scream'],
+  fetish:   ['Tie','Blindfold','Choke','Spank','Hair Pull'],
+  tochar:   ['Pat His Head','Pinch Cheek','Tease','Touch Him','Kiss His Neck','Bite His Neck','Scratch His Back','Ride','Tie Him','Blindfold Him','Spank Him','Choke Him','Hair Pull Him','Grip His Waist','Push Down','Straddle','Aegyo'],
 };
 
 export function render() {
