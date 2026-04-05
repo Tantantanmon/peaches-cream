@@ -36,7 +36,7 @@ const defaultCharData = {
 
 const defaultGlobalConfig = {
   apiSource:'main', maxTokens:1500, toolbarEnabled:false,
-  customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[] }
+  customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[], fetish:[], tochar:[] }
 };
 
 // ═══════════════════════════════════════════
@@ -195,12 +195,14 @@ const TOOLBAR_ID = 'pc-nsfw-toolbar';
 
 const FIXED_TAGS = {
   sfw:      ['Kiss','Hug','Cuddle','Head Pat','Back Hug','Forehead Kiss','Pout','Whisper in Ear'],
-  mood:     ['Romantic','Dominant','Bed','Wall'],
+  mood:     ['Romantic','Dominant','Bed','Wall','Angry'],
   foreplay: ['Kissing','Fingering','Blowjob','Cunnilingus'],
   position: ['Missionary','Doggy','Cowgirl','Standing'],
   action:   ['Slow','Fast','Rough','Penetrate','Continue'],
   finish:   ['Internal','External','On Body'],
   orgasm:   ['Squirt','Scream'],
+  fetish:   ['Tie','Blindfold','Choke','Spank','Hair Pull'],
+  tochar:   ['Pat His Head','Pinch Cheek','Tease','Touch Him','Kiss His Neck','Bite His Neck','Scratch His Back','Ride','Tie Him','Blindfold Him','Spank Him','Choke Him','Hair Pull Him','Grip His Waist','Push Down','Straddle','Aegyo'],
 };
 
 const GROUPS = [
@@ -211,6 +213,8 @@ const GROUPS = [
   { id:'action',   label:'Action',       key:'action'   },
   { id:'finish',   label:'Finish',       key:'finish'   },
   { id:'orgasm',   label:'Orgasm',       key:'orgasm'   },
+  { id:'fetish',   label:'Fetish',       key:'fetish'   },
+  { id:'tochar',   label:'To {{char}}',  key:'tochar'   },
 ];
 
 let tbCollapsed = false;
@@ -403,31 +407,57 @@ window.pcTbApply=async function(){
   const parts=[];
   let actionMsg='';
 
+  const sfwMap={
+    'Kiss':           'kiss her softly',
+    'Hug':            'pull her into a hug',
+    'Cuddle':         'cuddle with her',
+    'Head Pat':       'gently pat her head',
+    'Back Hug':       'wrap your arms around her from behind',
+    'Forehead Kiss':  'kiss her forehead',
+    'Pout':           'pout and act sulky toward her',
+    'Whisper in Ear': 'lean in and whisper something in her ear',
+  };
+
+  const tocharMap={
+    'Pat His Head':   'let the user gently pat your head',
+    'Pinch Cheek':    'let the user pinch your cheek playfully',
+    'Tease':          'be teased by the user playfully',
+    'Touch Him':      'let the user touch and explore your body',
+    'Kiss His Neck':  'let the user kiss your neck',
+    'Bite His Neck':  'let the user bite your neck gently',
+    'Scratch His Back':'let the user scratch your back',
+    'Ride':           'let the user take the lead and ride on top',
+    'Tie Him':        'let the user tie you up',
+    'Blindfold Him':  'let the user blindfold you',
+    'Spank Him':      'let the user spank you',
+    'Choke Him':      'let the user choke you gently',
+    'Hair Pull Him':  'let the user pull your hair',
+    'Grip His Waist': 'let the user grip your waist firmly',
+    'Push Down':      'let the user push you down onto the bed',
+    'Straddle':       'let the user straddle you',
+    'Aegyo':          'act cute and do aegyo toward the user',
+  };
+
   if(byKey.sfw?.length){
-    const sfwMap={
-      'Kiss':           'kiss her softly',
-      'Hug':            'pull her into a hug',
-      'Cuddle':         'cuddle with her',
-      'Head Pat':       'gently pat her head',
-      'Back Hug':       'wrap your arms around her from behind',
-      'Forehead Kiss':  'kiss her forehead',
-      'Pout':           'pout and act sulky toward her',
-      'Whisper in Ear': 'lean in and whisper something in her ear',
-    };
     const sfwParts=byKey.sfw.map(v=>sfwMap[v]||v.toLowerCase());
-    actionMsg=`IMMEDIATE INSTRUCTION: In your very next response, you MUST — ${sfwParts.join(', ')}. Stay in character. Do this without exception.`;
-  } else {
-    if(byKey.mood?.length)     parts.push(`set the mood to ${byKey.mood.join(' and ')}`);
-    if(byKey.foreplay?.length) parts.push(`perform ${byKey.foreplay.join(' and ')}`);
-    if(byKey.position?.length) parts.push(`switch to ${byKey.position.join(', ')} position`);
-    if(byKey.action?.length)   parts.push(byKey.action.includes('Penetrate')?'penetrate now without further foreplay':byKey.action.join(', ').toLowerCase());
-    if(byKey.finish?.length)   parts.push(`finish ${byKey.finish.join(', ')}`);
-    if(byKey.orgasm?.length)   parts.push(`user reaches orgasm with ${byKey.orgasm.join(' and ')}`);
-    if(condom==='on')          parts.push('put on a condom first');
-    else if(condom==='off')    parts.push('no condom');
-    if(!parts.length) return;
-    actionMsg=`IMMEDIATE INSTRUCTION: In your very next response, you MUST — ${parts.join(', ')}. Do this without exception.`;
+    parts.push(...sfwParts);
   }
+  if(byKey.tochar?.length){
+    const tocharParts=byKey.tochar.map(v=>tocharMap[v]||v.toLowerCase());
+    parts.push(...tocharParts);
+  }
+  if(byKey.mood?.length)     parts.push(`set the mood to ${byKey.mood.join(' and ')}`);
+  if(byKey.foreplay?.length) parts.push(`perform ${byKey.foreplay.join(' and ')}`);
+  if(byKey.position?.length) parts.push(`switch to ${byKey.position.join(', ')} position`);
+  if(byKey.action?.length)   parts.push(byKey.action.includes('Penetrate')?'penetrate now without further foreplay':byKey.action.join(', ').toLowerCase());
+  if(byKey.finish?.length)   parts.push(`finish ${byKey.finish.join(', ')}`);
+  if(byKey.orgasm?.length)   parts.push(`user reaches orgasm with ${byKey.orgasm.join(' and ')}`);
+  if(byKey.fetish?.length)   parts.push(`include fetish elements: ${byKey.fetish.join(', ')}`);
+  if(condom==='on')          parts.push('put on a condom first');
+  else if(condom==='off')    parts.push('no condom');
+  if(!parts.length) return;
+
+  actionMsg=`IMMEDIATE INSTRUCTION: In your very next response, you MUST — ${parts.join(', ')}. Stay in character. Do this without exception.`;
 
   pcTbReset();
   try{
