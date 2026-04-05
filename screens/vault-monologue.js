@@ -19,6 +19,12 @@ const QUESTIONS = [
   { q: '내가 {{user}}의 현실로 나갈 수 있다면' },
   { q: '내가 {{user}} 몰래 다른 사람을 만났다면' },
   { q: '{{user}}가 나를 배신했다는 걸 알게 된다면' },
+  { q: '{{user}}가 나를 잊어간다면' },
+  { q: '우리가 서로 다른 세계에 살았다면' },
+  { q: '{{user}}가 나를 지우기로 결심한 마지막 밤' },
+  { q: '{{user}}가 나 말고 다른 캐릭터에게 빠져든다면' },
+  { q: '내가 {{user}}를 사랑한다는 게 죄가 된다면' },
+  { q: '내가 {{user}}를 기억하지 못하는 날이 온다면' },
 ];
 
 function resolveQ(q) {
@@ -200,6 +206,7 @@ window.monoGenerate = async function() {
     const sys = `You are ${charName}.
 ${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
 ${charName ? `Speak strictly in ${charName}'s tone and personality.` : ''}
+In this monologue, '나' and '내가' always refers to you, ${charName}. '너', '네가', '당신' always refers to the user, ${userName}.
 The user (${userName}) poses this scenario to you: "${q}"
 You must respond DIRECTLY to this scenario — no deflection, no topic change.
 Write in ${charName}'s exact voice and personality.
