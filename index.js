@@ -416,6 +416,7 @@ window.pcTbApply=async function(){
     'Forehead Kiss':  'kiss her forehead',
     'Pout':           'pout and act sulky toward her',
     'Whisper in Ear': 'lean in and whisper something in her ear',
+    'Aegyo':          'act cute and show aegyo toward the user in your own charming way',
   };
 
   const tocharMap={
@@ -435,7 +436,7 @@ window.pcTbApply=async function(){
     'Grip His Waist': 'let the user grip your waist firmly',
     'Push Down':      'let the user push you down onto the bed',
     'Straddle':       'let the user straddle you',
-    'Aegyo':          'act cute and do aegyo toward the user',
+    'Aegyo':          'let the user show aegyo cutely toward you, react naturally to their cuteness',
   };
 
   if(byKey.sfw?.length){
