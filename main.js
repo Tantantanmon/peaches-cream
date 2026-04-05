@@ -36,6 +36,8 @@ function initBridge() {
 
 window.__PC_ON_BRIDGE__ = function() {
   initBridge();
+  window.saveStore = saveStore;
+  window.refreshPrompt = refreshPrompt;
   router.init();
 };
 
