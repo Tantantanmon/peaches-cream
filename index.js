@@ -96,16 +96,16 @@ function buildMainPrompt() {
   const lines=['<peaches_and_cream>'];
 
   if(cd.userBody) {
-    lines.push(`<user_body>\nThis describes the female user's body.\n${cd.userBody}\n</user_body>`);
+    lines.push(`<user_body>\nThis describes the user's body. Always incorporate these details naturally in scene descriptions.\n${cd.userBody}\n</user_body>`);
   }
   if(cd.userMarks) {
-    lines.push(`<user_marks>\n${cd.userMarks}\n</user_marks>`);
+    lines.push(`<user_marks>\nThese are the user's physical marks and distinguishing features. Always reference them naturally in descriptions.\n${cd.userMarks}\n</user_marks>`);
   }
   if(cd.charBody) {
-    lines.push(`<char_body name="${cname}">\nThis describes the male character's body.\n${cd.charBody}\n</char_body>`);
+    lines.push(`<char_body name="${cname}">\nThis describes ${cname}'s body.\n${cd.charBody}\n</char_body>`);
   }
   if(cd.charMarks) {
-    lines.push(`<char_marks name="${cname}">\n${cd.charMarks}\n</char_marks>`);
+    lines.push(`<char_marks name="${cname}">\nThese are ${cname}'s physical marks and distinguishing features. Always reference them naturally in descriptions.\n${cd.charMarks}\n</char_marks>`);
   }
 
   lines.push(`<instruction>
@@ -128,10 +128,10 @@ function buildSexPrompt() {
   const lines=['<sex_data>'];
 
   if(cd.userErogenous) {
-    lines.push(`<user_erogenous>\nThis describes the female user's sexual response.\n${cd.userErogenous}\n</user_erogenous>`);
+    lines.push(`<user_erogenous>\nThis describes the user's erogenous zones and sexual responses. Apply these during intimate scenes.\n${cd.userErogenous}\n</user_erogenous>`);
   }
   if(cd.charErogenous) {
-    lines.push(`<char_erogenous name="${cname}">\nThis describes the male character's erogenous response.\n${cd.charErogenous}\n</char_erogenous>`);
+    lines.push(`<char_erogenous name="${cname}">\nThis describes ${cname}'s erogenous zones and sexual responses. Apply these during intimate scenes.\n${cd.charErogenous}\n</char_erogenous>`);
   }
 
   lines.push('</sex_data>');
