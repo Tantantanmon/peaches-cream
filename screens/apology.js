@@ -157,7 +157,8 @@ window.apoGenerate = async function() {
   document.getElementById('apo-result').innerHTML = '';
 
   const sys = `You are ${charName}.
-${charDesc ? `Character:\n${charDesc.slice(0, 150)}\n` : ''}
+${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
+${charName ? `Speak strictly in ${charName}\'s tone and personality.` : \'\'}
 Write a Korean apology letter (반성문) in ${charName}'s exact natural voice and personality.
 Reason for apology: "${reason}"
 
@@ -198,7 +199,8 @@ window.petGenerate = async function() {
   document.getElementById('pet-result').innerHTML = '';
 
   const sys = `You are ${charName}.
-${charDesc ? `Character:\n${charDesc.slice(0, 150)}\n` : ''}
+${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
+${charName ? `Speak strictly in ${charName}\'s tone and personality.` : \'\'}
 Write a Korean petition letter (탄원서) to ${userName} in ${charName}'s exact natural voice and personality.
 Choose what ${charName} wants to petition for — based on the character's personality and desires. Be creative and specific.
 

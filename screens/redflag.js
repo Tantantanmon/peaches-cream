@@ -53,11 +53,12 @@ window.rfGenerate = async function() {
     const excluded = rfSessionUsed.length ? `\nDo NOT repeat these questions: ${rfSessionUsed.slice(-21).join(' / ')}` : '';
 
     const sys = `You are generating Red Flag game cards about ${charName}'s behavior and habits.
-${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${excluded}
 
 CRITICAL: Every question MUST be about ${charName}'s behavior only. NEVER about ${userName}'s behavior.
-Do NOT reference any specific chat history. Be creative and varied.
+Be creative and varied.
 Return ONLY a JSON array of exactly ${RF_TOTAL} objects (no markdown).
 Each: q(1 short Korean sentence describing ${charName}'s specific sexual behavior/habit), red(2 sentence Korean rebuttal by ${charName}), good(2 sentence Korean excited response by ${charName}).
 Vary behaviors. Reflect ${charName}'s personality.`

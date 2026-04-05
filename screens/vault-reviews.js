@@ -40,12 +40,11 @@ function renderList(reviews) {
   list.innerHTML = reviews.map((r,i) => `
     <div class="acc-item${openAccIdx===i?' open':''}" id="acc-${i}">
       <div class="acc-header" onclick="rvToggle(${i})">
-        <div class="acc-avatar">${r.emoji||'👤'}</div>
+        <div class="acc-avatar">👤</div>
         <div class="acc-meta">
           <div class="acc-name">${esc(r.name)}</div>
           <div class="acc-stars-row">
             ${Array.from({length:5},(_,j)=>`<span class="acc-star${j<r.rating?' on':''}">★</span>`).join('')}
-            <span class="acc-tag-text">${esc(r.tag||'')}</span>
           </div>
         </div>
         <span class="acc-rec-badge ${r.rec?'rec':'norec'}">${r.rec?'👍 추천':'👎 비추'}</span>
@@ -78,12 +77,13 @@ window.rvGenerate = async function() {
     const excluded = '';
 
     const sys = `You are generating anonymous reviews for ${charName} in a NSFW roleplay context.
-${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${excluded}
 
 IMPORTANT: Be creative. Do NOT reference specific chat events.
 Return ONLY a JSON array of 3 objects (no markdown).
-Each: emoji, name(Korean anonymous e.g. "익명의 클럽녀"), tag(e.g. "클럽 · 3개월 전"), rating(1-5), rec(boolean), text(2-3 sentence Korean review, explicit ok, no slurs).
+Each: name(Korean anonymous e.g. "익명의 클럽녀"), rating(1-5), rec(boolean), text(2-3 sentence Korean review, explicit ok, no slurs).
 Vary sentiment and context.`
 
     const result = await generateWithRole(sys, '후기 3개 생성해줘', 'reviews');

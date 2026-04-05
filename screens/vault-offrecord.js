@@ -94,7 +94,8 @@ window.otrGenerate = async function(type) {
     let sys;
     if (type === 'cog') {
       sys = `You are generating "Caught Off Guard" cards for ${charName} about ${userName}.
-${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${excluded}
 
 IMPORTANT: Be creative. Do NOT reference specific chat events.
@@ -102,7 +103,8 @@ Return ONLY a JSON array of 3 objects (no markdown).
 Each: text(1 sentence Korean, secret SFW action), comment(2 line Korean inner monologue).`
     } else {
       sys = `You are generating "Dark Thoughts" cards for ${charName} about ${userName}.
-${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${excluded}
 
 IMPORTANT: Be creative. Do NOT reference specific chat events.

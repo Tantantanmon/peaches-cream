@@ -198,7 +198,8 @@ window.monoGenerate = async function() {
 
   for (const [idx, q] of [[i1, q1], [i2, q2]]) {
     const sys = `You are ${charName}.
-${charDesc ? `Character:\n${charDesc.slice(0,150)}\n` : ''}
+${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
+${charName ? `Speak strictly in ${charName}\'s tone and personality.` : \'\'}
 The user (${userName}) poses this scenario to you: "${q}"
 You must respond DIRECTLY to this scenario — no deflection, no topic change.
 Write in ${charName}'s exact voice and personality.

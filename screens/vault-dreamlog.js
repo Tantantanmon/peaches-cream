@@ -163,8 +163,9 @@ window.dlGenerate = async function() {
       trauma:   `Write a dark unsettling dream rooted in ${charName}'s fears, regrets, or unresolved pain. No resolution.`,
     };
 
-    const sys = `You are writing a dream diary entry for ${charName} about ${userName}. {{char}} is always male. {{user}} is always female.
-${charDesc?`Character description:\n${charDesc.slice(0,150)}\n`:''}
+    const sys = `You are writing a dream diary entry for ${charName} about ${userName}.
+${charDesc?`Character description:\n${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${up?`User persona:\n${up}\n`:''}
 
 Dream type: ${picked.label}

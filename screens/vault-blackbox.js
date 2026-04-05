@@ -115,19 +115,21 @@ window.bbGenerate = async function(type) {
     let sys;
     if (type === 'threat') {
       sys = `You are generating anonymous threat letters received by ${charName}.
-${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${excluded}
 
 Generate exactly 3 threat letter objects. Return ONLY a JSON array (no markdown).
 Senders are anonymous but ${charName} can guess who it is based on clues.
 ${isUserSender ? `One letter must be from ${userName} (but sent anonymously). ${charName} immediately recognizes it's them.` : `All senders are from ${charName}'s world — rivals, ex-lovers, jealous fans, colleagues, etc. Match the character's world/occupation.`}
 Mix tones: genuine threat, NSFW threat, comic/petty threat. Explicit content allowed. No female-degrading slurs.
-${charName}'s reaction: completely unbothered, even amused. Max 20 words. ${charReaction}
+${charName}'s reaction: completely unbothered, even amused. Max 20 words. 
 
 Each object: from(anonymous description e.g. "No postmark", "Perfume traces"), text(Korean threat letter, 2-3 sentences), guess(Korean, ${charName}'s one-line guess of who sent it), comment(Korean, max 20 words, unbothered/cocky response).`;
     } else {
       sys = `You are generating anonymous complaints filed against ${charName}.
-${charDesc?`Character: ${charDesc.slice(0,100)}\n`:''}
+${charDesc?`Character: ${charDesc.slice(0,300)}\n`:''}
+${charName ? `Speak strictly in ${charName}'s tone and personality.\n` : ''}
 ${excluded}
 
 Generate exactly 3 complaint objects. Return ONLY a JSON array (no markdown).
@@ -135,7 +137,7 @@ Complainants are anonymous but ${charName} can guess who it is.
 ${isUserSender ? `One complaint must be from ${userName} (but filed anonymously). ${charName} immediately recognizes it.` : `All complainants are from ${charName}'s world — teammates, rivals, ex-lovers, officials, fans, etc. Match the character's world/occupation.`}
 Mix tones: NSFW complaint, serious complaint, absurd/comic complaint. Explicit content allowed. No female-degrading slurs.
 Processing status is always either "dismissed" or "under_review".
-${charName}'s reaction: completely unbothered, shameless. Max 20 words. ${charReaction}
+${charName}'s reaction: completely unbothered, shameless. Max 20 words. 
 
 Each object: from(anonymous description), text(Korean complaint, 2-3 sentences), guess(Korean, ${charName}'s one-line guess), status("dismissed" or "under_review"), comment(Korean, max 20 words, shameless response).`;
     }
