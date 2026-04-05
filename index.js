@@ -447,7 +447,7 @@ window.pcTbApply=async function(){
   }
   if(byKey.tochar?.length){
     const tocharParts=byKey.tochar.map(v=>tocharMap[v]||v.toLowerCase());
-    parts.push(...tocharParts);
+    parts.push(`THE USER (not you) is doing the following actions TO YOU right now — ${tocharParts.join(', ')}. React naturally as the character receiving these actions.`);
   }
   if(byKey.mood?.length)     parts.push(`set the mood to ${byKey.mood.join(' and ')}`);
   if(byKey.foreplay?.length) parts.push(`perform ${byKey.foreplay.join(' and ')}`);
