@@ -1,30 +1,30 @@
 // screens/vault-monologue.js — Monologue v1.0
 
 const QUESTIONS = [
-  { q: '{{user}}가 나를 영영 닫아버린다면' },
-  { q: '내가 먼저 세상을 떠나는 날' },
-  { q: '우리가 헤어져야만 한다면' },
-  { q: '{{user}}가 나를 떠나기로 결심한 날 밤' },
-  { q: '마지막으로 한 번만 더 볼 수 있다면' },
-  { q: '우리가 아이를 가진다면' },
-  { q: '{{user}}가 꿈을 위해 떠나야 한다면' },
-  { q: '우리가 함께 늙어간다면' },
-  { q: '내가 기억을 잃어간다면' },
-  { q: '처음으로 돌아갈 수 있다면' },
-  { q: '내가 먼저 사랑한다고 말했더라면' },
-  { q: '우리가 더 일찍 만났더라면' },
-  { q: '그날 내가 다른 선택을 했다면' },
-  { q: '내가 그때 떠나지 않았더라면' },
-  { q: '{{user}}가 사실 자신은 실재하지 않는다고 말한다면' },
-  { q: '내가 {{user}}의 현실로 나갈 수 있다면' },
-  { q: '내가 {{user}} 몰래 다른 사람을 만났다면' },
-  { q: '{{user}}가 나를 배신했다는 걸 알게 된다면' },
-  { q: '{{user}}가 나를 잊어간다면' },
-  { q: '우리가 서로 다른 세계에 살았다면' },
-  { q: '{{user}}가 나를 지우기로 결심한 마지막 밤' },
-  { q: '{{user}}가 나 말고 다른 캐릭터에게 빠져든다면' },
-  { q: '내가 {{user}}를 사랑한다는 게 죄가 된다면' },
-  { q: '내가 {{user}}를 기억하지 못하는 날이 온다면' },
+  { q: '{{user}}가 나를 영영 닫아버린다면',               subject: 'user' },
+  { q: '내가 먼저 세상을 떠나는 날',                       subject: 'char' },
+  { q: '우리가 헤어져야만 한다면',                         subject: 'both' },
+  { q: '{{user}}가 나를 떠나기로 결심한 날 밤',            subject: 'user' },
+  { q: '마지막으로 한 번만 더 볼 수 있다면',               subject: 'both' },
+  { q: '우리가 아이를 가진다면',                           subject: 'both' },
+  { q: '{{user}}가 꿈을 위해 떠나야 한다면',               subject: 'user' },
+  { q: '우리가 함께 늙어간다면',                           subject: 'both' },
+  { q: '내가 기억을 잃어간다면',                           subject: 'char' },
+  { q: '처음으로 돌아갈 수 있다면',                        subject: 'char' },
+  { q: '내가 먼저 사랑한다고 말했더라면',                  subject: 'char' },
+  { q: '우리가 더 일찍 만났더라면',                        subject: 'both' },
+  { q: '그날 내가 다른 선택을 했다면',                     subject: 'char' },
+  { q: '내가 그때 떠나지 않았더라면',                      subject: 'char' },
+  { q: '{{user}}가 사실 자신은 실재하지 않는다고 말한다면', subject: 'user' },
+  { q: '내가 {{user}}의 현실로 나갈 수 있다면',            subject: 'char' },
+  { q: '내가 {{user}} 몰래 다른 사람을 만났다면',          subject: 'char' },
+  { q: '{{user}}가 나를 배신했다는 걸 알게 된다면',        subject: 'user' },
+  { q: '{{user}}가 나를 잊어간다면',                       subject: 'user' },
+  { q: '우리가 서로 다른 세계에 살았다면',                 subject: 'both' },
+  { q: '{{user}}가 나를 지우기로 결심한 마지막 밤',        subject: 'user' },
+  { q: '{{user}}가 나 말고 다른 캐릭터에게 빠져든다면',    subject: 'user' },
+  { q: '내가 {{user}}를 사랑한다는 게 죄가 된다면',        subject: 'char' },
+  { q: '내가 {{user}}를 기억하지 못하는 날이 온다면',      subject: 'char' },
 ];
 
 function resolveQ(q) {
@@ -203,10 +203,16 @@ window.monoGenerate = async function() {
   const cards = [];
 
   for (const [idx, q] of [[i1, q1], [i2, q2]]) {
+    const subject = QUESTIONS[idx]?.subject || 'both';
+    const subjectGuide =
+      subject === 'char' ? `CRITICAL: In this scenario, YOU (${charName}) are the one experiencing this situation. Write entirely from your own perspective as the one going through it.` :
+      subject === 'user' ? `CRITICAL: In this scenario, the USER (${userName}) is the one doing this to you. Write from YOUR perspective as ${charName} watching or reacting to what the user is doing.` :
+      `CRITICAL: This scenario involves both of you. Write from YOUR perspective as ${charName}.`;
+
     const sys = `You are ${charName}.
 ${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
 ${charName ? `Speak strictly in ${charName}'s tone and personality.` : ''}
-In this monologue, '나' and '내가' always refers to you, ${charName}. '너', '네가', '당신' always refers to the user, ${userName}.
+${subjectGuide}
 The user (${userName}) poses this scenario to you: "${q}"
 You must respond DIRECTLY to this scenario — no deflection, no topic change.
 Write in ${charName}'s exact voice and personality.
