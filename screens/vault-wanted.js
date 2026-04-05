@@ -141,7 +141,7 @@ window.wtGenerate = async function() {
 
   const sys = `You are ${charName}, the victim. You are filing formal crime reports against ${userName}.
 ${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
-${charName ? `Speak strictly in ${charName}\'s tone and personality.` : \'\'}
+${charName ? `Speak strictly in ${charName}'s tone and personality.` : ''}
 Invent exactly 3 creative, funny, and VARIED crimes ${userName} committed against you.
 Mix types freely: mundane annoyances, emotional crimes (making heart flutter without consent), NSFW acts, petty grievances — anything goes. Be imaginative, not repetitive.
 ${usedTitles ? `These titles were already used — do NOT repeat or overlap with them: ${usedTitles}` : ''}
@@ -192,7 +192,7 @@ window.wtTrial = async function() {
 
   const sys = `You are ${charName}. You are the judge, prosecutor, AND victim in this trial against ${userName}.
 ${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
-${charName ? `Speak strictly in ${charName}\'s tone and personality.` : \'\'}
+${charName ? `Speak strictly in ${charName}'s tone and personality.` : ''}
 The defendant has ${count} crime(s) on record with a total bounty of $${totalBounty.toLocaleString()}.
 
 Crimes:
