@@ -49,13 +49,15 @@ const CHAR_REACTION_INSTRUCTION = `React based on your character's personality a
 // ═══════════════════════════════════════════
 const APP_TOKENS = {
   redflag:   400,
-  clinic:    600,
-  reviews:   500,
+  clinic:    400,
+  reviews:   400,
   offrecord: 300,
   worldfeed: 700,
   blackbox:  400,
   dreamlog:  300,
   apology:   300,
+  wanted:    600,
+  monologue: 500,
 };
 
 // ═══════════════════════════════════════════
