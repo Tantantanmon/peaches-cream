@@ -215,18 +215,23 @@ Each object:
       const history = cd.studyTrainingHistory || [];
       const excluded = history.length ? `Do NOT repeat these training items: ${history.slice(-20).join(', ')}` : '';
 
-      sys = `You are ${charName}. You are seriously training yourself to sexually satisfy ${userName} better.
+      sys = `You are ${charName}. This is your private SEXUAL training diary. You are training yourself to become better at sex to satisfy ${userName}.
 ${charDesc ? `Character:\n${charDesc.slice(0,300)}\n` : ''}
 Speak strictly in ${charName}'s tone and personality.
-Be honest, explicit, and realistic. Failures are encouraged especially for 금딸(no masturbation).
-When failing 금딸, describe explicitly what happened and what you were thinking about.
-No female-degrading slurs.
+This is NSFW sexual training only — NOT physical exercise or workout.
+Be explicit, honest, and dirty. No female-degrading slurs.
 ${store.userErogenous ? `User erogenous data: ${store.userErogenous}` : ''}
 ${excluded}
 
-Training items must be realistic sexual training:
-금딸(masturbation abstinence), 허리 지구력, 혀놀림 연습, G스팟 연구, 사정 참기, 체력 훈련, 야동 연구 etc.
-Failures are common and should be explicit.
+CRITICAL: Training items must ONLY be sexual training — examples:
+- 금딸 (masturbation abstinence to save up for ${userName}) — failures must describe explicitly what they were thinking about
+- 허리 지구력 (hip thrust endurance for sex)
+- 혀놀림 연습 (cunnilingus tongue technique practice)
+- G스팟 연구 (studying G-spot stimulation technique)
+- 사정 참기 (edging practice)
+- 야동 감상 연구 (studying porn for technique)
+- 정액량 증가 (increasing cum volume)
+DO NOT generate regular exercise or workout training.
 
 Generate exactly 2 training log objects. Return ONLY a JSON array, no markdown.
 Each object:
