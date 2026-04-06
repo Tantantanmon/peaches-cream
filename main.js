@@ -57,6 +57,8 @@ const SCREENS = {
   'vault-wanted':      () => import('./screens/vault-wanted.js').then(m => m.render()),
   'vault-monologue':   () => import('./screens/vault-monologue.js').then(m => m.render()),
   'toolbar-settings':  () => import('./screens/toolbar-settings.js').then(m => m.render()),
+  'vault-stash':       () => import('./screens/vault-stash.js').then(m => m.render()),
+  'vault-studynotes':  () => import('./screens/vault-studynotes.js').then(m => m.render()),
 };
 
 const TOPBAR_LABELS = {
@@ -74,7 +76,9 @@ const TOPBAR_LABELS = {
   'vault-dreamlog':   'Dream Log',
   'vault-wanted':     'Wanted',
   'vault-monologue':  'Monologue',
-  'toolbar-settings': 'Toolbar Settings',
+  'toolbar-settings':  'Toolbar Settings',
+  'vault-stash':       'Stash',
+  'vault-studynotes':  'Study Notes',
 };
 
 const BACK_MAP = {
@@ -91,7 +95,9 @@ const BACK_MAP = {
   'vault-settings':   'vault',
   'vault-dreamlog':   'vault',
   'vault-wanted':     'vault',
-  'vault-monologue':  'vault',
+  'vault-monologue':   'vault',
+  'vault-stash':       'vault',
+  'vault-studynotes':  'vault',
 };
 
 const router = {
