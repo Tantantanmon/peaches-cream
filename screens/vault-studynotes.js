@@ -192,7 +192,10 @@ Each object:
 }`;
       userMsg = `${userName}의 신체 부위 분석 2개 생성`;
       result = await generateWithRole(sys, userMsg, 'studynotes');
-      let cards = JSON.parse(result.replace(/```json|```/g,'').trim());
+      const cleanBody = result.replace(/```json|```/g,'').trim();
+      const matchBody = cleanBody.match(/\[[\s\S]*\]/);
+      if (!matchBody) throw new Error('no array found');
+      let cards = JSON.parse(matchBody[0]);
       if (!Array.isArray(cards)) throw new Error('not array');
       bodyCards = cards.slice(0,2);
       const newHistory = [...history, ...bodyCards.map(c=>c.part)].slice(-30);

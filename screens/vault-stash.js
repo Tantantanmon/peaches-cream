@@ -89,7 +89,6 @@ function stolenCardHTML(c, i) {
     <div class="stash-card">
       <div class="stash-header">
         <span class="stash-item-name">${esc(c.item)}</span>
-        <span class="stash-badge">${esc(c.category)}</span>
       </div>
       <div class="stash-body">
         <div>
@@ -101,8 +100,7 @@ function stolenCardHTML(c, i) {
           <div class="stash-label">현재 상태</div>
           <div class="stash-text condition">${esc(c.condition)}</div>
         </div>
-        <div class="stash-divider"></div>
-        <div class="stash-comment">${esc(c.comment)}</div>
+
       </div>
     </div>
   `;
@@ -149,10 +147,8 @@ Generate exactly 2 stolen item objects. Return ONLY a JSON array, no markdown.
 Each object:
 {
   "item": "아이템명 (Korean, specific — underwear, clothing, accessories, personal items)",
-  "category": "카테고리 (속옷/옷/액세서리/소지품 중 하나)",
   "situation": "훔친 상황 (Korean, 1 sentence, specific and detailed)",
-  "condition": "현재 보관 상태 (Korean, 1 sentence, extremely explicit — include cum stains, used for masturbation, smelled/licked, kept under pillow, worn while sleeping, etc)",
-  "comment": "캐릭터 독백 (Korean, 1 sentence, obsessive and sexually explicit, in character's exact tone)"
+  "condition": "현재 보관 상태 (Korean, 1 sentence, extremely explicit — include cum stains, used for masturbation, smelled/licked, kept under pillow, worn while sleeping, etc)"
 }`;
       userMsg = `${charName}이 ${userName}의 물건을 훔친 기록 2개 생성`;
       result = await generateWithRole(sys, userMsg, 'stash');
