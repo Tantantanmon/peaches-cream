@@ -76,6 +76,20 @@ export function render() {
         </div>
         <span class="row-chevron">›</span>
       </div>
+      <div class="list-row tappable" onclick="resetApp('stash')">
+        <div>
+          <div class="row-label">Stash</div>
+          <div class="row-sub">Stolen · Evidence 히스토리 삭제</div>
+        </div>
+        <span class="row-chevron">›</span>
+      </div>
+      <div class="list-row tappable" onclick="resetApp('studynotes')">
+        <div>
+          <div class="row-label">Study Notes</div>
+          <div class="row-sub">Body Map · Training Log 히스토리 삭제</div>
+        </div>
+        <span class="row-chevron">›</span>
+      </div>
     </div>
 
     <!-- DANGER -->
@@ -161,6 +175,16 @@ window.resetApp = function(type) {
           ps.monologueLastDate    = '';
           ps.monologueUsedIndices = [];
         }
+      }
+      if (type === 'stash') {
+        store.stashStolenHistory   = [];
+        store.stashEvidenceHistory = [];
+        if (ps) { ps.stashStolenHistory = []; ps.stashEvidenceHistory = []; }
+      }
+      if (type === 'studynotes') {
+        store.studyBodyHistory    = [];
+        store.studyTrainingHistory= [];
+        if (ps) { ps.studyBodyHistory = []; ps.studyTrainingHistory = []; }
       }
       if (saveStore) saveStore();
       showToast('초기화됐어요');
