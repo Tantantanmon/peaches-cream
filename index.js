@@ -492,6 +492,13 @@ function renderToolbar(){
   renderToolbarTags();
   renderToolbarSelected();
   document.addEventListener('click', pcDocClick);
+  // prevent touch events from propagating to SillyTavern swipe handler
+  const toolbar = document.getElementById(TOOLBAR_ID);
+  if(toolbar){
+    ['touchstart','touchmove','touchend'].forEach(evt=>{
+      toolbar.addEventListener(evt, e=>e.stopPropagation(), {passive:false});
+    });
+  }
 }
 
 function pcDocClick(e){
