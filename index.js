@@ -414,8 +414,10 @@ function renderToolbarTags(){
         renderToolbarTags();
         renderToolbarSelected();
       } else {
-        tbPendingTag = { tag, group: tbActiveGroup };
         pcHideMiniPopup();
+        tbPendingTag = { tag, group: tbActiveGroup };
+        const pendingTag = tag;
+        const pendingGroup = tbActiveGroup;
         // insert inline mini-popup right after this tag
         const popup = document.createElement('div');
         popup.id = 'pc-tb-mini-popup';
@@ -426,7 +428,7 @@ function renderToolbarTags(){
           btn.textContent = r.label;
           btn.onclick = (ev) => {
             ev.stopPropagation();
-            tbSelected.push({ tag: tbPendingTag.tag, group: tbPendingTag.group, role: r.id, roleLabel: r.label });
+            tbSelected.push({ tag: pendingTag, group: pendingGroup, role: r.id, roleLabel: r.label });
             tbPendingTag = null;
             pcHideMiniPopup();
             renderToolbarTags();
