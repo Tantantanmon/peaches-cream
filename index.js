@@ -406,7 +406,8 @@ function renderToolbarTags(){
     const el = document.createElement('div');
     el.className = 'pc-tb-tag' + (isSel ? ' active' : '');
     el.textContent = tag;
-    el.onclick = () => {
+    el.onclick = (e) => {
+      e.stopPropagation();
       if(isSel){
         tbSelected = tbSelected.filter(s => !(s.tag === tag && s.group === tbActiveGroup));
         pcHideMiniPopup();
@@ -423,8 +424,8 @@ function renderToolbarTags(){
           const btn = document.createElement('button');
           btn.className = 'pc-tb-mini-role';
           btn.textContent = r.label;
-          btn.onclick = (e) => {
-            e.stopPropagation();
+          btn.onclick = (ev) => {
+            ev.stopPropagation();
             tbSelected.push({ tag: tbPendingTag.tag, group: tbPendingTag.group, role: r.id, roleLabel: r.label });
             tbPendingTag = null;
             pcHideMiniPopup();
