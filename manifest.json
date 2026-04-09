@@ -1,10 +1,10 @@
 {
   "display_name": "Peaches & Cream",
-  "version": "2.8.0",
+  "version": "2.7.0",
   "author": "",
   "description": "NSFW companion \u2014 profile, red flag, clinic, vault and more.",
   "requires": [],
   "optional": [],
   "js": "index.js",
-  "auto_update": true
+  "auto_update": false
 }

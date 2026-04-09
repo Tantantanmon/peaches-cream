@@ -44,6 +44,8 @@ const defaultGlobalConfig = {
   deletedTags:{},
   deletedGroups:[],
   customGroups:[],
+  favoriteTags:[],
+  favoriteTabEnabled:false,
 };
 
 // ═══════════════════════════════════════════
@@ -87,6 +89,8 @@ function getStore() {
   if (!s.config.deletedTags)   s.config.deletedTags   = {};
   if (!s.config.deletedGroups) s.config.deletedGroups  = [];
   if (!s.config.customGroups)  s.config.customGroups   = [];
+  if (!s.config.favoriteTags)  s.config.favoriteTags   = [];
+  if (s.config.favoriteTabEnabled===undefined) s.config.favoriteTabEnabled = false;
   // clean up legacy tochar
   delete s.config.customTags.tochar;
   delete s.config.deletedTags.tochar;
@@ -319,6 +323,12 @@ function injectToolbarStyle(){
 .pc-tb-reset:hover{color:#555;}
 .pc-tb-apply{background:#1a1a1a;color:#fff;border:none;border-radius:10px;padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;flex-shrink:0;letter-spacing:0.2px;font-family:inherit;white-space:nowrap;transition:background .15s;}
 .pc-tb-apply:active{opacity:.8;}
+.pc-tb-tag.fav-tag{background:#fdf6e3;border-color:#f0d080;color:#8a6d20;}
+.pc-tb-tab.fav-tab{color:#f0a020;}
+.pc-tb-tab.fav-tab.active{color:#d48f00;border-bottom-color:#d48f00;}
+.pc-tb-add-input{padding:5px 12px;border-radius:20px;font-size:13px;background:#fff;color:#1a1a1a;border:0.5px solid #e0e0e0;outline:none;font-family:inherit;width:100px;}
+.pc-tb-add-input::placeholder{color:#bbb;}
+.pc-tb-add-input:focus{border-color:#aaa;}
 @media(prefers-color-scheme:dark){
   .pc-tb-wrap{background:#1c1c1e;border-color:#3a3a3c;}
   .pc-tb-topbar,.pc-tb-footer{border-color:#2c2c2e;}
@@ -344,7 +354,11 @@ function injectToolbarStyle(){
   .pc-tb-input::placeholder{color:#666;}
   .pc-tb-reset{background:#2c2c2e;border-color:#3a3a3c;color:#888;}
   .pc-tb-apply{background:#fff;color:#000;}
-  .pc-tb-footer{border-color:#2c2c2e;}
+  .pc-tb-tag.fav-tag{background:#3a3520;border-color:#6a5a20;color:#f0d080;}
+  .pc-tb-tab.fav-tab{color:#f0a020;}
+  .pc-tb-tab.fav-tab.active{color:#ffc040;border-bottom-color:#ffc040;}
+  .pc-tb-add-input{background:#2c2c2e;border-color:#3a3a3c;color:#e0e0e0;}
+  .pc-tb-add-input::placeholder{color:#666;}
 }
 @media(max-width:430px){
   #pc-popup-overlay{align-items:flex-end!important;justify-content:center!important;}
@@ -360,7 +374,10 @@ function buildToolbarHTML(){
   if (groups.length > 0 && !groups.find(g => g.id === tbActiveGroup)) {
     tbActiveGroup = groups[0].id;
   }
-  const tabsHTML = groups.map(g=>
+  const favTab = store.config.favoriteTabEnabled
+    ? `<button class="pc-tb-tab fav-tab${tbActiveGroup==='__fav__'?' active':''}" onclick="pcSwitchTab('__fav__')">★</button>`
+    : '';
+  const tabsHTML = favTab + groups.map(g=>
     `<button class="pc-tb-tab${g.id===tbActiveGroup?' active':''}" onclick="pcSwitchTab('${g.id}')">${g.label}</button>`
   ).join('');
 
@@ -399,12 +416,14 @@ function buildToolbarHTML(){
 function renderToolbarTags(){
   const area = document.getElementById('pc-tb-tag-area');
   if(!area) return;
-  const tags = getVisibleTags(tbActiveGroup);
+  const isFavTab = tbActiveGroup === '__fav__';
+  const store = getStore();
+  const tags = isFavTab ? (store.config.favoriteTags||[]) : getVisibleTags(tbActiveGroup);
   area.innerHTML = '';
   tags.forEach(tag => {
     const isSel = tbSelected.some(s => s.tag === tag && s.group === tbActiveGroup);
     const el = document.createElement('div');
-    el.className = 'pc-tb-tag' + (isSel ? ' active' : '');
+    el.className = 'pc-tb-tag' + (isSel ? ' active' : '') + (isFavTab ? ' fav-tag' : '');
     el.textContent = tag;
     el.onclick = (e) => {
       e.stopPropagation();
@@ -418,7 +437,6 @@ function renderToolbarTags(){
         tbPendingTag = { tag, group: tbActiveGroup };
         const pendingTag = tag;
         const pendingGroup = tbActiveGroup;
-        // insert inline mini-popup right after this tag
         const popup = document.createElement('div');
         popup.id = 'pc-tb-mini-popup';
         popup.className = 'pc-tb-mini-popup show';
@@ -441,11 +459,33 @@ function renderToolbarTags(){
     };
     area.appendChild(el);
   });
-  const addBtn = document.createElement('button');
-  addBtn.className = 'pc-tb-add';
-  addBtn.textContent = '+ add';
-  addBtn.onclick = () => pcAddCustom(tbActiveGroup);
-  area.appendChild(addBtn);
+  // inline add input + button
+  if(!isFavTab){
+    const addInput = document.createElement('input');
+    addInput.className = 'pc-tb-add-input';
+    addInput.type = 'text';
+    addInput.placeholder = 'Tag name...';
+    addInput.onclick = (e) => e.stopPropagation();
+    const addBtn = document.createElement('button');
+    addBtn.className = 'pc-tb-add';
+    addBtn.textContent = '+ add';
+    const doAdd = () => {
+      const val = addInput.value.trim();
+      if(!val) return;
+      const store=getStore();
+      if(!store.config.customTags[tbActiveGroup]) store.config.customTags[tbActiveGroup]=[];
+      if(store.config.customTags[tbActiveGroup].includes(val)) return;
+      if(FIXED_TAGS[tbActiveGroup]?.includes(val)) return;
+      store.config.customTags[tbActiveGroup].push(val);
+      saveStore();
+      addInput.value = '';
+      renderToolbarTags();
+    };
+    addInput.onkeydown = (e) => { if(e.key==='Enter'){ e.preventDefault(); doAdd(); } };
+    addBtn.onclick = (e) => { e.stopPropagation(); doAdd(); };
+    area.appendChild(addInput);
+    area.appendChild(addBtn);
+  }
 }
 
 function pcShowMiniPopup(tagName){
@@ -524,10 +564,17 @@ window.pcTbCollapse=function(){
 
 window.pcSwitchTab=function(groupId){
   tbActiveGroup=groupId;
+  const store=getStore();
   const groups = getVisibleGroups();
+  const hasFav = store.config.favoriteTabEnabled;
   document.querySelectorAll('.pc-tb-tab').forEach((t,i)=>{
-    const g = groups[i];
-    if(g) t.classList.toggle('active', g.id===groupId);
+    if(hasFav && i===0){
+      t.classList.toggle('active', groupId==='__fav__');
+    } else {
+      const gi = hasFav ? i-1 : i;
+      const g = groups[gi];
+      if(g) t.classList.toggle('active', g.id===groupId);
+    }
   });
   pcHideMiniPopup();
   renderToolbarTags();
@@ -544,16 +591,7 @@ window.pcCondom=function(val){
 };
 
 window.pcAddCustom=function(key){
-  const val=prompt('Add (English):');
-  if(!val||!val.trim()) return;
-  const trimmed=val.trim();
-  const store=getStore();
-  if(!store.config.customTags[key]) store.config.customTags[key]=[];
-  if(store.config.customTags[key].includes(trimmed)) return;
-  if(FIXED_TAGS[key]?.includes(trimmed)) return;
-  store.config.customTags[key].push(trimmed);
-  saveStore();
-  renderToolbarTags();
+  // handled by inline input in renderToolbarTags
 };
 
 window.pcTbReset=function(){
