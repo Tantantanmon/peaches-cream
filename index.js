@@ -297,9 +297,9 @@ function injectToolbarStyle(){
 .pc-tb-tag.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
 .pc-tb-add{padding:5px 12px;border-radius:20px;font-size:13px;background:transparent;color:#aaa;border:0.5px dashed #ccc;cursor:pointer;display:inline-block !important;width:fit-content !important;font-family:inherit;}
 .pc-tb-add:hover{border-color:#999;color:#666;}
-.pc-tb-mini-popup{display:none;padding:6px 8px;margin:6px 14px 4px;background:#fff;border:0.5px solid #e0e0e0;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.1);gap:4px;flex-wrap:wrap;align-items:center;}
+.pc-tb-mini-popup{display:none;padding:3px 6px;background:#fff;border:0.5px solid #e0e0e0;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);gap:3px;align-items:center;vertical-align:middle;}
 .pc-tb-mini-popup.show{display:inline-flex;}
-.pc-tb-mini-label{font-size:12px;font-weight:500;color:#1a1a1a;padding:4px 6px;white-space:nowrap;}
+.pc-tb-mini-label{display:none;}
 .pc-tb-mini-role{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;border:0.5px solid #e0e0e0;background:#f4f4f4;color:#555;cursor:pointer;font-family:inherit;transition:all .1s;white-space:nowrap;}
 .pc-tb-mini-role:hover{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
 .pc-tb-selected-area{padding:4px 14px 8px;display:none;}
@@ -331,7 +331,7 @@ function injectToolbarStyle(){
   .pc-tb-tag.active{background:#fff;color:#000;border-color:#fff;}
   .pc-tb-add{color:#666;border-color:#555;}
   .pc-tb-condom-btn{color:#888;border-color:#3a3a3c;}
-  .pc-tb-mini-popup{background:#2c2c2e;border-color:#3a3a3c;box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+  .pc-tb-mini-popup{background:#2c2c2e;border-color:#3a3a3c;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
   .pc-tb-mini-label{color:#fff;}
   .pc-tb-mini-role{background:#3a3a3c;color:#ccc;border-color:#555;}
   .pc-tb-mini-role:hover{background:#fff;color:#000;border-color:#fff;}
@@ -382,7 +382,6 @@ function buildToolbarHTML(){
           <div class="pc-tb-body">
             <div class="pc-tb-tags" id="pc-tb-tag-area"></div>
           </div>
-          <div id="pc-tb-mini-popup" class="pc-tb-mini-popup"></div>
           <div id="pc-tb-selected-area" class="pc-tb-selected-area">
             <div class="pc-tb-selected-label">선택됨</div>
             <div class="pc-tb-selected-wrap" id="pc-tb-selected-wrap"></div>
@@ -415,7 +414,26 @@ function renderToolbarTags(){
         renderToolbarSelected();
       } else {
         tbPendingTag = { tag, group: tbActiveGroup };
-        pcShowMiniPopup(tag);
+        pcHideMiniPopup();
+        // insert inline mini-popup right after this tag
+        const popup = document.createElement('div');
+        popup.id = 'pc-tb-mini-popup';
+        popup.className = 'pc-tb-mini-popup show';
+        ROLE_OPTIONS.forEach(r => {
+          const btn = document.createElement('button');
+          btn.className = 'pc-tb-mini-role';
+          btn.textContent = r.label;
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            tbSelected.push({ tag: tbPendingTag.tag, group: tbPendingTag.group, role: r.id, roleLabel: r.label });
+            tbPendingTag = null;
+            pcHideMiniPopup();
+            renderToolbarTags();
+            renderToolbarSelected();
+          };
+          popup.appendChild(btn);
+        });
+        el.insertAdjacentElement('afterend', popup);
       }
     };
     area.appendChild(el);
@@ -428,32 +446,12 @@ function renderToolbarTags(){
 }
 
 function pcShowMiniPopup(tagName){
-  const popup = document.getElementById('pc-tb-mini-popup');
-  if(!popup) return;
-  popup.className = 'pc-tb-mini-popup show';
-  popup.innerHTML = '';
-  const lbl = document.createElement('span');
-  lbl.className = 'pc-tb-mini-label';
-  lbl.textContent = tagName;
-  popup.appendChild(lbl);
-  ROLE_OPTIONS.forEach(r => {
-    const btn = document.createElement('button');
-    btn.className = 'pc-tb-mini-role';
-    btn.textContent = r.label;
-    btn.onclick = () => {
-      tbSelected.push({ tag: tbPendingTag.tag, group: tbPendingTag.group, role: r.id, roleLabel: r.label });
-      tbPendingTag = null;
-      pcHideMiniPopup();
-      renderToolbarTags();
-      renderToolbarSelected();
-    };
-    popup.appendChild(btn);
-  });
+  // now handled inline in renderToolbarTags
 }
 
 function pcHideMiniPopup(){
   const popup = document.getElementById('pc-tb-mini-popup');
-  if(popup){ popup.className = 'pc-tb-mini-popup'; popup.innerHTML = ''; }
+  if(popup) popup.remove();
   tbPendingTag = null;
 }
 
@@ -495,7 +493,7 @@ function renderToolbar(){
 
 function pcDocClick(e){
   const popup = document.getElementById('pc-tb-mini-popup');
-  if(!popup || !popup.classList.contains('show')) return;
+  if(!popup) return;
   if(!popup.contains(e.target) && !e.target.classList.contains('pc-tb-tag')){
     pcHideMiniPopup();
   }
