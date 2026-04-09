@@ -20,7 +20,7 @@ export function render() {
         <div class="list-row tappable" onclick="router.go('toolbar-settings')">
           <div>
             <div class="row-label">Toolbar 태그 관리</div>
-            <div class="row-sub">커스텀 태그 추가 · 삭제</div>
+            <div class="row-sub">그룹 · 태그 추가 · 삭제</div>
           </div>
           <span class="row-chevron">›</span>
         </div>
