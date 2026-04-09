@@ -29,32 +29,33 @@ export function render() {
     const s = document.createElement('style');
     s.id = 'tbs-style';
     s.textContent = `
-.tbs-layout{display:flex;height:340px;border-top:0.5px solid var(--divider-light);}
-.tbs-sidebar{width:108px;flex-shrink:0;border-right:0.5px solid var(--divider-light);background:var(--bg);overflow-y:auto;display:flex;flex-direction:column;scrollbar-width:none;}
+.tbs-layout{display:flex;height:100%;}
+.tbs-sidebar{width:108px;flex-shrink:0;background:#f5f5f7;border-right:0.5px solid var(--divider-light);overflow-y:auto;display:flex;flex-direction:column;padding:6px 0;scrollbar-width:none;}
 .tbs-sidebar::-webkit-scrollbar{display:none;}
-.tbs-sb-item{padding:10px 10px;font-size:12px;cursor:pointer;transition:all .1s;border-left:2.5px solid transparent;display:flex;align-items:center;justify-content:space-between;gap:4px;color:var(--text-muted);}
+.tbs-sb-item{padding:10px 14px;font-size:12.5px;cursor:pointer;transition:all .1s;color:var(--text-muted);border-left:2.5px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tbs-sb-item:hover{color:var(--text-secondary);background:rgba(0,0,0,0.02);}
 .tbs-sb-item.active{color:var(--text-primary);background:var(--surface);border-left-color:var(--text-primary);font-weight:600;}
-.tbs-sb-item-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
-.tbs-sb-item-x{font-size:13px;color:var(--text-hint);cursor:pointer;line-height:1;flex-shrink:0;opacity:0;transition:opacity .1s,color .1s;}
-.tbs-sb-item:hover .tbs-sb-item-x{opacity:1;}
-.tbs-sb-item-x:hover{color:var(--danger);}
-.tbs-sb-add{padding:10px 10px;font-size:12px;color:var(--text-hint);cursor:pointer;border-left:2.5px solid transparent;transition:color .1s;}
+.tbs-sb-add{padding:10px 14px;font-size:12.5px;color:var(--text-hint);cursor:pointer;border-left:2.5px solid transparent;transition:color .1s;margin-top:2px;}
 .tbs-sb-add:hover{color:var(--text-muted);}
-.tbs-main{flex:1;display:flex;flex-direction:column;min-width:0;}
-.tbs-main-header{padding:12px 14px 6px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--text-hint);text-transform:uppercase;flex-shrink:0;}
-.tbs-tag-area{flex:1;padding:6px 14px;overflow-y:auto;scrollbar-width:none;}
+.tbs-main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--surface);}
+.tbs-header{padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.tbs-header-label{font-size:17px;font-weight:600;color:var(--text-primary);}
+.tbs-del-group{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;color:var(--danger);background:transparent;border:0.5px solid rgba(200,60,60,0.3);cursor:pointer;font-family:inherit;transition:all .1s;}
+.tbs-del-group:hover{background:var(--danger-bg);}
+.tbs-tag-area{flex:1;padding:8px 16px;overflow-y:auto;scrollbar-width:none;}
 .tbs-tag-area::-webkit-scrollbar{display:none;}
-.tbs-tag-wrap{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;}
-.tbs-tag{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:20px;font-size:13px;background:var(--surface);border:0.5px solid var(--divider);color:var(--text-secondary);cursor:default;transition:all .1s;}
-.tbs-tag-x{font-size:14px;color:var(--text-hint);cursor:pointer;line-height:1;margin-left:1px;transition:color .1s;}
+.tbs-tag-wrap{display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;}
+.tbs-tag{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:20px;font-size:13px;background:var(--surface);color:var(--text-secondary);cursor:default;transition:all .1s;border:0.5px solid var(--divider);}
+.tbs-tag:hover{border-color:#ccc;}
+.tbs-tag-x{font-size:14px;color:var(--text-hint);cursor:pointer;line-height:1;transition:color .1s;}
 .tbs-tag-x:hover{color:var(--danger);}
-.tbs-tag-add{display:inline-flex;align-items:center;padding:7px 14px;border-radius:20px;font-size:13px;color:var(--text-hint);border:0.5px dashed var(--text-hint);cursor:pointer;background:transparent;transition:all .1s;font-family:inherit;}
-.tbs-tag-add:hover{color:var(--text-muted);border-color:var(--text-muted);}
-.tbs-empty{font-size:12px;color:var(--text-hint);padding:24px 0;text-align:center;width:100%;}
-.tbs-bottom{padding:10px 14px 14px;border-top:0.5px solid var(--divider-light);display:flex;gap:8px;flex-shrink:0;}
-.tbs-save-btn{flex:1;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:#fff;background:#1a1a2e;border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
+.tbs-tag-add{display:inline-flex;align-items:center;padding:7px 12px;border-radius:20px;font-size:13px;color:var(--text-hint);border:0.5px dashed #ccc;cursor:pointer;background:transparent;transition:all .1s;font-family:inherit;}
+.tbs-tag-add:hover{color:var(--text-muted);border-color:#aaa;}
+.tbs-empty{font-size:13px;color:var(--text-hint);padding:40px 0;text-align:center;width:100%;}
+.tbs-bottom{padding:12px 16px 16px;display:flex;gap:10px;flex-shrink:0;}
+.tbs-save-btn{flex:1;padding:14px;border-radius:var(--radius-sm);font-size:15px;font-weight:500;color:#fff;background:#1a1a2e;border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
 .tbs-save-btn:active{opacity:.8;}
-.tbs-reset-btn{flex:1;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--danger);background:var(--danger-bg);border:0.5px solid rgba(200,60,60,0.2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tbs-reset-btn{flex:1;padding:14px;border-radius:var(--radius-sm);font-size:15px;font-weight:500;color:var(--danger);background:#fff0f0;border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
 .tbs-reset-btn:active{opacity:.8;}
     `;
     document.head.appendChild(s);
@@ -70,13 +71,16 @@ export function render() {
 
   const area = document.getElementById('scroll-area');
   area.style.padding = '0';
-  area.style.background = 'var(--bg)';
+  area.style.background = '#f5f5f7';
 
   area.innerHTML = `
     <div class="tbs-layout">
       <div class="tbs-sidebar" id="tbs-sidebar"></div>
       <div class="tbs-main">
-        <div class="tbs-main-header" id="tbs-main-header"></div>
+        <div class="tbs-header">
+          <span class="tbs-header-label" id="tbs-header-label"></span>
+          <button class="tbs-del-group" id="tbs-del-group">그룹 삭제</button>
+        </div>
         <div class="tbs-tag-area" id="tbs-tag-area"></div>
         <div class="tbs-bottom">
           <button class="tbs-save-btn" id="tbs-save-btn">저장</button>
@@ -86,7 +90,6 @@ export function render() {
     </div>
   `;
 
-  // ensure active group is valid
   const visibleGroups = getVisibleGroupsList(globalStore);
   if (visibleGroups.length > 0 && !visibleGroups.find(g => g.id === tbsActiveGroup)) {
     tbsActiveGroup = visibleGroups[0].id;
@@ -94,6 +97,37 @@ export function render() {
 
   renderSidebar();
   renderTags();
+
+  document.getElementById('tbs-del-group').onclick = () => {
+    const gs = window.parent?.__PC_GLOBAL_STORE__;
+    if (!gs) return;
+    showModal({
+      title: '그룹 삭제',
+      desc: `"${getActiveGroupLabel(gs)}" 그룹을 삭제할까요?`,
+      confirmText: '삭제',
+      danger: true,
+      onConfirm: () => {
+        const isDefault = TB_DEFAULT_GROUPS.some(dg => dg.id === tbsActiveGroup);
+        if (isDefault) {
+          if (!gs.config.deletedGroups.includes(tbsActiveGroup)) {
+            gs.config.deletedGroups.push(tbsActiveGroup);
+          }
+        } else {
+          gs.config.customGroups = gs.config.customGroups.filter(cg => cg.id !== tbsActiveGroup);
+          delete gs.config.customTags[tbsActiveGroup];
+          delete gs.config.deletedTags[tbsActiveGroup];
+        }
+        if (saveStore) saveStore();
+        const visible = getVisibleGroupsList(gs);
+        if (visible.length > 0) {
+          tbsActiveGroup = visible[0].id;
+        }
+        renderSidebar();
+        renderTags();
+        showToast('삭제됐어요');
+      }
+    });
+  };
 
   document.getElementById('tbs-save-btn').onclick = () => {
     if (saveStore) saveStore();
@@ -117,7 +151,6 @@ export function render() {
           gs.config.deletedTags[tbsActiveGroup] = [];
           gs.config.customTags[tbsActiveGroup] = [];
         } else {
-          // custom group: just clear its custom tags
           gs.config.customTags[tbsActiveGroup] = [];
           const cg = gs.config.customGroups.find(g => g.id === tbsActiveGroup);
           if (cg) cg.tags = [];
@@ -128,6 +161,12 @@ export function render() {
       }
     });
   };
+}
+
+function getActiveGroupLabel(gs) {
+  const groups = getVisibleGroupsList(gs);
+  const g = groups.find(gr => gr.id === tbsActiveGroup);
+  return g ? g.label : '';
 }
 
 function getVisibleGroupsList(gs) {
@@ -149,42 +188,12 @@ function renderSidebar() {
   groups.forEach(g => {
     const item = document.createElement('div');
     item.className = 'tbs-sb-item' + (g.id === tbsActiveGroup ? ' active' : '');
-
-    const label = document.createElement('span');
-    label.className = 'tbs-sb-item-label';
-    label.textContent = g.label;
-    label.onclick = () => {
+    item.textContent = g.label;
+    item.onclick = () => {
       tbsActiveGroup = g.id;
       renderSidebar();
       renderTags();
     };
-
-    const xBtn = document.createElement('span');
-    xBtn.className = 'tbs-sb-item-x';
-    xBtn.textContent = '×';
-    xBtn.onclick = (e) => {
-      e.stopPropagation();
-      const isDefault = TB_DEFAULT_GROUPS.some(dg => dg.id === g.id);
-      if (isDefault) {
-        if (!gs.config.deletedGroups.includes(g.id)) {
-          gs.config.deletedGroups.push(g.id);
-        }
-      } else {
-        gs.config.customGroups = gs.config.customGroups.filter(cg => cg.id !== g.id);
-        delete gs.config.customTags[g.id];
-        delete gs.config.deletedTags[g.id];
-      }
-      if (saveStore) saveStore();
-      const visible = getVisibleGroupsList(gs);
-      if (visible.length > 0 && !visible.find(v => v.id === tbsActiveGroup)) {
-        tbsActiveGroup = visible[0].id;
-      }
-      renderSidebar();
-      renderTags();
-    };
-
-    item.appendChild(label);
-    item.appendChild(xBtn);
     sb.appendChild(item);
   });
 
@@ -213,7 +222,7 @@ function renderSidebar() {
 
 function renderTags() {
   const tagArea = document.getElementById('tbs-tag-area');
-  const header = document.getElementById('tbs-main-header');
+  const header = document.getElementById('tbs-header-label');
   if (!tagArea || !header) return;
 
   const gs = window.parent?.__PC_GLOBAL_STORE__;
@@ -260,21 +269,17 @@ function renderTags() {
     xBtn.textContent = '×';
     xBtn.onclick = () => {
       if (i < baseTags.length) {
-        // deleting a base tag
         if (isDefault) {
           if (!gs.config.deletedTags[tbsActiveGroup]) gs.config.deletedTags[tbsActiveGroup] = [];
           gs.config.deletedTags[tbsActiveGroup].push(tag);
         } else {
-          // custom group base tag
           if (customGroup) {
             customGroup.tags = customGroup.tags.filter(t => t !== tag);
           }
         }
       } else {
-        // deleting a custom tag
         gs.config.customTags[tbsActiveGroup] = (gs.config.customTags[tbsActiveGroup] || []).filter(t => t !== tag);
       }
-      // don't auto-save, user clicks 저장
       renderTags();
     };
 
@@ -292,20 +297,13 @@ function renderTags() {
     if (!val || !val.trim()) return;
     const trimmed = val.trim();
 
-    // check duplicates
     if (allTags.includes(trimmed)) {
       showToast('이미 있는 태그예요');
       return;
     }
 
-    if (isDefault) {
-      if (!gs.config.customTags[tbsActiveGroup]) gs.config.customTags[tbsActiveGroup] = [];
-      gs.config.customTags[tbsActiveGroup].push(trimmed);
-    } else {
-      // custom group — add to group's own tags or customTags
-      if (!gs.config.customTags[tbsActiveGroup]) gs.config.customTags[tbsActiveGroup] = [];
-      gs.config.customTags[tbsActiveGroup].push(trimmed);
-    }
+    if (!gs.config.customTags[tbsActiveGroup]) gs.config.customTags[tbsActiveGroup] = [];
+    gs.config.customTags[tbsActiveGroup].push(trimmed);
     renderTags();
   };
   wrap.appendChild(addBtn);
