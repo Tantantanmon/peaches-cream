@@ -185,71 +185,13 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
-// generateRaw 래퍼 — 백엔드 직접 호출 (참메모리/embedding 우회)
+// generateRaw 래퍼
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
   const c=ctx(), store=getStore();
   const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
-
-  // 백엔드 직접 호출 시도 (참메모리 우회)
-  try {
-    const result = await generateDirectChat(systemPrompt||'', userPrompt||'', tokens);
-    if (result) return result;
-  } catch(e) {
-    console.warn(`[${MODULE_NAME}] direct chat failed, falling back to generateRaw`, e);
-  }
-
-  // fallback: 기존 generateRaw
   const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
-}
-
-// ═══════════════════════════════════════════
-// 직접 백엔드 호출 (참메모리/embedding 파이프라인 우회)
-// ═══════════════════════════════════════════
-async function generateDirectChat(systemPrompt, userPrompt, maxTokens) {
-  const c = ctx();
-  const headers = c.getRequestHeaders();
-  const ccs = c.chatCompletionSettings || {};
-  const model = ccs.google_model || ccs.openai_model || '';
-
-  const messages = [];
-  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
-  if (userPrompt)   messages.push({ role: 'user',   content: userPrompt });
-
-  const body = {
-    chat_completion_source: ccs.chat_completion_source || 'openai',
-    model: model,
-    messages: messages,
-    max_tokens: maxTokens,
-    temperature: ccs.temp ?? 1.0,
-    top_p: ccs.top_p ?? 1.0,
-    stream: false,
-    reverse_proxy: ccs.reverse_proxy || '',
-    proxy_password: ccs.proxy_password || '',
-    ...(ccs.chat_completion_source === 'vertexai' ? {
-      google_model: model,
-      use_makersuite: false,
-    } : {}),
-  };
-
-  const resp = await fetch('/api/backends/chat-completions/generate', {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(body),
-  });
-
-  if (!resp.ok) {
-    const errText = await resp.text().catch(()=>'');
-    throw new Error(`Backend ${resp.status}: ${errText.slice(0,200)}`);
-  }
-
-  const data = await resp.json();
-  if (data?.choices?.[0]?.message?.content) return data.choices[0].message.content;
-  if (data?.candidates?.[0]?.content?.parts?.[0]?.text) return data.candidates[0].content.parts[0].text;
-  if (typeof data === 'string') return data;
-  if (data?.response) return data.response;
-  throw new Error('Unexpected response format');
 }
 
 // ═══════════════════════════════════════════
