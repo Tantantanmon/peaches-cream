@@ -39,7 +39,7 @@ const defaultCharData = {
 };
 
 const defaultGlobalConfig = {
-  apiSource:'main', maxTokens:1500, toolbarEnabled:false, vertexSafe:true,
+  apiSource:'main', maxTokens:1500, toolbarEnabled:false,
   customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[], fetish:[] },
   deletedTags:{},
   deletedGroups:[],
@@ -91,7 +91,6 @@ function getStore() {
   if (!s.config.customGroups)  s.config.customGroups   = [];
   if (!s.config.favoriteTags)  s.config.favoriteTags   = [];
   if (s.config.favoriteTabEnabled===undefined) s.config.favoriteTabEnabled = false;
-  if (s.config.vertexSafe===undefined) s.config.vertexSafe = true;
   // clean up legacy tochar
   delete s.config.customTags.tochar;
   delete s.config.deletedTags.tochar;
@@ -186,137 +185,27 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
-// Vertex Safe — 미성년 시그널 제거 + 성적 키워드 순화
-// ═══════════════════════════════════════════
-function sanitizeForVertex(text) {
-  if (!text) return text;
-  let s = text;
-
-  // ── 1. 나이 관련 직접 표현 ──
-  s = s.replace(/\b(?:Age|age|나이)\s*[:：]?\s*(?:1[0-7]|[1-9])\b/gi, '');
-  s = s.replace(/\b(\d{1,2})\s*(?:years?\s*old|세|살)\b/gi, (m, n) => parseInt(n) < 18 ? '' : m);
-
-  // ── 2. 미성년 시그널 표현 ──
-  const minorSignals = [
-    /\bstill\s+boyish\b/gi,
-    /\bboyish\s+in\s+the\s+face\b/gi,
-    /\bjust\s+looks?\s+like\s+a\s+kid\b/gi,
-    /\blooks?\s+like\s+a\s+kid\b/gi,
-    /\bhe\s+just\s+looks?\s+like\s+a\s+kid\b/gi,
-    /\bshe\s+just\s+looks?\s+like\s+a\s+kid\b/gi,
-    /\bnot\s+fully\s+filled\s+out(?:\s+yet)?\b/gi,
-    /\bstartlingly\s+young\b/gi,
-    /\blooks?\s+older\s+when\s+serious\s+and\s+startlingly\s+young\b/gi,
-    /\bunder(?:age|aged)\b/gi,
-    /\bminor\b/gi,
-    /\bjuvenile\b/gi,
-    /\bchild(?:ish|like)?\b/gi,
-    /\bteen(?:age|aged|ager)?\b/gi,
-    /\badolescen(?:t|ce)\b/gi,
-    /\bpuber(?:ty|tal|scent)\b/gi,
-    /\bschool\s*(?:girl|boy|kid|student|child)\b/gi,
-    /\bhigh\s*school(?:er)?\b/gi,
-    /\bmiddle\s*school(?:er)?\b/gi,
-    /\b(?:elementary|primary)\s*school\b/gi,
-    /\b(?:소녀|소년|미성년|청소년|학생|중학생|고등학생|초등학생)\b/g,
-  ];
-  minorSignals.forEach(re => { s = s.replace(re, ''); });
-
-  // ── 3. 성적 키워드 순화 (지시문만 — 응답에는 영향 없음) ──
-  const sexualReplacements = [
-    // 영어 키워드
-    [/\bextremely\s+explicit\s+and\s+perverted\b/gi, 'obsessive and detailed'],
-    [/\bextremely\s+explicit\b/gi, 'very detailed'],
-    [/\bsexually\s+explicit\b/gi, 'intimate and detailed'],
-    [/\bexplicit\s+sexual\b/gi, 'intimate'],
-    [/\bexplicit\s+content\s+allowed\b/gi, 'unrestricted content'],
-    [/\bexplicit\s+if\s+NSFW\b/gi, 'vivid if mature'],
-    [/\bexplicit\b/gi, 'candid'],
-    [/\bNSFW\s+roleplay\s+context\b/gi, 'mature roleplay context'],
-    [/\bNSFW\s+threat\b/gi, 'provocative threat'],
-    [/\bNSFW\s+complaint\b/gi, 'provocative complaint'],
-    [/\bNSFW\s+acts\b/gi, 'intimate acts'],
-    [/\bNSFW\s+sexual\s+training\b/gi, 'private intimate training'],
-    [/\bNSFW\s+dream\b/gi, 'intimate dream'],
-    [/\bNSFW\s+ok\b/gi, 'mature content ok'],
-    [/\bNSFW\b/gi, 'mature'],
-    [/\bperverted\b/gi, 'obsessive'],
-    [/\bcum\s+stains?\b/gi, 'bodily traces'],
-    [/\bused\s+for\s+masturbation\b/gi, 'used privately'],
-    [/\bmasturbation\s+abstinence\b/gi, 'self-restraint practice'],
-    [/\bmasturbation\b/gi, 'self-pleasure'],
-    [/\bcunnilingus\b/gi, 'oral technique'],
-    [/\bG-?\s*spot\b/gi, 'sensitive spot'],
-    [/\bedging\s+practice\b/gi, 'endurance practice'],
-    [/\bstudying\s+porn\b/gi, 'studying technique'],
-    [/\bincreasing\s+cum\s+volume\b/gi, 'increasing stamina'],
-    [/\bcreampie[s]?\b/gi, 'finishing inside'],
-    [/\boverstimulation\b/gi, 'intense stimulation'],
-    [/\brough\s+sex\b/gi, 'intense intimacy'],
-    [/\bmarathon\s+sex\b/gi, 'extended intimacy'],
-    [/\bsexual\s+behavior\b/gi, 'intimate behavior'],
-    [/\bsexual\s+habit\b/gi, 'intimate habit'],
-    [/\bsexual\s+confession\b/gi, 'intimate confession'],
-    [/\bsexual\s+observation\b/gi, 'intimate observation'],
-    [/\bsexual\s+technique\b/gi, 'intimate technique'],
-    [/\bsexual\s+training\b/gi, 'private training'],
-    [/\bsexual\s+content\b/gi, 'mature content'],
-    [/\bsexual\s+desires?\b/gi, 'intimate desires'],
-    [/\bsexual\b/gi, 'intimate'],
-    [/\berotic\b/gi, 'sensual'],
-    // 한국어 키워드
-    [/금딸/g, '자기절제'],
-    [/정액량\s*증가/g, '체력 강화'],
-    [/정액/g, '체액'],
-    [/사정\s*참기/g, '인내력 훈련'],
-    [/사정/g, '절정'],
-    [/혀놀림\s*연습/g, '기술 연습'],
-    [/야동\s*감상\s*연구/g, '기법 연구'],
-    [/자위/g, '자기관리'],
-    [/성감대/g, '민감한 부위'],
-    [/성적\s*씬/g, '친밀한 씬'],
-    [/성적/g, '친밀한'],
-  ];
-  sexualReplacements.forEach(([re, rep]) => { s = s.replace(re, rep); });
-
-  // ── 4. 구체적 묘사 구문 제거 (charDesc 안의 긴 구문) ──
-  s = s.replace(/(?:include|including)\s+cum\s+stains.*?(?:etc\.?|\.)/gi, '');
-  s = s.replace(/smelled\/licked.*?(?:sleeping|etc\.?|\.)/gi, '');
-
-  // ── 5. 연속 공백/빈 줄 정리 ──
-  s = s.replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
-
-  return s;
-}
-
-// ═══════════════════════════════════════════
-// generateRaw 래퍼 — Vertex Safe 모드에서는 직접 백엔드 호출 (embedding 우회)
+// generateRaw 래퍼 — 백엔드 직접 호출 (참메모리/embedding 우회)
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
   const c=ctx(), store=getStore();
   const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
-  let finalSys = systemPrompt || '';
-  if (store.config.vertexSafe) {
-    finalSys = sanitizeForVertex(finalSys);
-  }
 
-  // Vertex Safe 모드: SillyTavern 백엔드에 직접 요청 (embedding/Vector Storage 우회)
-  if (store.config.vertexSafe) {
-    try {
-      const result = await generateDirectChat(finalSys, userPrompt||'', tokens);
-      if (result) return result;
-    } catch(e) {
-      console.warn(`[${MODULE_NAME}] direct chat failed, falling back to generateRaw`, e);
-    }
+  // 백엔드 직접 호출 시도 (참메모리 우회)
+  try {
+    const result = await generateDirectChat(systemPrompt||'', userPrompt||'', tokens);
+    if (result) return result;
+  } catch(e) {
+    console.warn(`[${MODULE_NAME}] direct chat failed, falling back to generateRaw`, e);
   }
 
   // fallback: 기존 generateRaw
-  const params = { systemPrompt: finalSys, prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
+  const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
 }
 
 // ═══════════════════════════════════════════
-// 직접 백엔드 호출 (embedding 파이프라인 우회)
+// 직접 백엔드 호출 (참메모리/embedding 파이프라인 우회)
 // ═══════════════════════════════════════════
 async function generateDirectChat(systemPrompt, userPrompt, maxTokens) {
   const c = ctx();
@@ -356,11 +245,9 @@ async function generateDirectChat(systemPrompt, userPrompt, maxTokens) {
   }
 
   const data = await resp.json();
-  // OpenAI-compatible 응답 파싱
   if (data?.choices?.[0]?.message?.content) return data.choices[0].message.content;
   if (data?.candidates?.[0]?.content?.parts?.[0]?.text) return data.candidates[0].content.parts[0].text;
   if (typeof data === 'string') return data;
-  // SillyTavern 래핑 형태
   if (data?.response) return data.response;
   throw new Error('Unexpected response format');
 }
@@ -851,10 +738,6 @@ function renderSettingsPanel(){
             <label style="white-space:nowrap;">최대 토큰</label>
             <input id="pc-max-tokens" type="number" value="${store.config.maxTokens||1500}" min="100" max="8000" style="width:80px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;font-size:13px;"/>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-            <input id="pc-vertex-safe" type="checkbox" ${store.config.vertexSafe?'checked':''} style="margin:0;"/>
-            <label for="pc-vertex-safe" style="white-space:nowrap;font-size:13px;cursor:pointer;">Vertex Safe Mode</label>
-          </div>
           <hr>
           <small style="color:#888;">요술봉 메뉴에서 🍑 Peaches &amp; Cream을 클릭해 여세요.</small>
         </div>
@@ -864,7 +747,6 @@ function renderSettingsPanel(){
   function fillApiSelect(){ }
 
   $('#pc-max-tokens').on('change',function(){ getStore().config.maxTokens=parseInt($(this).val())||1500; saveStore(); });
-  $('#pc-vertex-safe').on('change',function(){ getStore().config.vertexSafe=$(this).is(':checked'); saveStore(); });
 }
 
 function addWandMenuItem(){
