@@ -186,17 +186,17 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
-// Vertex Safe — 미성년 시그널 제거
+// Vertex Safe — 미성년 시그널 제거 + 성적 키워드 순화
 // ═══════════════════════════════════════════
 function sanitizeForVertex(text) {
   if (!text) return text;
   let s = text;
 
-  // ── 나이 관련 직접 표현 ──
+  // ── 1. 나이 관련 직접 표현 ──
   s = s.replace(/\b(?:Age|age|나이)\s*[:：]?\s*(?:1[0-7]|[1-9])\b/gi, '');
   s = s.replace(/\b(\d{1,2})\s*(?:years?\s*old|세|살)\b/gi, (m, n) => parseInt(n) < 18 ? '' : m);
 
-  // ── 미성년 시그널 표현 ──
+  // ── 2. 미성년 시그널 표현 ──
   const minorSignals = [
     /\bstill\s+boyish\b/gi,
     /\bboyish\s+in\s+the\s+face\b/gi,
@@ -222,7 +222,68 @@ function sanitizeForVertex(text) {
   ];
   minorSignals.forEach(re => { s = s.replace(re, ''); });
 
-  // ── 연속 공백/빈 줄 정리 ──
+  // ── 3. 성적 키워드 순화 (지시문만 — 응답에는 영향 없음) ──
+  const sexualReplacements = [
+    // 영어 키워드
+    [/\bextremely\s+explicit\s+and\s+perverted\b/gi, 'obsessive and detailed'],
+    [/\bextremely\s+explicit\b/gi, 'very detailed'],
+    [/\bsexually\s+explicit\b/gi, 'intimate and detailed'],
+    [/\bexplicit\s+sexual\b/gi, 'intimate'],
+    [/\bexplicit\s+content\s+allowed\b/gi, 'unrestricted content'],
+    [/\bexplicit\s+if\s+NSFW\b/gi, 'vivid if mature'],
+    [/\bexplicit\b/gi, 'candid'],
+    [/\bNSFW\s+roleplay\s+context\b/gi, 'mature roleplay context'],
+    [/\bNSFW\s+threat\b/gi, 'provocative threat'],
+    [/\bNSFW\s+complaint\b/gi, 'provocative complaint'],
+    [/\bNSFW\s+acts\b/gi, 'intimate acts'],
+    [/\bNSFW\s+sexual\s+training\b/gi, 'private intimate training'],
+    [/\bNSFW\s+dream\b/gi, 'intimate dream'],
+    [/\bNSFW\s+ok\b/gi, 'mature content ok'],
+    [/\bNSFW\b/gi, 'mature'],
+    [/\bperverted\b/gi, 'obsessive'],
+    [/\bcum\s+stains?\b/gi, 'bodily traces'],
+    [/\bused\s+for\s+masturbation\b/gi, 'used privately'],
+    [/\bmasturbation\s+abstinence\b/gi, 'self-restraint practice'],
+    [/\bmasturbation\b/gi, 'self-pleasure'],
+    [/\bcunnilingus\b/gi, 'oral technique'],
+    [/\bG-?\s*spot\b/gi, 'sensitive spot'],
+    [/\bedging\s+practice\b/gi, 'endurance practice'],
+    [/\bstudying\s+porn\b/gi, 'studying technique'],
+    [/\bincreasing\s+cum\s+volume\b/gi, 'increasing stamina'],
+    [/\bcreampie[s]?\b/gi, 'finishing inside'],
+    [/\boverstimulation\b/gi, 'intense stimulation'],
+    [/\brough\s+sex\b/gi, 'intense intimacy'],
+    [/\bmarathon\s+sex\b/gi, 'extended intimacy'],
+    [/\bsexual\s+behavior\b/gi, 'intimate behavior'],
+    [/\bsexual\s+habit\b/gi, 'intimate habit'],
+    [/\bsexual\s+confession\b/gi, 'intimate confession'],
+    [/\bsexual\s+observation\b/gi, 'intimate observation'],
+    [/\bsexual\s+technique\b/gi, 'intimate technique'],
+    [/\bsexual\s+training\b/gi, 'private training'],
+    [/\bsexual\s+content\b/gi, 'mature content'],
+    [/\bsexual\s+desires?\b/gi, 'intimate desires'],
+    [/\bsexual\b/gi, 'intimate'],
+    [/\berotic\b/gi, 'sensual'],
+    // 한국어 키워드
+    [/금딸/g, '자기절제'],
+    [/정액량\s*증가/g, '체력 강화'],
+    [/정액/g, '체액'],
+    [/사정\s*참기/g, '인내력 훈련'],
+    [/사정/g, '절정'],
+    [/혀놀림\s*연습/g, '기술 연습'],
+    [/야동\s*감상\s*연구/g, '기법 연구'],
+    [/자위/g, '자기관리'],
+    [/성감대/g, '민감한 부위'],
+    [/성적\s*씬/g, '친밀한 씬'],
+    [/성적/g, '친밀한'],
+  ];
+  sexualReplacements.forEach(([re, rep]) => { s = s.replace(re, rep); });
+
+  // ── 4. 구체적 묘사 구문 제거 (charDesc 안의 긴 구문) ──
+  s = s.replace(/(?:include|including)\s+cum\s+stains.*?(?:etc\.?|\.)/gi, '');
+  s = s.replace(/smelled\/licked.*?(?:sleeping|etc\.?|\.)/gi, '');
+
+  // ── 5. 연속 공백/빈 줄 정리 ──
   s = s.replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
 
   return s;
