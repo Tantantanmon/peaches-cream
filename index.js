@@ -39,7 +39,7 @@ const defaultCharData = {
 };
 
 const defaultGlobalConfig = {
-  apiSource:'main', maxTokens:1500, toolbarEnabled:false,
+  apiSource:'main', maxTokens:1500, toolbarEnabled:false, vertexSafe:true,
   customTags:{ sfw:[], mood:[], foreplay:[], position:[], action:[], finish:[], orgasm:[], fetish:[] },
   deletedTags:{},
   deletedGroups:[],
@@ -91,6 +91,7 @@ function getStore() {
   if (!s.config.customGroups)  s.config.customGroups   = [];
   if (!s.config.favoriteTags)  s.config.favoriteTags   = [];
   if (s.config.favoriteTabEnabled===undefined) s.config.favoriteTabEnabled = false;
+  if (s.config.vertexSafe===undefined) s.config.vertexSafe = true;
   // clean up legacy tochar
   delete s.config.customTags.tochar;
   delete s.config.deletedTags.tochar;
@@ -185,12 +186,59 @@ function getCharDescription() {
 function getUserPersona(){ try{const c=ctx();return c.persona||c?.powerUserSettings?.persona_description||'';}catch(e){return '';} }
 
 // ═══════════════════════════════════════════
+// Vertex Safe — 미성년 시그널 제거
+// ═══════════════════════════════════════════
+function sanitizeForVertex(text) {
+  if (!text) return text;
+  let s = text;
+
+  // ── 나이 관련 직접 표현 ──
+  s = s.replace(/\b(?:Age|age|나이)\s*[:：]?\s*(?:1[0-7]|[1-9])\b/gi, '');
+  s = s.replace(/\b(\d{1,2})\s*(?:years?\s*old|세|살)\b/gi, (m, n) => parseInt(n) < 18 ? '' : m);
+
+  // ── 미성년 시그널 표현 ──
+  const minorSignals = [
+    /\bstill\s+boyish\b/gi,
+    /\bboyish\s+in\s+the\s+face\b/gi,
+    /\bjust\s+looks?\s+like\s+a\s+kid\b/gi,
+    /\blooks?\s+like\s+a\s+kid\b/gi,
+    /\bhe\s+just\s+looks?\s+like\s+a\s+kid\b/gi,
+    /\bshe\s+just\s+looks?\s+like\s+a\s+kid\b/gi,
+    /\bnot\s+fully\s+filled\s+out(?:\s+yet)?\b/gi,
+    /\bstartlingly\s+young\b/gi,
+    /\blooks?\s+older\s+when\s+serious\s+and\s+startlingly\s+young\b/gi,
+    /\bunder(?:age|aged)\b/gi,
+    /\bminor\b/gi,
+    /\bjuvenile\b/gi,
+    /\bchild(?:ish|like)?\b/gi,
+    /\bteen(?:age|aged|ager)?\b/gi,
+    /\badolescen(?:t|ce)\b/gi,
+    /\bpuber(?:ty|tal|scent)\b/gi,
+    /\bschool\s*(?:girl|boy|kid|student|child)\b/gi,
+    /\bhigh\s*school(?:er)?\b/gi,
+    /\bmiddle\s*school(?:er)?\b/gi,
+    /\b(?:elementary|primary)\s*school\b/gi,
+    /\b(?:소녀|소년|미성년|청소년|학생|중학생|고등학생|초등학생)\b/g,
+  ];
+  minorSignals.forEach(re => { s = s.replace(re, ''); });
+
+  // ── 연속 공백/빈 줄 정리 ──
+  s = s.replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+
+  return s;
+}
+
+// ═══════════════════════════════════════════
 // generateRaw 래퍼
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
   const c=ctx(), store=getStore();
   const tokens = (appName && APP_TOKENS[appName]) ? APP_TOKENS[appName] : (store.config.maxTokens||1500);
-  const params = { systemPrompt: systemPrompt||'', prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
+  let finalSys = systemPrompt || '';
+  if (store.config.vertexSafe) {
+    finalSys = sanitizeForVertex(finalSys);
+  }
+  const params = { systemPrompt: finalSys, prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
 }
 
@@ -680,6 +728,10 @@ function renderSettingsPanel(){
             <label style="white-space:nowrap;">최대 토큰</label>
             <input id="pc-max-tokens" type="number" value="${store.config.maxTokens||1500}" min="100" max="8000" style="width:80px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;font-size:13px;"/>
           </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+            <input id="pc-vertex-safe" type="checkbox" ${store.config.vertexSafe?'checked':''} style="margin:0;"/>
+            <label for="pc-vertex-safe" style="white-space:nowrap;font-size:13px;cursor:pointer;">Vertex Safe Mode</label>
+          </div>
           <hr>
           <small style="color:#888;">요술봉 메뉴에서 🍑 Peaches &amp; Cream을 클릭해 여세요.</small>
         </div>
@@ -689,6 +741,7 @@ function renderSettingsPanel(){
   function fillApiSelect(){ }
 
   $('#pc-max-tokens').on('change',function(){ getStore().config.maxTokens=parseInt($(this).val())||1500; saveStore(); });
+  $('#pc-vertex-safe').on('change',function(){ getStore().config.vertexSafe=$(this).is(':checked'); saveStore(); });
 }
 
 function addWandMenuItem(){
