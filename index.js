@@ -290,7 +290,7 @@ function sanitizeForVertex(text) {
 }
 
 // ═══════════════════════════════════════════
-// generateRaw 래퍼
+// generateRaw 래퍼 — Vertex Safe 모드에서는 직접 백엔드 호출 (embedding 우회)
 // ═══════════════════════════════════════════
 async function generateWithRole(systemPrompt, userPrompt, appName) {
   const c=ctx(), store=getStore();
@@ -299,8 +299,70 @@ async function generateWithRole(systemPrompt, userPrompt, appName) {
   if (store.config.vertexSafe) {
     finalSys = sanitizeForVertex(finalSys);
   }
+
+  // Vertex Safe 모드: SillyTavern 백엔드에 직접 요청 (embedding/Vector Storage 우회)
+  if (store.config.vertexSafe) {
+    try {
+      const result = await generateDirectChat(finalSys, userPrompt||'', tokens);
+      if (result) return result;
+    } catch(e) {
+      console.warn(`[${MODULE_NAME}] direct chat failed, falling back to generateRaw`, e);
+    }
+  }
+
+  // fallback: 기존 generateRaw
   const params = { systemPrompt: finalSys, prompt: userPrompt||'', max_new_tokens: tokens, streaming: false };
   return await c.generateRaw(params);
+}
+
+// ═══════════════════════════════════════════
+// 직접 백엔드 호출 (embedding 파이프라인 우회)
+// ═══════════════════════════════════════════
+async function generateDirectChat(systemPrompt, userPrompt, maxTokens) {
+  const c = ctx();
+  const headers = c.getRequestHeaders();
+  const ccs = c.chatCompletionSettings || {};
+  const model = ccs.google_model || ccs.openai_model || '';
+
+  const messages = [];
+  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+  if (userPrompt)   messages.push({ role: 'user',   content: userPrompt });
+
+  const body = {
+    chat_completion_source: ccs.chat_completion_source || 'openai',
+    model: model,
+    messages: messages,
+    max_tokens: maxTokens,
+    temperature: ccs.temp ?? 1.0,
+    top_p: ccs.top_p ?? 1.0,
+    stream: false,
+    reverse_proxy: ccs.reverse_proxy || '',
+    proxy_password: ccs.proxy_password || '',
+    ...(ccs.chat_completion_source === 'vertexai' ? {
+      google_model: model,
+      use_makersuite: false,
+    } : {}),
+  };
+
+  const resp = await fetch('/api/backends/chat-completions/generate', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(body),
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text().catch(()=>'');
+    throw new Error(`Backend ${resp.status}: ${errText.slice(0,200)}`);
+  }
+
+  const data = await resp.json();
+  // OpenAI-compatible 응답 파싱
+  if (data?.choices?.[0]?.message?.content) return data.choices[0].message.content;
+  if (data?.candidates?.[0]?.content?.parts?.[0]?.text) return data.candidates[0].content.parts[0].text;
+  if (typeof data === 'string') return data;
+  // SillyTavern 래핑 형태
+  if (data?.response) return data.response;
+  throw new Error('Unexpected response format');
 }
 
 // ═══════════════════════════════════════════
